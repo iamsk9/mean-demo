@@ -1,0 +1,155 @@
+<md-content class = "md-padding" flex>
+	<div layout = "column">
+		<div layout = "column" layout-align = "center center" ng-show = "!isClient">
+			<md-autocomplete
+					md-floating-label = "Select a Client"
+		          md-selected-item="client"
+		          md-search-text="searchText"
+		          md-selected-item-change="selectedClientChanged(item)"
+		          md-items="item in querySearch(searchText)"
+		          md-item-text="getName(item)"
+		          md-min-length="0"
+		          placeholder="Select a client"
+		          md-menu-class="autocomplete-custom-template" style = "width : 500px" >
+		        <md-item-template>
+		          <span class="item-title">
+		            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> #[[item.id]] - [[item.company_name]] - [[item.name]] - [[item.company_pan_number]] </span>
+		          </span>
+		        </md-item-template>
+		        <md-not-found>
+    				No clients found.
+				</md-not-found>
+		    </md-autocomplete>
+		</div>
+		<div layout = "row">
+			<div layout = "column" flex = "30" class = "md-whiteframe-z2" style = "max-height : 500px">
+				<div layout = "row" layout-align = "space-between">
+					<h2 class = "margin_left_20">Client Details</h2>
+					<md-button class="md-fab" aria-label="Edit Client" ng-click = "showEditDialog()" ng-show = "!isClient">
+						<md-icon md-font-icon="fa-pencil" class = "fa fa-2x" style = "color : white"></md-icon>
+					</md-button>
+				</div>
+				<div class = "margin_bottom_40">
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Client Name </p> <p flex = "70"> - [[clientDetails.name]]</p></div>
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Company Name </p> <p flex = "70"> - [[clientDetails.company_name]]</p></div>
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Email </p> <p flex = "70"> - [[clientDetails.email]]</p></div>
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Phone Number </p> <p flex = "70">- [[clientDetails.phone_number]]</p></div>
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Alt Phone Number </p> <p flex = "70"> - [[clientDetails.alt_phone_number]]</p></div>
+					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Pan Card </p> <p flex = "70"> - [[clientDetails.company_pan_number]]</p></div>
+				</div>
+			</div>
+			<div layout = "column" class = "margin_left_20" flex = "70">
+				<h2 class = "margin_left_20">Documents</h2>
+				<div layout = "row" layout-align = "space-between" ng-show = "clientSelected" layout-wrap>
+					<div layout = "column" ng-show = "docs.length == 0">
+						<p>There are no documents uploaded yet.</p>
+					</div>
+					<div layout = "column" ng-repeat = "doc in docs">
+						<md-card class = "card md-card-hover doc-card">
+							<span class = "doc-remove" ng-click = "removeDoc($index)" ng-show = "!isClient"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
+							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-click = "openDoc(doc)">
+								<img src = "[[doc.url.indexOf('.pdf') > -1 && 'images/pdf.png' || doc.url]]"></img>
+							</md-card-content>
+							<md-card-actions class = "margin_top_20" layout = "column">
+								<div layout="column" layout-align = "center center">
+									<md-button ng-show = "!doc.descriptionInputFlag && (doc.description != null || doc.description != '')" ng-click = "showDescriptionInput($index, $event)">[[doc.description]]</md-button>
+									<md-input-container ng-show = "doc.descriptionInputFlag" class = "md-block" style = "margin_bottom_20">
+									<label>Description</label>
+									  <input type="text" name = "description" ng-blur = "saveDescription($index)" ng-model = "doc.description" ng-disabled = "doc.descriptionLoader">
+									  <md-progress-circular md-mode="[[doc.descriptionLoader]]" style = "margin-left:auto;"></md-progress-circular>
+									</md-input-container>
+								</div>
+								<div layout = "row" layout-align = "end center">
+									<md-button class = "md-primary" ng-show = "!isClient && (!doc.descriptionInputFlag &&(doc.description == null || doc.description == ''))" ng-click = "showDescriptionInput($index, $event)" >Add Description</md-button>
+									<md-button target = "_self" href = "/document/[[doc.id]]">Download </md-button>
+								</div>
+							</md-card-actions>
+						</md-card>
+					</div>
+					<div ngf-select="" ngf-drop="" ng-model="images" ng-model-options="modelOptionsObj" ngf-multiple="multiple" ngf-drag-over-class="dragOverClassObj" ngf-validate="validate" ngf-duration="durationFn($file, $duration)" class="drop-box" ngf-drop-available="dropAvailable" ngf-accept = "'image/*,application/pdf'" accept="image/*,application/pdf" ngf-pattern="'image/*,application/pdf'" ng-show = "!isClient">
+						<span ng-hide = "fileUploading"> Select File <span ng-show="dropAvailable" class=""> or Drop File</span> </span>
+						<md-progress-circular md-mode="[[fileUploading]]" style = "margin-left:auto;margin-right:auto" md-diameter = "60"></md-progress-circular>
+
+		            </div>
+				</div>
+				<div layout = "row" ng-if = "!clientSelected">
+					<p>Select a client to view the repective documents.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-if = "openPDFGallery" layout = "column" flex>
+        <pdf url = "[[openDocUrl]]" onclose = "closeGallery"></pdf>
+    </div>
+    <div ng-if = "openImageGallery">
+    	<gallery-image url = "[[openDocUrl]]" onclose = "closeGallery"></gallery-image>
+    </div>
+</md-content>
+<script type = "text/ng-template" id = "editClient.tmpl.html">
+	<md-dialog aria-label="Edit Client">
+			<md-toolbar>
+		      <div class="md-toolbar-tools">
+		        <h2>Edit Client - [[theScope.editClientName]]</h2>
+		        <span flex></span>
+		        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+		          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+		        </md-button>
+		      </div>
+		    </md-toolbar>
+		    <md-dialog-content style="width:400px;max-height:810px; ">
+		        <form name = "editClientForm">
+		    	<div layout = "column" layout-align = "center center">
+		            <md-input-container style = "width : 300px" class = "md-block">
+					  <label>Name of the Company</label>
+					  <input type="text" required="" name = "companyName" ng-model = "theScope.editClient.company_name">
+					  <div ng-messages = "editClientForm.companyName.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+		            <md-input-container style = "width : 300px" class = "md-block">
+					  <label>Client Name</label>
+					  <input type="text" required="" name = "clientName" ng-model = "theScope.editClient.name">
+					  <div ng-messages = "editClientForm.clientName.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+		            <md-input-container style = "width : 300px">
+					  <label>Email</label>
+					  <input type="email" required name = "email" ng-model = "theScope.editClient.email">
+					  <div ng-messages = "editClientForm.email.$error">
+					  	<div ng-message = "email">Please enter a valid email</div>
+					  	<div ng-message = "required">This is required</div>
+					  	<div ng-message = "userExists">User Exists. Email is already registered.</div>
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width : 300px">
+					  <label>Phone Number</label>
+					  <input type="number" name = "phone_number" ng-model = "theScope.editClient.phone_number" required>
+					  <div ng-messages = "editClientForm.phone_number.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width : 300px">
+					  <label>Alt Phone Number</label>
+					  <input type="number" name = "altPhoneNumber" ng-model = "theScope.editClient.alt_phone_number">
+					  <div ng-messages = "editClientForm.altPhoneNumber.$error">
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width : 300px">
+					  <label>Pan Card</label>
+					  <input type="text" required="" name = "panCard" ng-model = "theScope.editClient.company_pan_number">
+					  <div ng-messages = "editClientForm.panCard.$error">
+					  	<div ng-message = "required">This is required</div>
+					  	<div ng-message = "panCardExists">This Pan Card already exists</div>
+					  </div>
+					</md-input-container>
+					<div layout = "row" layout-align = "center center">
+						<md-button class = "md-primary" style = "font-size : 1.3em"
+						ng-click = "theScope.updateClient()" ng-disabled = "theScope.editClientLoading">Update Client</md-button>
+						<md-progress-circular md-mode="[[theScope.editClientLoading]]"></md-progress-circular>
+		            </div>
+				</div>
+			</form>
+		</md-dialog-content>
+    </md-dialog>
+</script>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <title>Team Consultancy</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css"/>
+    <link href="bower_components/angular-material-data-table/dist/md-data-table.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-material/angular-material.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-messages/angular-messages.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="/bower_components/lodash/dist/lodash.min.js"></script>
+    <script type="text/javascript" src="/bower_components/restangular/dist/restangular.min.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+    <script type="text/javascript" src="/bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="/js/plugins/pdfobject.js"></script>
+    
+    <script src = "/js/app/app.js"></script>
+    <script type="text/javascript" src = "/js/app/services/userService.js"></script>
+    <script type="text/javascript" src = "/js/app/services/caService.js"></script>
+    <script type="text/javascript" src = "/js/app/directives/caDirectives.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/dashboardController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/addClientController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/searchClientController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/clientAreaController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/downloadCountController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/reportsController.js"></script>
+    <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
+    </style>
+    <script>
+    	var apiKey = '{{apiKey}}';
+    	var user = {
+    		id : {{id}},
+    		role : "{{role}}",
+    		name : "{{name}}",
+    		email : "{{email}}"
+    	};
+    </script>
+  </head>
+
+  <body ng-app="Caweb" layout="column" layout-fill style = "height:auto">
+  <div layout = "column" flex>
+  	<header>
+	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px">
+			<h2 style = "margin-left : 2em">Team Consultancy</h2>
+			<span flex></span>
+			<md-menu>
+				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
+				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
+					[[user.name]]
+				</md-button>
+				<md-menu-content width="4">
+					<md-menu-item>
+						<md-button ng-click="showUserProfile($event)">
+							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
+							Show User Profile
+						</md-button>
+					</md-menu-item>
+					<md-menu-divider></md-menu-divider>
+					<md-menu-item>
+						<md-button ng-click="logout()">
+							Log out
+						</md-button>
+					</md-menu-item>
+				</md-menu-content>
+	  		</md-menu>
+	    </md-toolbar>
+    </header>
+    <main class = "md-padding" layout = "column" flex>
+    	<md-tabs md-stretch-tabs md-selected="selectedTab">
+			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Client Area')"></md-tab>
+		</md-tabs>
+    	<div ng-view flex></div>
+    </main>
+  </div>
+  </body>
+</html>

@@ -1,0 +1,177 @@
+md-toast {
+  position : fixed !important;
+}
+
+.font_16 {
+	font-size : 16px !important;
+}
+
+.font_18 {
+	font-size : 18px !important;
+}
+
+.font_20 {
+	font-size : 20px !important;
+}
+
+.font_bold {
+	font-weight : 800 !important;
+}
+
+.center {
+	text-align : center !important;
+}
+
+.margin_left_20 {
+	margin-left : 20px;
+}
+
+
+.margin_right_20 {
+	margin-right : 20px;
+}
+
+.margin_bottom_20 {
+	margin-bottom : 20px;
+}
+
+.margin_bottom_40 {
+	margin-bottom : 40px;
+}
+
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 220px;
+    text-align: center;
+    padding: 50px 10px;
+    margin-left: 10px;
+    cursor : pointer;
+}
+
+.drop-box.dragover {
+	border : 5px dashed blue;
+}
+
+.drop-box.dragover-err {
+    border: 5px dashed red;
+}
+
+
+.doc-card img {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+.stick {
+	position : fixed;
+	top : 0;
+}
+
+.gallery-container {
+    left: 0;
+    min-height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index : 400;
+}
+
+.overlay {
+	bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .5);
+    z-index : 200;
+}
+
+.gallery-container .pdf {
+    width: 70%;
+    margin : 10px auto;
+    height : 95vh;
+}
+
+.gallery-container .image-wrapper {
+	width : 70%;
+	height: 100%;
+	margin : 50px auto;
+	text-align: center;
+}
+
+.image-wrapper img {
+	max-width: 70%;
+	max-height: 100%;
+}
+
+.gallery-container .close{
+	position:absolute;
+	right:5px;
+	top:5px;
+	cursor : pointer;
+	outline: none;
+}
+
+.doc-card {
+	position:relative;
+	width:250px;
+	height:250px;
+	cursor : pointer;
+}
+
+.doc-remove {
+	position:absolute;
+	right:-10px;
+	top:-10px;
+	cursor : pointer;
+	outline: none;
+}
+
+.doc-card-content {
+	outline: none;
+	position:relative;
+	display:block;
+	margin:auto;
+	width: 200px;
+	height: 200px
+}
+
+.md-card-hover {
+    transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+}
+
+.md-card-hover{
+    -webkit-transition:all 280ms cubic-bezier(.4,0,.2,1);
+    transition:all 280ms cubic-bezier(.4,0,.2,1)
+}
+
+.md-card-hover:hover{
+    box-shadow:0 10px 20px rgba(0,0,0,.19), 0 6px 6px rgba(0,0,0,.23);
+    cursor : pointer;
+}
+
+.panel-widget-title {
+    color: #7A7A7A;
+}
+
+.bgm-cyan {
+	background-color: #00bcd4;
+	color : white;
+}
+
+.bgm-lightgreen {
+    background-color: #8bc34a !important;
+    color : white;
+}
+
+.bgm-orange {
+	background-color: #ff9800 !important;
+	color : white;
+}
+
+.bgm-bluegray {
+    background-color: #607d8b !important;
+    color : white;
+}

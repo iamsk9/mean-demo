@@ -1,0 +1,25 @@
+<md-content class="md-padding" flex>
+	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
+		<div layout = "column" layout-align = "center center">
+			<md-autocomplete
+					md-floating-label = "Select a Client"
+		          md-selected-item="client"
+		          md-search-text="searchText"
+		          md-selected-item-change="selectedClientChanged(item)"
+		          md-items="item in querySearch(searchText)"
+		          md-item-text="getName(item)"
+		          md-min-length="0"
+		          placeholder="Select a client"
+		          md-menu-class="autocomplete-custom-template" style = "width : 500px" >
+		        <md-item-template>
+		          <span class="item-title">
+		            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> #[[item.id]] - [[item.company_name]] - [[item.name]] - [[item.company_pan_number]] </span>
+		          </span>
+		        </md-item-template>
+		        <md-not-found>
+    				No clients found.
+				</md-not-found>
+		    </md-autocomplete>
+		</div>
+	</div>
+</md-content>

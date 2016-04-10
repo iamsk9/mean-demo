@@ -1,0 +1,280 @@
+var config = require('../../config/config');
+
+var azure = require('azure-storage');
+
+var blobService = azure.createBlobService(config.storage.storageAccount, config.storage.storageAccessKey);
+
+var q = require('q');
+
+var db = require('../../db');
+
+var moment = require('moment');
+
+function uploadToAzureStorage(request) {
+	var azureUploadDefer = q.defer();
+	blobService.createBlockBlobFromLocalFile(config.storage.containerName, request.file.filename, request.file.path, function(error, result, response) {
+		if(error) {
+			azureUploadDefer.reject(error);
+			return;
+		}
+		azureUploadDefer.resolve(config.storage.domainName + 
+			config.storage.containerName + '/' + result);
+	});
+	return azureUploadDefer.promise;
+}
+
+exports.saveDoc = function(request) {
+	var saveDocDefer = q.defer();
+	uploadToAzureStorage(request).then(function(url) {
+		console.log("Uploaded to azure " + url);
+		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at) VALUES (?,?,?,?,?)";
+		db.getConnection().then(function(connection) {
+			console.log("Obtained the connection");
+			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url, 
+				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')], function(err, result){
+					console.log("Inside Query");
+					if(err) {
+						console.log("Query Error");
+						saveDocDefer.reject(err);
+						connection.release();
+						return;
+					}
+					console.log("Query Successful");
+					saveDocDefer.resolve({url : url});
+					connection.release();
+				});
+			console.log(query.sql);
+		}, function() {
+			saveDocDefer.reject();
+		})
+	});
+	return saveDocDefer.promise;
+}
+
+exports.getDocumentsByClientId = function(id) {
+	var documentsDefer = q.defer();
+	var docsByClientId = "SELECT * from docs where client_id = ? and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(docsByClientId, [id], function(err, results) {
+			if(err) {
+				documentsDefer.reject(err);
+				connection.release();
+				return;
+			}
+			documentsDefer.resolve(results);
+			connection.release();
+		});
+	}, function(err) {
+		documentsDefer.reject(err);
+	});
+	return documentsDefer.promise;
+}
+
+exports.updateDocument = function(id, description) {
+	var updateDefer = q.defer();
+	var docUpdate = "UPDATE docs set ";
+	if(typeof description != "undefined") {
+		docUpdate = docUpdate + ("description = ?, modified_at = ? where id = ?");
+		db.getConnection().then(function(connection) {
+			var query = connection.query(docUpdate, [description, moment().format('YYYY-MM-DD HH:mm:ss'), id], function(err, results) {
+				if(err) {
+					updateDefer.reject(err);
+					connection.release();
+					return;
+				}
+				updateDefer.resolve(results);
+				connection.release();
+			});
+			console.log(query.sql);
+		}, function(err) {
+			updateDefer.reject(err);
+		});
+	} else {
+		updateDefer.reject();
+	}
+	return updateDefer.promise;
+}
+
+function updateCountIfClient(connection, id, req) {
+	var updateCountDefer = q.defer();
+	if(req.user.role == "CLIENT") {
+		var clientDocs = "INSERT into client_downloads (doc_id, downloaded_at) VALUES (?,?)";
+		connection.query(clientDocs, [id, moment().format('YYYY-MM-DD HH:mm:ss')], function(err, results) {
+			if(err) {
+				updateCountDefer.reject(err)
+				return;
+			}
+			updateCountDefer.resolve();
+		});
+	} else {
+		updateCountDefer.resolve();
+	}
+	return updateCountDefer.promise;
+}
+
+exports.downloadDocument = function(id, req) {
+	var downloadDefer = q.defer();
+	var fetchUrl = "SELECT * from docs where id = ? and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		console.log("connection inside");
+		updateCountIfClient(connection, id, req).then(function() {
+			console.log("askdjgaskdjg");
+			connection.query(fetchUrl, [id], function(err, results) {
+				if(err) {
+					downloadDefer.reject();
+					connection.release();
+					return;
+				}
+				if(results.length > 0) {
+					downloadDefer.resolve(results[0]);
+					connection.release();
+				}
+			});
+		}, function(err) {
+			connection.release();
+			downloadDefer.reject(err);
+		});
+	}, function(err) {
+		downloadDefer.reject();
+	});
+	return downloadDefer.promise;
+}
+
+exports.deleteDocument = function(id) {
+	var deleteDefer = q.defer();
+	var deleteQuery = "UPDATE docs set deleted_at = ?, modified_at = deleted_at where id = ?";
+	db.getConnection().then(function(connection) {
+		connection.query(deleteQuery, [moment().format('YYYY-MM-DD HH:mm:ss'), id], function(err, result) {
+			if(err) {
+				connection.release();
+				deleteDefer.reject(err);
+				return;
+			}
+			connection.release();
+			deleteDefer.resolve();
+		});
+	}, function(err) {
+		deleteDefer.reject(err);
+	});
+	return deleteDefer.promise;
+}
+
+exports.getTotalDownloads = function(obj) {
+	var documentDownloadsDefer = q.defer();
+	var totalDownloads = "SELECT count(*) as downloadsCount from client_downloads";
+	db.getConnection().then(function(connection) {
+		connection.query(totalDownloads, function(err, results){
+			if(err) {
+				connection.release();
+				documentDownloadsDefer.reject(err);
+				return;
+			}
+			if(results.length > 0) {
+				obj.totalMetrics.downloadsCount = results[0].downloadsCount;
+			} else {
+				obj.totalMetrics.downloadsCount = 0;
+			}
+			connection.release();
+			documentDownloadsDefer.resolve();
+		});
+	}, function(err) {
+		documentDownloadsDefer.reject(err);
+	});
+	return documentDownloadsDefer.promise;
+}
+
+exports.getTodaysDownloads = function(obj) {
+	var documentDownloadsDefer = q.defer();
+	var todaysDownloads = "SELECT count(*) as downloadsCount from client_downloads where DATE(downloaded_at) = DATE(NOW())";
+	db.getConnection().then(function(connection) {
+		connection.query(todaysDownloads, function(err, results){
+			if(err) {
+				connection.release();
+				documentDownloadsDefer.reject(err);
+				return;
+			}
+			if(results.length > 0) {
+				obj.todaysMetrics.downloadsCount = results[0].downloadsCount;
+			} else {
+				obj.todaysMetrics.downloadsCount = 0;
+			}
+			connection.release();
+			console.log(results);
+			documentDownloadsDefer.resolve();
+		});
+	}, function(err) {
+		documentDownloadsDefer.reject(err);
+	});
+	return documentDownloadsDefer.promise;
+}
+
+exports.getTotalDocs = function(obj) {
+	var docsDefer = q.defer();
+	var totalDocsCount = "SELECT count(*) as docsCount from docs where deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(totalDocsCount, function(err, results){
+			if(err) {
+				connection.release();
+				docsDefer.reject(err);
+				return;
+			}
+			if(results.length > 0) {
+				obj.totalMetrics.docsCount = results[0].docsCount;	
+			} else {
+				obj.totalMetrics.docsCount = 0;
+			}
+			connection.release();
+			console.log(results);
+
+			docsDefer.resolve();
+		});
+	}, function(err) {
+		docsDefer.reject(err);
+	});
+	return docsDefer.promise;
+}
+
+exports.getTodaysDocs = function(obj) {
+	var docsDefer = q.defer();
+	var todaysDocsCount = "SELECT count(*) as docsCount from docs where DATE(created_at) = DATE(now()) and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(todaysDocsCount, function(err, results){
+			if(err) {
+				connection.release();
+				docsDefer.reject(err);
+				return;
+			}
+			if(results.length > 0) {
+				obj.todaysMetrics.docsCount = results[0].docsCount;
+			} else {
+				obj.todaysMetrics.docsCount = 0;
+			}
+			connection.release();
+
+			docsDefer.resolve();
+		});
+	}, function(err) {
+		docsDefer.reject(err);
+	});
+	return docsDefer.promise;
+}
+
+exports.getDocDownloads = function(id) {
+	var docDownloadsDefer = q.defer();
+	var query = 'SELECT b.id, max(a.downloaded_at) as latestDownloadedTime, b.client_id, b.description, b.url, count(downloaded_at) as downloadCount\
+	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = 7 and b.deleted_at is NULL group by b.id'
+	db.getConnection().then(function(connection) {
+		connection.query(query, [id], function(err, results) {
+			if(err) {
+				connection.release();
+				docDownloadsDefer.reject(err);
+				return;
+			}
+			docDownloadsDefer.resolve(results);
+		});
+	}, function(err) {
+		docDownloadsDefer.reject(err);
+	});
+	return docDownloadsDefer.promise;
+}
+

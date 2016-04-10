@@ -1,0 +1,71 @@
+<md-content class="md-padding" flex>
+	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
+		<h2>Search Clients</h2>
+		<div layout = "row" layout-align = "center center">
+			<md-input-container class = "margin_right_20" style = "width : 100px" class = "md-block">
+			  <label>Client Id</label>
+			  <input type="Number" name = "clientId" ng-model = "search.clientId">
+			</md-input-container>
+			<md-input-container class = "margin_right_20" style = "width : 200px" class = "md-block">
+			  <label>Name of the Company</label>
+			  <input type="text" name = "companyName" ng-model = "search.companyName">
+			</md-input-container>
+			<md-input-container class = "margin_right_20" style = "width : 150px" class = "md-block">
+			  <label>Client Name</label>
+			  <input type="text" name = "clientName" ng-model = "search.clientName">
+			</md-input-container>
+			<md-input-container class = "margin_right_20" style = "width : 150px" class = "md-block">
+			  <label>Email</label>
+			  <input type="text" name = "email" ng-model = "search.email">
+			</md-input-container>
+			<md-input-container class = "margin_right_20" style = "width : 150px" class = "md-block">
+			  <label>Phone Number</label>
+			  <input type="text" name = "phoneNumber" ng-model = "search.phoneNumber">
+			</md-input-container>
+			<md-input-container class = "margin_right_20" style = "width : 150px" class = "md-block">
+			  <label>Pan Card Number</label>
+			  <input type="text" name = "panCardNumber" ng-model = "search.panCardNumber">
+			</md-input-container>
+			<md-button class = "md-primary" style = "font-size : 1.3em"
+				ng-click = "search()" ng-disabled = "clientsLoading">Search</md-button>
+		</div>
+		<md-table-container md-row-select style = "margin-bottom : 40px">
+	        <table md-table>
+	            <thead md-head >
+	                <tr md-row >
+	                    <th md-column class = "font_18 center" style = "width : 100px">Id</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Company Name</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Client Name</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Email</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Pan Card Number</th>
+	                    <th md-column class = "font_18 center" style = "width : 100px">Action </th>
+	                </tr>
+	            </thead>
+	            <tbody md-body>
+	            	<tr md-row ng-show = "!searched && !clientsLoading">
+	            		<td md-cell class = "font_16 center font_bold" colspan = "6">Search for Clients with the above available options</td>
+	            	</tr>
+		            <tr md-row ng-show = "searched && clients.length > 0" ng-repeat = "client in clients">
+		                <td md-cell class = "font_16 center">#[[client.id]]</td>
+		                <td md-cell class = "font_16 center">[[client.company_name]]</td>
+		                <td md-cell class = "font_16 center">[[client.name]]</td>
+		                <td md-cell class = "font_16 center">[[client.email]]</td>
+		                <td md-cell class = "font_16 center">[[client.company_pan_number]]</td>
+		                <td md-cell class = "font_16 center"><md-button ng-click = "openClient(client)">
+		                    Open
+		                </md-button></td>
+		            </tr>
+		            <tr md-row ng-show = "searched && clients.length == 0 && !clientsLoading">
+		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no Clients for the search Results.</td>
+		            </tr>
+		            <tr md-row ng-show = "clientsLoading">
+		            	<td md-cell class = "center" colspan = "6"><md-progress-circular md-mode="[[clientsLoading]]" style = "margin-left:auto;margin-right:auto"></md-progress-circular></td>
+		            </tr>
+		        </tbody>
+		    </table>
+		</md-table-container>
+	</div>
+</md-content>
+<md-button class="md-fab md-fab-bottom-right" aria-label="Add Client" ng-click = "addClient()">
+	<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
+</md-button>

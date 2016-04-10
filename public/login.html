@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <title>Team Consultancy</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-material/angular-material.js"></script>
+    <script type="text/javascript" src="/bower_components/angular-messages/angular-messages.min.js"></script>
+    <script type="text/javascript" src="/bower_components/lodash/dist/lodash.min.js"></script>
+    <script type="text/javascript" src="/bower_components/restangular/dist/restangular.min.js"></script>
+    <script src = "/js/login/app.js"></script>
+    <script src = "/js/login/services/loginService.js"></script>
+
+    <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
+    </style>
+
+  </head>
+
+  <body ng-app="loginApp" layout="column" layout-fill style = "height:auto;">
+  <div ng-controller = "loginController" layout = "column" flex style = "background : #eee">
+    <main class = "md-padding" layout = "column" flex style = "margin-top : 4em">
+    	<div layout = "column" layout-align = "center center">
+    		<h1>Team Consultancy</h1>
+    	</div>
+    	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2" style = "width : 400px; background :  white; margin-left:auto; margin-right : auto">
+    		<md-content class="md-padding">
+	          	<form name = "loginForm">
+		            <div layout = "column" layout-align = "center center">
+		            	<md-input-container style = "width : 300px">
+						  <label>Email</label>
+						  <input type="email" required = "" name = "email" ng-model = "login.email">
+						  <div ng-messages = "loginForm.email.$error">
+						  	<div ng-message = "required">This is required</div>
+						  	<div ng-message = "notRegistered">The email is not registered</div>
+						  </div>
+						</md-input-container>
+						<md-input-container style = "width : 300px">
+						  <label>Password</label>
+						  <input type="password" required="" name = "password" ng-model = "login.password">
+						  <div ng-messages = "loginForm.password.$error">
+						  	<div ng-message = "required">This is required</div>
+						  	<div ng-message = "incorrect">The email and password entered does not match</div>
+						  	<div ng-message = "serverError">Unable to login due to a server error. Please try after some time</div>
+						  </div>
+						</md-input-container>
+						<md-button class = "md-primary" ng-click = "signin()" style = "font-size : 1.3em">Sign In</md-button>
+		            </div>
+	  			</form>
+	        </md-content>
+    	</div>
+    </main>
+  </div>
+  </body>
+</html>
