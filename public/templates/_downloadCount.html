@@ -34,8 +34,11 @@
 	                </tr>
 	            </thead>
 	            <tbody md-body>
-	            	<tr md-row ng-show = "!searched && !clientsLoading">
+	            	<tr md-row ng-show = "!searched && !docsLoading">
 	            		<td md-cell class = "font_16 center font_bold" colspan = "6">Select a Client to view the document downloads</td>
+	            	</tr>
+	            	<tr md-row ng-show = "searched && downloadCountDetails.length == 0">
+	            		<td md-cell class = "font_16 center font_bold" colspan = "6">There are no documents for the selected client.</td>
 	            	</tr>
 		            <tr md-row ng-show = "searched && downloadCountDetails.length > 0" ng-repeat = "docDownload in downloadCountDetails">
 		                <td md-cell class = "font_16 center">#[[docDownload.id]]</td>

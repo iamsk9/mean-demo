@@ -9,7 +9,7 @@ var upload = multer({ dest: 'tmp/' });
 
 var AuthorizationMiddleware = require('./middlewares/authorizationMiddleware');
 
-var CustomRequestMiddleware = require('./middlewares/CustomRequestMiddleware');
+var CustomRequestMiddleware = require('./middlewares/customRequestMiddleware');
 
 var IndexController = require('./controllers/indexController.js');
 
