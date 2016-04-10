@@ -78,7 +78,7 @@ exports.deleteDocument = function(req, res) {
 };
 
 exports.getDocDownloads = function(req, res) {
-    DocsHelper.getDocDownloads(req.params.id).then(function(data) {
+    DocsHelper.getDocDownloads(req.params.clientId).then(function(data) {
         res.json({returnCode : "SUCCESS", data : data, errorCode : null});
     }, function(err) {
         console.log(err);

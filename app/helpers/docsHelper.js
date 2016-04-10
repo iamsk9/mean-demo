@@ -262,16 +262,20 @@ exports.getTodaysDocs = function(obj) {
 exports.getDocDownloads = function(id) {
 	var docDownloadsDefer = q.defer();
 	var query = 'SELECT b.id, max(a.downloaded_at) as latestDownloadedTime, b.client_id, b.description, b.url, count(downloaded_at) as downloadCount\
-	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = 7 and b.deleted_at is NULL group by b.id'
+	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = ? and b.deleted_at is NULL group by b.id'
 	db.getConnection().then(function(connection) {
-		connection.query(query, [id], function(err, results) {
+		console.log(id);
+		var sql = connection.query(query, [id], function(err, results) {
 			if(err) {
 				connection.release();
 				docDownloadsDefer.reject(err);
 				return;
 			}
+			connection.release();
+			console.log(results);
 			docDownloadsDefer.resolve(results);
 		});
+		console.log(sql.sql);
 	}, function(err) {
 		docDownloadsDefer.reject(err);
 	});
