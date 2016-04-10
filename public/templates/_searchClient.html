@@ -26,7 +26,7 @@
 			  <label>Pan Card Number</label>
 			  <input type="text" name = "panCardNumber" ng-model = "search.panCardNumber">
 			</md-input-container>
-			<md-button class = "md-primary" style = "font-size : 1.3em"
+			<md-button class = "md-primary md-raised" style = "font-size : 1.3em"
 				ng-click = "search()" ng-disabled = "clientsLoading">Search</md-button>
 		</div>
 		<md-table-container md-row-select style = "margin-bottom : 40px">
@@ -51,7 +51,7 @@
 		                <td md-cell class = "font_16 center">[[client.name]]</td>
 		                <td md-cell class = "font_16 center">[[client.email]]</td>
 		                <td md-cell class = "font_16 center">[[client.company_pan_number]]</td>
-		                <td md-cell class = "font_16 center"><md-button ng-click = "openClient(client)">
+		                <td md-cell class = "font_16 center"><md-button class = "md-primary" ng-click = "openClient(client)">
 		                    Open
 		                </md-button></td>
 		            </tr>
