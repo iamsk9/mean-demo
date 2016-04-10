@@ -45,7 +45,7 @@
 		                <td md-cell class = "font_16 center" ng-show = "docDownload.latestDownloadedTime">[[docDownload.latestDownloadedTime]]</td>
 		                <td md-cell class = "font_16 center" ng-show = "!docDownload.latestDownloadedTime">-</td>
 		                <td md-cell class = "font_16 center">[[docDownload.downloadCount]]</td>
-		                <td md-cell class = "font_16 center"><md-button ng-click = "openClient()">
+		                <td md-cell class = "font_16 center"><md-button class = "md-primary md-raised" ng-click = "openClient()">
 		                    Open Client Area
 		                </md-button></td>
 		            </tr>
@@ -57,6 +57,3 @@
 		</md-table-container>
 	</div>
 </md-content>
-<md-button class="md-fab md-fab-bottom-right" aria-label="Add Client" ng-click = "addClient()">
-	<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
-</md-button>
