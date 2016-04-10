@@ -91,7 +91,7 @@ exports.addClient = function(req) {
 					console.log("asdkghasdg");
 					emailer.send('public/templates/_emailTemplate.html', {
 						name : req.client_name,
-						url : config.domain + '/client/resetpassword?hash =' + hash
+						url : config.domain + '/client/resetpassword?hash=' + hash
 					}, req.email, "Team Consultancy - Set Password for the Account");
 					console.log("here");
 					connection.query(insertUser, [req.client_name, req.email, "CLIENT", 
