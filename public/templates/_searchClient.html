@@ -2,11 +2,11 @@
 	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
 		<h2>Search Clients</h2>
 		<div layout = "row" layout-align = "center center">
-			<md-input-container class = "margin_right_20" style = "width : 150px" class = "md-block">
+			<md-input-container class = "margin_right_20" style = "width : 250px" class = "md-block">
 			  <label>Pan Card Number</label>
 			  <input type="text" name = "panCardNumber" ng-model = "search.panCardNumber">
 			</md-input-container>
-			<md-button class = "md-primary md-raised" style = "font-size : 1.3em"
+			<md-button class = "md-primary md-raised" style = "font-size : 1.3em;margin-bottom : 30px"
 				ng-click = "search()" ng-disabled = "clientsLoading">Search</md-button>
 		</div>
 		<md-table-container md-row-select style = "margin-bottom : 40px">
