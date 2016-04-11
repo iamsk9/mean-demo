@@ -10,7 +10,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Client Area'];
 	$scope.dropAvailable = true;
-	$scope.dragOverClassObj = {accept:'dragover', reject:'dragover-err', pattern:'image/*,application/pdf'}
+	$scope.dragOverClassObj = {accept:'dragover', reject:'dragover-err'}
 	$scope.modelOptionsObj = {debounce:100};
 	$scope.acceptSelect = 'image/*,application/pdf';
 	$scope.validateObj = {size: {max: '20MB', min: '10B'}, height: {max: 12000}, width: {max: 12000}, duration: {max: '5m'}};
@@ -99,6 +99,20 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 
 	$scope.closeDialog = function() {
 		$mdDialog.cancel();
+	}
+
+	$scope.getViewImage = function(doc) {
+		console.log('imageCalled');
+		if(doc.url.indexOf('.pdf') > -1) {
+			return 'images/pdf.png';
+		} else if(doc.url.indexOf('.doc') > -1 || doc.url.indexOf('.docx') > -1){
+			return 'images/word.ico';
+		} else if(doc.url.indexOf('.xls') > -1 || doc.url.indexOf('xlsx') > -1 || 
+			doc.url.indexOf('csv') > -1) {
+			return 'images/XLS.png';
+		} else {
+			return doc.url;
+		}
 	}
 
 	$scope.showEditDialog = function() {
@@ -205,6 +219,12 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		if(doc.url.indexOf('.pdf') > -1) {
 			$scope.openImageGallery = false;
 			$scope.openPDFGallery = true;
+		} else if(doc.url.indexOf('.doc') > -1 || doc.url.indexOf('.docx') > -1 || doc.url.indexOf('.xls') > -1 || doc.url.indexOf('xlsx') > -1 || 
+			doc.url.indexOf('csv') > -1){
+			$mdToast.show($mdToast.simple()
+			.textContent("Doc View for word and excel documents is not available. Will be added Soon.")
+			.position("top right")
+			.hideDelay(5000));
 		} else {
 			$scope.openPDFGallery = false;
 			$scope.openImageGallery = true;

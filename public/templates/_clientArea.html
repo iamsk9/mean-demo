@@ -48,7 +48,7 @@
 						<md-card class = "card md-card-hover doc-card">
 							<span class = "doc-remove" ng-click = "removeDoc($index)" ng-show = "!isClient"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
 							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-click = "openDoc(doc)">
-								<img src = "[[doc.url.indexOf('.pdf') > -1 && 'images/pdf.png' || doc.url]]"></img>
+								<img ng-src = "[[getViewImage(doc)]]"></img>
 							</md-card-content>
 							<md-card-actions class = "margin_top_20" layout = "column">
 								<div layout="column" layout-align = "center center">
@@ -66,7 +66,7 @@
 							</md-card-actions>
 						</md-card>
 					</div>
-					<div ngf-select="" ngf-drop="" ng-model="images" ng-model-options="modelOptionsObj" ngf-multiple="multiple" ngf-drag-over-class="dragOverClassObj" ngf-validate="validate" ngf-duration="durationFn($file, $duration)" class="drop-box" ngf-drop-available="dropAvailable" ngf-accept = "'image/*,application/pdf'" accept="image/*,application/pdf" ngf-pattern="'image/*,application/pdf'" ng-show = "!isClient">
+					<div ngf-select="" ngf-drop="" ng-model="images" ng-model-options="modelOptionsObj" ngf-multiple="multiple" ngf-drag-over-class="dragOverClassObj" ngf-validate="validate" ngf-duration="durationFn($file, $duration)" class="drop-box" ngf-drop-available="dropAvailable" ngf-accept = "'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" ng-show = "!isClient">
 						<span ng-hide = "fileUploading"> Select File <span ng-show="dropAvailable" class=""> or Drop File</span> </span>
 						<md-progress-circular md-mode="[[fileUploading]]" style = "margin-left:auto;margin-right:auto" md-diameter = "60"></md-progress-circular>
 
