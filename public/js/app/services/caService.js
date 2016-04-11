@@ -46,7 +46,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				payload.phone_number = search.phoneNumber;
 			}
 			if(search.panCardNumber && search.panCardNumber) {
-				payload.pan_card_number = search.panCardNumber;
+				payload.company_pan_number = search.panCardNumber;
 			}
 			this.getClientsService(payload).then(function(data) {
 				if(data.returnCode == "SUCCESS") {

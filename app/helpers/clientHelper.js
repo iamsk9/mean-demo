@@ -150,8 +150,8 @@ exports.getClients = function(request) {
 			clientsQuery = clientsQuery + " id = " + request.client_id + " ";
 		}
 		if(request.company_pan_number) {
-			clientsQuery = clientsQuery + clientsQuery.indexOf('where') == -1?" where":" and ";
-			clientsQuery = clientsQuery + " company_pan_number like '%" + request.company_pan_number + "%' ";	
+			clientsQuery = clientsQuery + (clientsQuery.indexOf('where') == -1?" where":" and ");
+			clientsQuery = clientsQuery + (" company_pan_number like '%" + request.company_pan_number + "%' ");	
 		}
 		if(request.client_name) {
 			clientsQuery = clientsQuery + (clientsQuery.indexOf('where') == -1?" where":" and ");
