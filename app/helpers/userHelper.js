@@ -10,12 +10,12 @@ var moment = require('moment');
 
 var SALT_WORK_FACTOR = 19204;
 
-function generateHash(password) {
+function generateHash(string) {
 	var hashDefer = q.defer();
 	bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
         if (err) hashDefer.reject(err);
         // hash the password using our new salt
-        bcrypt.hash(password, salt, null, function(err, hash) {
+        bcrypt.hash(string, salt, null, function(err, hash) {
             if (err) hashDefer.reject(err);
             // override the cleartext password with the hashed one
             hashDefer.resolve(hash);
@@ -36,7 +36,7 @@ function comparePassword(candidatePassword, dbPassword) {
 exports.addUser = function(request) {
 	var addUserDefer = q.defer();
 	var checkUser = "SELECT * from users where email = ?";
-	var insertUser = "INSERT INTO users (first_name, last_name, email, password, user_role, created_at, modified_at, is_verified) VALUES (?,?,?,?,?,?,?,?)";
+	var insertUser = "INSERT INTO users (first_name, last_name, email, password, user_role, is_verified, created_at, modified_at, is_verified) VALUES (?,?,?,?,?,?,?,?,?)";
 	generateHash(request.password).then(function(password){
 		console.log(password);
 		db.getConnection().then(function(connection){
@@ -48,7 +48,7 @@ exports.addUser = function(request) {
 				}
 				if(results.length == 0) {
 					connection.query(insertUser, [request.first_name, request.last_name, request.email, password,
-					request.user_role, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.is_verified]
+					request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.is_verified]
 					, function(err, results) {
 						if(err) {
 							addUserDefer(err);
@@ -164,6 +164,54 @@ exports.sendResetPassword = function(req) {
 		});
 	});
 	return sendResetPasswordDefer.promise;
+}
+
+exports.getUsers = function(req) {
+	var getUsersDefer = q.defer();
+	var query = "SELECT id, name, email, is_verified from users where user_role <> 'CLIENT' and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(query, function(err, results) {
+			connection.release();
+			if(err) {
+				getUsersDefer.reject(err);
+				return;
+			}
+			getUsersDefer.resolve(results);
+		});
+	});
+	return getUsersDefer.promise;
+}
+
+exports.getUser = function(id) {
+	var getUserDefer = q.defer();
+	var getUser = "Select id, name, email, is_verified from users where id = ? and user_role <> 'CLIENT' and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(getUser, [id], function(err, results) {
+			connection.release();
+			if(err) {
+				getUserDefer.reject(err);
+				return;
+			}
+			getUserDefer.resolve(results);
+		});
+	});
+	return getUserDefer.promise;
+}
+
+exports.removeUser = function(id) {
+	var removeUserDefer = q.defer();
+	var removeUser = "UPDATE users SET deleted_at = ? where id = ? and user_role <> 'CLIENT' and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(removeUser, [id, moment().format('YYYY-MM-DD HH:mm:ss')], function(err, results) {
+			connection.release();
+			if(err) {
+				removeUserDefer.reject(err);
+				return;
+			}
+			removeUserDefer.resolve();
+		});
+	});
+	return removeUserDefer.promise;
 }
 
 exports.resetPassword = function(req) {

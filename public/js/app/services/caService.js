@@ -251,6 +251,20 @@ Caweb.factory('CAService', function(Restangular, $q){
 				docDownloadDefer.reject(err);
 			});
 			return docDownloadDefer.promise;
+		},
+
+		getUsers : function() {
+			var usersDefer = $q.defer();
+			Restangular.one('/users').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					usersDefer.resolve(data.data);
+				} else {
+					usersDefer.reject();
+				}
+			}, function(err){
+				usersDefer.reject(err);
+			})
+			return usersDefer.promise;
 		}
 
 	}

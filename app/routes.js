@@ -59,6 +59,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.get('/docdownloads/:clientId', DocsController.getDocDownloads);
 
+	apiRoutes.get('/users', UserController.getUsers);
+
 	// apiRoutes.post('updateMasterAttributes', attributesController.updateAttributes);
 
 }

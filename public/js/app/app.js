@@ -9,6 +9,7 @@ Caweb.constant('Tabs', [
 	'Search Client',
 	'Client Area',
 	'Download Count',
+	'Manage Users',
 	'Reports'
 ]);
 
@@ -53,6 +54,10 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         .when('/reports', {
         	templateUrl : basepath + "/_reports.html",
         	controller : "reportsController"
+        })
+        .when('/users', {
+        	templateUrl : basepath + "/_users.html",
+        	controller : "usersController"
         })
         .otherwise('/dashboard');
 });
@@ -99,6 +104,8 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location){
 			case $rootScope.tabsMap['Client Area'] : $location.path('/clientArea');
 				break;
 			case $rootScope.tabsMap['Download Count'] : $location.path('/downloadCount');
+				break;
+			case $rootScope.tabsMap['Manage Users'] : $location.path('/users');
 				break;
 			case $rootScope.tabsMap['Reports'] : $location.path('/reports');
 				break;
