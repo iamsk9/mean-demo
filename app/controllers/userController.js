@@ -78,12 +78,12 @@ exports.getUser = function(req, res) {
 		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
 	}, function(err) {
 		console.log(err);
-		res.json({returnCode : "FAILURE", data : null, errorCode : 1014})l
+		res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
 	});
 }
 
 exports.addUser = function(req, res) {
-	UserHelper.addUser(req.params.id).then(function(data) {
+	UserHelper.addUser(req.body).then(function(data) {
 		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
 	}, function(err) {
 		console.log(err);
@@ -94,6 +94,32 @@ exports.addUser = function(req, res) {
 		}
 	});
 }
+
+exports.removeUser = function(req, res) {
+	UserHelper.removeUser(req.params.userId).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+	}, function(err) {
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+		} else {
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+		}
+	});
+}
+
+exports.updateUser = function(req, res) {
+	UserHelper.updateUser(req.params.userId, req.body).then(function(data){
+		res.json({returnCode: "SUCCESS", data: data, errorCode : null});
+	}, function(err) {
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+		} else {
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+		}
+	});
+}
+
 exports.resetPassword = function(req, res) {
 	UserHelper.resetPassword(req).then(function(data) {
 		res.clearCookie('x-ca-api-token');

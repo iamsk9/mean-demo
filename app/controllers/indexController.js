@@ -32,6 +32,8 @@ exports.handle = function(req,res){
 						});
 						res.send(tmpl);
 		    			connection.release();
+		    		} else {
+		    			res.sendfile('public/login.html');
 		    		}
 		    	});
 		    });

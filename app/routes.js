@@ -29,6 +29,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/client/resetpassword', UserController.sendResetPassword);
 
+	app.get('/user/resetpassword', UserController.sendResetPassword);
+
 	app.post('/resetPassword/:userId', UserController.resetPassword);
 
 	apiRoutes.post('/authenticate', UserController.authenticate);
@@ -60,6 +62,12 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.get('/docdownloads/:clientId', DocsController.getDocDownloads);
 
 	apiRoutes.get('/users', UserController.getUsers);
+
+	apiRoutes.post('/user', UserController.addUser);
+
+	apiRoutes.delete('/user/:userId', UserController.removeUser);
+
+	apiRoutes.patch('/user/:userId', UserController.updateUser);
 
 	// apiRoutes.post('updateMasterAttributes', attributesController.updateAttributes);
 

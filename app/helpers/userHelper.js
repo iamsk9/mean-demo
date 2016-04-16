@@ -8,6 +8,10 @@ var bcrypt = require('bcrypt-nodejs');
 
 var moment = require('moment');
 
+var emailer = require('../emailer');
+
+var config = require('../../config/config');
+
 var SALT_WORK_FACTOR = 19204;
 
 function generateHash(string) {
@@ -33,42 +37,161 @@ function comparePassword(candidatePassword, dbPassword) {
     return comparePasswordDefer.promise;
 }
 
+var checkUserExists = function(connection, email) {
+	var userExistsDefer = q.defer();
+	if(typeof email !== "undefined") {
+		var query = "SELECT * from users where email = ? and deleted_at is NULL";
+		connection.query(query, [email], function(err, results) {
+			if(err) {
+				userExistsDefer.reject(err);
+				connection.release();
+				return;
+			}
+			if(results.length > 0) {
+				connection.release();
+				userExistsDefer.reject({userExists: true})	
+			} else {
+				userExistsDefer.resolve();
+			}
+		});
+	} else {
+		userExistsDefer.resolve();
+	}
+	return userExistsDefer.promise;
+}
+
+exports.checkUserExists = checkUserExists;
+
 exports.addUser = function(request) {
 	var addUserDefer = q.defer();
-	var checkUser = "SELECT * from users where email = ?";
-	var insertUser = "INSERT INTO users (first_name, last_name, email, password, user_role, is_verified, created_at, modified_at, is_verified) VALUES (?,?,?,?,?,?,?,?,?)";
-	generateHash(request.password).then(function(password){
-		console.log(password);
-		db.getConnection().then(function(connection){
-			connection.query(checkUser, [request.email], function(err, results) {
-				if(err) {
-					addUserDefer(err);
-					connection.release();
-					return;
-				}
-				if(results.length == 0) {
-					connection.query(insertUser, [request.first_name, request.last_name, request.email, password,
-					request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.is_verified]
-					, function(err, results) {
-						if(err) {
-							addUserDefer(err);
-							connection.release();
-							return;
-						}
-						addUserDefer.resolve();
+	var insertUser = "INSERT INTO users (first_name, last_name, email, user_role, is_verified, created_at, modified_at, \
+		reset_password_hash, request_password_hash_active) VALUES (?,?,?,?,?,?,?,?,?)";
+	db.getConnection().then(function(connection) {
+		checkUserExists(connection, request.email).then(function(data) {
+			console.log("asdgasdg");
+			generateHash('#' + request.first_name + '-' + request.email + '-' + moment().format('YYYY-MM-DD HH:mm:ss')).then(function(hash){
+				console.log('inside hash');
+				emailer.send('public/templates/_emailTemplate.html', {
+					name : request.first_name,
+					url : config.domain + '/user/resetpassword?hash=' + hash,
+					role : 'User'
+				}, request.email, "Team Consultancy - Set Password for the Account");
+				connection.query(insertUser, [request.first_name, request.last_name, request.email,
+				request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), hash, 1]
+				, function(err, results) {
+					console.log("query");
+					if(err) {
+						addUserDefer.reject(err);
 						connection.release();
-						console.log("User successfully inserted");
-					});
-				} else {
-					addUserDefer.reject({errorCode : 1015});
+						return;
+					}
+					addUserDefer.resolve();
 					connection.release();
-				}
+					console.log("User successfully inserted");
+				});
+			}, function(err) {
+				connection.release();
+				addUserDefer.reject(err);
 			});
+		}, function(err) {
+			if(err.userExists) {
+				addUserDefer.reject({errorCode : 1015});
+			} else {
+				addUserDefer.reject(err);
+			}
 		});
 	}, function(err) {
 		addUserDefer.reject(err);
 	});
 	return addUserDefer.promise;
+}
+
+function runQuery(connection, query, params) {
+	var queryDefer = q.defer();
+	console.log("asdg");
+	console.log(params);
+	if(!params) {
+		params = [];
+	}
+	console.log(params);
+	connection.query(query, params, function(err, results){
+		connection.release();
+		if(err) {
+			queryDefer.reject(err);
+			return;
+		}
+		queryDefer.resolve(results);
+	}, function(err) {
+		queryDefer.reject(err);
+		connection.release;
+	});
+	return queryDefer.promise;
+}
+
+exports.updateUser = function(id, requestParams) {
+	var updateUserDefer = q.defer();
+	var query = "UPDATE users ";
+	db.getConnection().then(function(connection) {
+		if(requestParams.email) {
+			console.log(requestParams.email);
+			checkUserExists(connection, requestParams.email).then(function() {
+				console.log("asdkgakljsdg");
+				query = query + (query.indexOf('SET') > -1?", email = '" + requestParams.email + 
+					"'":" SET email = '" + requestParams.email + "'");
+				console.log(query);
+				if(requestParams.user_role) {
+					query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role + 
+						"'":" SET user_role = '" + requestParams.user_role + "'");
+				}
+				if(requestParams.first_name) {
+					query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
+						+ "'":" SET first_name = '" + requestParams.first_name + "'");
+				}
+				generateHash('#' + requestParams.email + '-' + moment().format('YYYY-MM-DD HH:mm:ss')).then(function(hash){
+					emailer.send('public/templates/_emailTemplate.html', {
+						name : "asdfasd",
+						url : config.domain + '/user/resetpassword?hash=' + hash,
+						role : 'User'
+					}, requestParams.email, "Team Consultancy - Set Password for the Account");
+					console.log(query);
+					query = query + (", reset_password_hash = '" + hash + "', request_password_hash_active = 1");
+					query = query + (" where id = " + id);
+					runQuery(connection, query).then(function(results) {
+						updateUserDefer.resolve(results);
+					}, function(err) {
+						updateUserDefer.reject(err);
+					})
+				}, function(err) {
+					updateUserDefer.reject(err);
+				});
+			}, function(err) {
+				if(err.userExists) {
+					updateUserDefer.reject({errorCode : 1015});
+				} else {
+					updateUserDefer.reject(err);
+				}
+			});
+		} else {
+			if(requestParams.user_role) {
+				query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role + 
+					"'":" SET user_role = '" + requestParams.user_role + "'");
+			}
+			if(requestParams.first_name) {
+				query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
+					+ "'":" SET first_name = '" + requestParams.first_name + "'");
+			}
+			query = query + (" where id = " + id);
+			console.log(query);
+			runQuery(connection, query).then(function(results){
+				updateUserDefer.resolve(results);
+			}, function(err) {
+				updateUserDefer.reject(err);
+			});
+		}
+	}, function(err) {
+		updateUserDefer.reject(err);
+	});
+	return updateUserDefer.promise;
 }
 
 exports.authenticateUser = function(req) {
@@ -168,7 +291,7 @@ exports.sendResetPassword = function(req) {
 
 exports.getUsers = function(req) {
 	var getUsersDefer = q.defer();
-	var query = "SELECT id, name, email, is_verified from users where user_role <> 'CLIENT' and deleted_at is NULL";
+	var query = "SELECT id, first_name, user_role, email, is_verified from users where user_role <> 'CLIENT' and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		connection.query(query, function(err, results) {
 			connection.release();

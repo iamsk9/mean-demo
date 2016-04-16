@@ -31,28 +31,6 @@ function generateHash(string) {
     return hashDefer.promise;
 }
 
-function checkUserExists(connection, email) {
-	var userExistsDefer = q.defer();
-	if(typeof email !== "undefined") {
-		var query = "SELECT * from users where email = ? and deleted_at is NULL";
-		connection.query(query, [email], function(err, results) {
-			if(err) {
-				userExistsDefer.reject(err);
-				connection.release();
-				return;
-			}
-			if(results.length > 0) {
-				connection.release();
-				userExistsDefer.reject({userExists: true})	
-			} else {
-				userExistsDefer.resolve();
-			}
-		});
-	} else {
-		userExistsDefer.resolve();
-	}
-	return userExistsDefer.promise;
-}
 
 function checkPancardExists(connection, panCard) {
 	var pancardExistsDefer = q.defer();
@@ -84,14 +62,15 @@ exports.addClient = function(req) {
 		alt_phone_number, company_pan_number, created_at, modified_at) VALUES (?,?,?,?,?,?,?,?,?)";
 
 	db.getConnection().then(function(connection) {
-		checkUserExists(connection, req.email).then(function() {
+		UserHelper.checkUserExists(connection, req.email).then(function() {
 			checkPancardExists(connection, req.company_pan_number).then(function() {
 				console.log("Inside");
 				generateHash("#" + req.client_name + " - " + req.email + " - " + req.phone_number).then(function(hash){
 					console.log("asdkghasdg");
 					emailer.send('public/templates/_emailTemplate.html', {
 						name : req.client_name,
-						url : config.domain + '/client/resetpassword?hash=' + hash
+						url : config.domain + '/client/resetpassword?hash=' + hash,
+						role : 'Client'
 					}, req.email, "Team Consultancy - Set Password for the Account");
 					console.log("here");
 					connection.query(insertUser, [req.client_name, req.email, "CLIENT", 

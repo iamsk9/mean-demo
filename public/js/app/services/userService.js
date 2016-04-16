@@ -16,6 +16,56 @@ Caweb.factory('UserService', function(Restangular, $q){
 				logoutDefer.reject(err);
 			})
 			return logoutDefer.promise;
+		},
+		getUsers : function() {
+			var usersDefer = $q.defer();
+			Restangular.one('/users').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					usersDefer.resolve(data.data);
+				} else {
+					usersDefer.reject();
+				}
+			}, function(err){
+				usersDefer.reject(err);
+			})
+			return usersDefer.promise;
+		},
+		addUser : function(payload) {
+			var addUserDefer = $q.defer();
+			Restangular.one('/user').post('', payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					addUserDefer.resolve(data.data);
+				} else {
+					addUserDefer.reject(data);
+				}
+			}, function(err) {
+				addUserDefer.reject(err);
+			});
+			return addUserDefer.promise;
+		},
+		removeUser : function(id) {
+			var removeUserDefer = $q.defer();
+			Restangular.one('/user/' + id).remove().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					removeUserDefer.resolve(data.data);
+				} else {
+					removeUserDefer.reject(data);
+				}
+			});
+			return removeUserDefer.promise;
+		},
+		updateUser : function(id, payload) {
+			var updateUserDefer = $q.defer();
+			Restangular.one('/user/' + id).patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateUserDefer.resolve(data);
+				} else {
+					updateUserDefer.reject(data);
+				}
+			}, function(err) {
+				updateUserDefer.reject(err);
+			})
+			return updateUserDefer.promise;
 		}
 	}
 });
