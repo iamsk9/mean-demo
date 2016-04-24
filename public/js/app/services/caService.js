@@ -130,9 +130,12 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return clientDefer.promise;
 		},
 
-		getDocsByClientId : function(id) {
+		getDocsByClientId : function(id, parent) {
 			var docsDefer = $q.defer();
-			Restangular.one('client/' + id + '/docs').get().then(function(data) {
+			var payload = {
+				parent : parent
+			};
+			Restangular.one('client/' + id + '/docs').get(payload).then(function(data) {
 				if(data.returnCode == "SUCCESS") {
 					docsCache[id] = {docs : angular.copy(data.data)};
 					docsDefer.resolve(data.data);
@@ -261,6 +264,26 @@ Caweb.factory('CAService', function(Restangular, $q){
 				}
 			}
 			return payload;
+		},
+
+		createFolder: function(data) {
+			var createFolderDefer = $q.defer();
+			var payload = {
+				parent : data.value,
+				path : data.path,
+				client_id : data.client_id,
+				name : data.name
+			};
+			Restangular.one('/createDirectory').post('',payload).then(function(data){
+				if(data.returnCode == 'SUCCESS') {
+					createFolderDefer.resolve(data.data);
+				} else {
+					createFolderDefer.reject(data);
+				}
+			}, function(err) {
+				createFolderDefer.reject(err);
+			});
+			return createFolderDefer.promise;
 		}
 
 	}

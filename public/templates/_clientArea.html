@@ -39,15 +39,24 @@
 				</div>
 			</div>
 			<div layout = "column" class = "margin_left_20" flex = "70">
-				<h2 class = "margin_left_20">Documents</h2>
+				<div layout = "row">
+					<h2 class = "margin_left_20">Documents</h2>
+					<div class="crumbs-container">
+						<ul class="crumbs">
+							<li ng-repeat = "node in pathNodes" ng-class = "{'last' : $last}"><a href="javascript:void(0)" ng-click = "!$last?changeWorkingDirectory($index):''">[[node.label]]</a></li>
+						</ul>
+					</div>
+					<span flex></span>
+					<md-button class = "md-primary" ng-if = "clientSelected" ng-click = "showFolderDialog()" style = "height:10%"><md-icon md-font-icon="fa-plus" class = "fa inline-icon"></md-icon> Create Folder</md-button>
+				</div>
 				<div layout = "row" layout-align = "space-between" ng-show = "clientSelected" layout-wrap>
 					<div layout = "column" ng-show = "docs.length == 0">
 						<p>There are no documents uploaded yet.</p>
 					</div>
 					<div layout = "column" ng-repeat = "doc in docs">
-						<md-card class = "card md-card-hover doc-card">
+						<md-card class = "card md-card-hover doc-card" ng-class = "{active : doc.selected}">
 							<span class = "doc-remove" ng-click = "removeDoc($index)" ng-show = "!isClient"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
-							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-click = "openDoc(doc)">
+							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-dblclick = "openDoc(doc)" ng-click = "selectDoc(doc)">
 								<img ng-src = "[[getViewImage(doc)]]"></img>
 							</md-card-content>
 							<md-card-actions class = "margin_top_20" layout = "column">
@@ -61,7 +70,7 @@
 								</div>
 								<div layout = "row" layout-align = "end center">
 									<md-button class = "md-primary" ng-show = "!isClient && (!doc.descriptionInputFlag &&(doc.description == null || doc.description == ''))" ng-click = "showDescriptionInput($index, $event)" >Add Description</md-button>
-									<md-button target = "_self" href = "/document/[[doc.id]]">Download </md-button>
+									<md-button target = "_self" ng-if = "!doc.is_directory" href = "/document/[[doc.id]]">Download </md-button>
 								</div>
 							</md-card-actions>
 						</md-card>
@@ -147,6 +156,36 @@
 						<md-button class = "md-primary" style = "font-size : 1.3em"
 						ng-click = "theScope.updateClient()" ng-disabled = "theScope.editClientLoading">Update Client</md-button>
 						<md-progress-circular md-mode="[[theScope.editClientLoading]]"></md-progress-circular>
+		            </div>
+				</div>
+			</form>
+		</md-dialog-content>
+    </md-dialog>
+</script>
+<script type = "text/ng-template" id = "newFolder.tmpl.html">
+	<md-dialog aria-label="Edit Client">
+			<md-toolbar>
+		      <div class="md-toolbar-tools">
+		        <h2>Create New Folder</h2>
+		        <span flex></span>
+		        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+		          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+		        </md-button>
+		      </div>
+		    </md-toolbar>
+		    <md-dialog-content style="width:400px;max-height:810px; ">
+		        <form name = "folderForm">
+		    	<div layout = "column" layout-align = "center center"style = "margin-top: 2em">
+		            <md-input-container style = "width : 300px" class = "md-block" >
+					  <label>Name of the Folder</label>
+					  <input type="text" required="" name = "folderName" ng-model = "theScope.folder.name">
+					  <div ng-messages = "folderForm.folderName.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+					<div layout = "row" layout-align = "center center" style = "margin-bottom: 2em">
+						<md-button class = "md-primary" ng-click = "theScope.createFolder()" ng-disabled = "theScope.folderLoading">Create Folder</md-button>
+						<md-progress-circular md-mode="[[theScope.folderLoading]]"></md-progress-circular>
 		            </div>
 				</div>
 			</form>

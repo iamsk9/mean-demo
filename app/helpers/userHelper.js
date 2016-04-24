@@ -12,6 +12,8 @@ var emailer = require('../emailer');
 
 var config = require('../../config/config');
 
+var utils = require('../utils');
+
 var SALT_WORK_FACTOR = 19204;
 
 function generateHash(string) {
@@ -106,28 +108,6 @@ exports.addUser = function(request) {
 	return addUserDefer.promise;
 }
 
-function runQuery(connection, query, params) {
-	var queryDefer = q.defer();
-	console.log("asdg");
-	console.log(params);
-	if(!params) {
-		params = [];
-	}
-	console.log(params);
-	connection.query(query, params, function(err, results){
-		connection.release();
-		if(err) {
-			queryDefer.reject(err);
-			return;
-		}
-		queryDefer.resolve(results);
-	}, function(err) {
-		queryDefer.reject(err);
-		connection.release;
-	});
-	return queryDefer.promise;
-}
-
 exports.updateUser = function(id, requestParams) {
 	var updateUserDefer = q.defer();
 	var query = "UPDATE users ";
@@ -156,7 +136,7 @@ exports.updateUser = function(id, requestParams) {
 					console.log(query);
 					query = query + (", reset_password_hash = '" + hash + "', request_password_hash_active = 1");
 					query = query + (" where id = " + id);
-					runQuery(connection, query).then(function(results) {
+					utils.runQuery(connection, query).then(function(results) {
 						updateUserDefer.resolve(results);
 					}, function(err) {
 						updateUserDefer.reject(err);
@@ -182,7 +162,7 @@ exports.updateUser = function(id, requestParams) {
 			}
 			query = query + (" where id = " + id);
 			console.log(query);
-			runQuery(connection, query).then(function(results){
+			utils.runQuery(connection, query).then(function(results){
 				updateUserDefer.resolve(results);
 			}, function(err) {
 				updateUserDefer.reject(err);

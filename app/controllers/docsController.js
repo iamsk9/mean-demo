@@ -39,7 +39,7 @@ exports.uploadDoc = function(req, res) {
 
 
 exports.getDocuments = function(req, res) {
-    DocsHelper.getDocumentsByClientId(req.params.id).then(function(data) {
+    DocsHelper.getDocumentsByClientId(req.params.id, req.query.parent).then(function(data) {
         res.json({returnCode : "SUCCESS", data : data, errorCode : null});
     }, function(err) {
         console.log(err);
@@ -84,4 +84,13 @@ exports.getDocDownloads = function(req, res) {
         console.log(err);
         res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
     })
+}
+
+exports.createDirectory = function(req, res) {
+    DocsHelper.createDirectory(req.user, req.body).then(function(data) {
+        res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+    }, function(err) {
+        console.log(err);
+        res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+    });
 }

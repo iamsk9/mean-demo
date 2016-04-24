@@ -18,26 +18,22 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	$scope.searchText = "";
 	if(typeof $routeParams.clientId !== "undefined") {
 		if($rootScope.user.role !== "CLIENT") {
-			CAService.getClientById($routeParams.clientId).then(function(data){
-				$scope.client = data;
-				$scope.clientDetails = data;
-				$scope.clientSelected = true;
-			}, function(err) {
-				console.log(err);
-				if(typeof err.errorCode != "undefined" && err.errorCode == 1019) {
-					$mdToast.show($mdToast.simple()
-					.textContent("There is no client with id " + $routeParams.clientId + ". Select a valid Client.")
-					.position("top right")
-					.hideDelay(5000));
-				} else {
-					$mdToast.show($mdToast.simple()
-					.textContent("Unable to fetch client details")
-					.position("top right")
-					.hideDelay(5000));
-				}
-			});
-
-			CAService.getDocsByClientId($routeParams.clientId).then(function(data) {
+			var getClient = CAService.getClientById.bind(CAService);
+		} else {
+			var getClient = CAService.getClientByUserId.bind(CAService);
+		}
+		getClient($routeParams.clientId).then(function(data) {
+			$scope.client = data;
+			$scope.clientDetails = data;
+			$scope.clientSelected = true;
+			console.log($scope.clientDetails);
+			$scope.currentPath = {
+				value : null, path : "root/", label : "root"
+			};
+			$scope.pathNodes = [{
+				value : null, path : "root/", label : "root"
+			}];
+			CAService.getDocsByClientId(data.id, $scope.currentPath.value).then(function(data) {
 				$scope.docs = data;
 			}, function(err) {
 				console.log(err);
@@ -46,36 +42,20 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 					.position("top right")
 					.hideDelay(5000));
 			})
-		} else {
-			CAService.getClientByUserId($routeParams.clientId).then(function(data) {
-				$scope.client = data;
-				$scope.clientDetails = data;
-				$scope.clientSelected = true;
-				console.log($scope.clientDetails);
-				CAService.getDocsByClientId(data.id).then(function(data) {
-					$scope.docs = data;
-				}, function(err) {
-					console.log(err);
-					$mdToast.show($mdToast.simple()
-						.textContent("Unable to fetch documents of the client")
-						.position("top right")
-						.hideDelay(5000));
-				})
-			} , function(err) {
-				console.log(err);
-				if(typeof err.errorCode != "undefined" && err.errorCode == 1019) {
-					$mdToast.show($mdToast.simple()
-					.textContent("There is no client with id " + $routeParams.clientId + ". Select a valid Client.")
-					.position("top right")
-					.hideDelay(5000));
-				} else {
-					$mdToast.show($mdToast.simple()
-					.textContent("Unable to fetch client details")
-					.position("top right")
-					.hideDelay(5000));
-				}
-			});
-		}
+		} , function(err) {
+			console.log(err);
+			if(typeof err.errorCode != "undefined" && err.errorCode == 1019) {
+				$mdToast.show($mdToast.simple()
+				.textContent("There is no client with id " + $routeParams.clientId + ". Select a valid Client.")
+				.position("top right")
+				.hideDelay(5000));
+			} else {
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch client details")
+				.position("top right")
+				.hideDelay(5000));
+			}
+		});
 	} else {
 		$scope.clientSelected = false;
 	}
@@ -102,8 +82,9 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	}
 
 	$scope.getViewImage = function(doc) {
-		console.log('imageCalled');
-		if(doc.url.indexOf('.pdf') > -1) {
+		if(doc.is_directory) {
+			return 'images/folder-icon.png'
+		} else if(doc.url.indexOf('.pdf') > -1) {
 			return 'images/pdf.png';
 		} else if(doc.url.indexOf('.doc') > -1 || doc.url.indexOf('.docx') > -1){
 			return 'images/word.ico';
@@ -214,9 +195,21 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	}
 
 	$scope.openDoc = function(doc) {
-		console.log(doc);
 		$scope.openDocUrl = doc.url;
-		if(doc.url.indexOf('.pdf') > -1) {
+		if(doc.is_directory) {
+			$scope.currentPath = {
+				value : doc.id, path : $scope.currentPath.path + doc.description, label : doc.description
+			};
+			$scope.pathNodes.push($scope.currentPath);
+			CAService.getDocsByClientId($scope.clientDetails.id, $scope.currentPath.value).then(function(data) {
+				$scope.docs = data;
+			}, function(){
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch documents in the folder")
+				.position("top right")
+				.hideDelay(5000));
+			})
+		} else if(doc.url.indexOf('.pdf') > -1) {
 			$scope.openImageGallery = false;
 			$scope.openPDFGallery = true;
 		} else if(doc.url.indexOf('.doc') > -1 || doc.url.indexOf('.docx') > -1 || doc.url.indexOf('.xls') > -1 || doc.url.indexOf('xlsx') > -1 || 
@@ -231,6 +224,19 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		}
 	}
 
+	$scope.changeWorkingDirectory = function(index) {
+		CAService.getDocsByClientId($scope.clientDetails.id, $scope.pathNodes[index].value).then(function(data) {
+			$scope.currentPath = $scope.pathNodes[index];
+			$scope.pathNodes = $scope.pathNodes.slice(0,index-1);
+			$scope.docs = data;
+		}, function() {
+			$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch documents in the folder")
+				.position("top right")
+				.hideDelay(5000));
+		});
+	}
+
 	$scope.closeGallery = function() {
 		$scope.openPDFGallery = false;
 		$scope.openImageGallery = false;
@@ -238,21 +244,21 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 
 	$scope.removeDoc = function(index) {
 		var confirm = $mdDialog.confirm()
-	          .title('Remove Document - ' + ($scope.docs[index].description?$scope.docs[index].description:''))
-	          .textContent('Are You sure you want to remove the document?')
+	          .title('Remove ' + ($scope.docs[index].is_directory?'Folder':'Document') + '- ' + ($scope.docs[index].description?$scope.docs[index].description:''))
+	          .textContent('Are You sure you want to remove the ' + ($scope.docs[index].is_directory?'Folder':'Document') + '?')
 	          .ariaLabel('Remove Document')
 	          .ok('Remove')
 	          .cancel('Cancel');
 	    $mdDialog.show(confirm).then(function() {
 	    	CAService.removeDocument($scope.clientDetails.id, index).then(function() {
-	    		$scope.docs.splice(index,1);
 	    		$mdToast.show($mdToast.simple()
-				.textContent("Removed the Document Successfully.")
+				.textContent("Removed the "+ ($scope.docs[index].is_directory?'Folder':'Document') +  " Successfully.")
 				.position("top right")
 				.hideDelay(5000));
+				$scope.docs.splice(index,1);
 	    	}, function(err) {
 	    		$mdToast.show($mdToast.simple()
-				.textContent("Error in removing document.")
+				.textContent("Error in removing " + ($scope.docs[index].is_directory?'Folder':'Document'))
 				.position("top right")
 				.hideDelay(5000));
 	    	});
@@ -274,7 +280,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 			headers : {
 				'x-ca-api-token' : apiKey
 			},
-			data : {doc : $scope.images, client_id : $scope.client.id}
+			data : {doc : $scope.images, client_id : $scope.client.id, parent : $scope.currentPath.value}
 		}).then(function(response) {
 			console.log(response);
 			$scope.fileUploading = false;
@@ -301,5 +307,57 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 			console.log(evt);
 			$scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
 		})
+	}
+
+	$scope.showFolderDialog = function() {
+		$mdDialog.show({
+	    	controller : function($scope, theScope) {
+	    		$scope.theScope = theScope;
+	    	},
+			templateUrl : 'newFolder.tmpl.html',
+			parent : angular.element(document.body),
+			clickOutsideToClose:true,
+			locals : {
+				theScope : $scope
+			}
+		}).then(function(){
+		});
+	}
+
+	$scope.createFolder = function() {
+		if(!($scope.folder && $scope.folder.name)) {
+			return;
+		}
+		$scope.folderDialogLoading = 'indeterminate';
+		var payload = {
+			client_id : $scope.clientDetails.id,
+			value : $scope.currentPath.value,
+			path : $scope.currentPath.path,
+			name : $scope.folder.name
+		}
+		CAService.createFolder(payload).then(function(data) {
+			$scope.folderDialogLoading = false;
+			$scope.docs.push(data);
+			CAService.addDocument($scope.clientDetails.id, data);
+			$mdToast.show($mdToast.simple()
+			.textContent("Folder successfully created.")
+			.position("top right")
+			.hideDelay(5000));
+			$scope.closeDialog();
+		}, function(err) {
+			$mdToast.show($mdToast.simple()
+			.textContent("Error in creating the folder.")
+			.position("top right")
+			.hideDelay(5000));
+		});
+	}
+
+	$scope.selectDoc = function(doc) {
+		doc.selected = true;
+		angular.forEach($scope.docs, function(thisDoc) {
+			if(thisDoc.id != doc.id) {
+				thisDoc.selected = false;
+			}
+		});
 	}
 });

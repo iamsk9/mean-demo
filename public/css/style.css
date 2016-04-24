@@ -152,6 +152,10 @@ md-toast {
     cursor : pointer;
 }
 
+.doc-card.active {
+	box-shadow:0 10px 20px rgba(0,0,0,.19), 0 6px 6px rgba(0,0,0,.23);
+}
+
 .panel-widget-title {
     color: #7A7A7A;
 }
@@ -174,4 +178,53 @@ md-toast {
 .bgm-bluegray {
     background-color: #607d8b !important;
     color : white;
+}
+
+.inline-icon {
+	margin-top: 8px;
+	margin-right: 5px;
+}
+
+.crumbs-container {
+	position: relative;
+	display: inline-block;
+	-webkit-transition: height 0.5s ease-out; 
+	-moz-transition: height 0.5s ease-out;  
+	-o-transition: height 0.5s ease-out; 
+	transition: height 0.5s ease-out;
+}
+
+.crumbs {
+	width: 100%;
+	bottom: 0;
+}
+.crumbs li a {
+	display: block;
+	padding: 1em;
+	color: rgb(33,150,243);
+}
+.crumbs li:last-child a {
+	text-decoration: none;
+	color: #000;
+	cursor: default;
+}
+
+.crumbs {
+	padding: 1em;
+}
+.crumbs li {
+	display: inline-block;
+}
+.crumbs li a {
+	display: inline;
+	border: 0;
+	padding: 0;
+}
+.crumbs li:after {
+	content: '→';
+	padding: 0 0.25em 0 0.5em;
+	color: #999;
+}
+.crumbs li.last:before, .crumbs li.last:after {
+	content: '';
 }

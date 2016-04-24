@@ -8,6 +8,8 @@ var q = require('q');
 
 var db = require('../../db');
 
+var utils = require('../utils');
+
 var moment = require('moment');
 
 function uploadToAzureStorage(request) {
@@ -27,11 +29,11 @@ exports.saveDoc = function(request) {
 	var saveDocDefer = q.defer();
 	uploadToAzureStorage(request).then(function(url) {
 		console.log("Uploaded to azure " + url);
-		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at) VALUES (?,?,?,?,?)";
+		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, parent) VALUES (?,?,?,?,?,?)";
 		db.getConnection().then(function(connection) {
 			console.log("Obtained the connection");
 			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url, 
-				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')], function(err, result){
+				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.body.parent], function(err, result){
 					console.log("Inside Query");
 					if(err) {
 						console.log("Query Error");
@@ -51,11 +53,16 @@ exports.saveDoc = function(request) {
 	return saveDocDefer.promise;
 }
 
-exports.getDocumentsByClientId = function(id) {
+exports.getDocumentsByClientId = function(id, parent) {
 	var documentsDefer = q.defer();
-	var docsByClientId = "SELECT * from docs where client_id = ? and deleted_at is NULL";
+	if(parent) {
+		var docsByClientId = "SELECT * from docs where client_id = ? and parent = ? and deleted_at is NULL";	
+	} else {
+		var docsByClientId = "SELECT * from docs where client_id = ? and parent is NULL and deleted_at is NULL";	
+
+	}
 	db.getConnection().then(function(connection) {
-		connection.query(docsByClientId, [id], function(err, results) {
+		connection.query(docsByClientId, [id, parent], function(err, results) {
 			if(err) {
 				documentsDefer.reject(err);
 				connection.release();
@@ -142,17 +149,27 @@ exports.downloadDocument = function(id, req) {
 
 exports.deleteDocument = function(id) {
 	var deleteDefer = q.defer();
+	var getDocument = "SELECT * from docs where id = ?";
 	var deleteQuery = "UPDATE docs set deleted_at = ?, modified_at = deleted_at where id = ?";
-	db.getConnection().then(function(connection) {
-		connection.query(deleteQuery, [moment().format('YYYY-MM-DD HH:mm:ss'), id], function(err, result) {
-			if(err) {
-				connection.release();
-				deleteDefer.reject(err);
-				return;
-			}
-			connection.release();
-			deleteDefer.resolve();
-		});
+	var connection;
+	db.getConnection().then(function(conn) {
+		connection = conn;
+		return utils.runQuery(connection, getDocument, [id], true);
+	}, function(err) {
+		deleteDefer.reject(err);
+	}).then(function(data) {
+		var params;
+		if(data[0].is_directory) {
+			deleteQuery = deleteQuery + (" or parent = ?");
+			params = [moment().format('YYYY-MM-DD HH:mm:ss'), id, id];
+		} else {
+			params = [moment().format('YYYY-MM-DD HH:mm:ss'), id];
+		}
+		return utils.runQuery(connection, deleteQuery, params);
+	}, function(err) {
+		deleteDefer.reject(err);
+	}).then(function(result){
+		deleteDefer.resolve();
 	}, function(err) {
 		deleteDefer.reject(err);
 	});
@@ -262,10 +279,10 @@ exports.getTodaysDocs = function(obj) {
 exports.getDocDownloads = function(id) {
 	var docDownloadsDefer = q.defer();
 	var query = 'SELECT b.id, max(a.downloaded_at) as latestDownloadedTime, b.client_id, b.description, b.url, count(downloaded_at) as downloadCount\
-	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = ? and b.deleted_at is NULL group by b.id'
+	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = ? and b.deleted_at is NULL and b.is_directory = ? and group by b.id'
 	db.getConnection().then(function(connection) {
 		console.log(id);
-		var sql = connection.query(query, [id], function(err, results) {
+		var sql = connection.query(query, [id, 0], function(err, results) {
 			if(err) {
 				connection.release();
 				docDownloadsDefer.reject(err);
@@ -282,3 +299,33 @@ exports.getDocDownloads = function(id) {
 	return docDownloadsDefer.promise;
 }
 
+exports.createDirectory = function(user, params) {
+	var createDirectoryDefer = q.defer();
+	var query = 'INSERT into docs (user_id, url, created_at, modified_at, client_id, is_directory, parent, description) \
+	VALUES (?,?,?,?,?,?,?,?)';
+	db.getConnection().then(function(connection) {
+		var values = {
+			user_id : user.id,
+			url : params.path,
+			created_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+			modified_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+			client_id : params.client_id,
+			is_directory : 1,
+			parent : params.parent,
+			description : params.name
+		};
+		console.log("inside connection");
+		console.log(utils);
+		utils.runQuery(connection, query, [values.user_id, values.url, values.created_at, 
+			values.modified_at, values.client_id, values.is_directory, values.parent, values.description]).then(function(results){
+			values.id = results.insertId;
+			console.log("uakasdjgas");
+			createDirectoryDefer.resolve(values);
+		}, function(err) {
+			createDirectoryDefer.reject(err);
+		})
+	}, function(err) {
+		createDirectoryDefer.reject(err);
+	});
+	return createDirectoryDefer.promise;
+}

@@ -69,6 +69,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/user/:userId', UserController.updateUser);
 
+	apiRoutes.post('/createDirectory', DocsController.createDirectory);
+
 	// apiRoutes.post('updateMasterAttributes', attributesController.updateAttributes);
 
 }
