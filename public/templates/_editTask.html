@@ -1,0 +1,182 @@
+<md-content class="md-padding" flex style = "width = 70%">
+	<div layout = "row">
+		<div class="crumbs-container">
+			<ul class="crumbs">
+				<li><a href="javascript:void(0)" ng-click = "back()">Tasks List</a></li>
+				<li class = "last"><a href="javascript:void(0)">Task #[[task.id]]</a></li>
+			</ul>
+		</div>
+		<h2 style = "text-align : center" flex>Task #[[task.id]]</h2>
+	</div>
+	<md-card>
+		<md-card-content>
+			<fieldset>
+				<form name = "editTaskForm">
+					<div layout = "column">
+						<div layout = "row" layout-align = "space-around center">
+							<div layout = "column" layout-align = "center center" style = "width : 200px">
+								<p class = "font_14 label">Assigned By</p>
+								<p class = "font_14">[[task.assigned_by_name]]</p>
+							</div>
+							<div layout = "column" layout-align = "center center" style = "width : 200px">
+								<p class = "font_14 label">Assigned To</p>
+								<p class = "font_14">[[task.user_name]]</p>
+							</div>
+						</div>
+						<div layout = "row" layout-align = "space-around center" ng-show = "!otherClient">
+			    			<p style = "margin-top : 0px">Select Client*</p>
+				            <md-autocomplete
+				            	  md-floating-label="Select Client"
+						          md-selected-item="selectedClient"
+						          md-search-text="clientSearchText"
+						          md-selected-item-change="selectedClientChanged(item)"
+						          md-items="item in querySearch(clientSearchText)"
+						          md-item-text="item.name"
+						          md-min-length="0"
+						          placeholder="Select a client"
+						          md-menu-class="autocomplete-custom-template" style = "width : 70%" 
+						          md-input-name="client"
+						          required>
+						        <md-item-template>
+						          <span class="item-title">
+						            <span> #[[item.id]] - [[item.company_name]] - [[item.name]] - [[item.company_pan_number]] </span>
+						          </span>
+						        </md-item-template>
+						        <md-not-found>
+				    				No clients found.
+								</md-not-found>
+								<div ng-messages="assignTaskForm.client.$error">
+									<div ng-message="required">This is required</div>
+								</div>
+						    </md-autocomplete>
+						</div>
+			    		<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
+			    			<p style = "margin-top : 0px">Client Name*</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" required="" name = "clientName" ng-model = "task.client_name" ng-disabled = "!otherClient">
+							  <div ng-messages = "assignTaskForm.clientName.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
+							<p style = "margin-top : 0px">Contact Number*</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" required="" name = "contactNumber" ng-model = "task.contact_number" ng-disabled = "!otherClient">
+							  <div ng-messages = "assignTaskForm.contactNumber.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "start center" class = "margin_left_20">
+					     	<md-switch class="md-primary" aria-label="Not a Registered Client" ng-model="otherClient" ng-change = "clientTypeChanged()">
+						    	Not a Registered Client
+							</md-switch>
+						</div>
+						<div layout = "row" layout-align = "space-around center" ng-if = "assigneeEditAccess">
+							<p style = "margin-top : 0px">Select Branch*</p>
+				            <md-input-container style = "width : 70%">
+								<md-select name = 'branch' ng-model="task.branch" ng-change = "branchChanged()" required>
+									<md-option ng-repeat="branch in branches" value="[[branch.id]]">
+									[[branch.name]]
+									</md-option>
+								</md-select>
+								<div ng-messages = "assignTaskForm.branch.$error">
+								  	<div ng-message = "required">This is required</div>
+								  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center" ng-if = "assigneeEditAccess">
+							<p style = "margin-top : 0px">Select Employee*</p>
+							<md-input-container style = "width : 70%">
+								<md-select name = "employee" ng-model="task.user_id" required>
+									<md-option ng-repeat="emp in employees" value="[[emp.id]]">
+									[[emp.first_name]]
+									</md-option>
+								</md-select>
+								<div ng-messages = "assignTaskForm.employee.$error">
+								  	<div ng-message = "required">This is required</div>
+								  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Task Status*</p>
+							<md-input-container style = "width : 70%">
+								<md-select name = "status" ng-model="task.task_status" required>
+									<md-option ng-repeat="status in taskStatus" value="[[status]]">
+									[[status]]
+									</md-option>
+								</md-select>
+								<div ng-messages = "assignTaskForm.status.$error">
+								  	<div ng-message = "required">This is required</div>
+								  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Task Description*</p>
+							<md-input-container style = "width : 70%">
+							  <input type="text" name = "taskDescription" ng-model = "task.task_description" required>
+							  <div ng-messages = "assignTaskForm.taskDescription.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Date of Appointment</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" name = "dateOfAppointment" ng-model = "task.date_of_appointment" ng-focus = "showDatePicker()">
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Time Of Appointment</p>
+							<md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" name = "timeOfAppointment" ng-model = "task.time_of_appointment" ng-focus = "showTimePicker()">
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Type Of Appointment</p>
+							<md-radio-group ng-model="task.type_of_appointment" layout = "row" layout-align = "space-around center" style = "width : 70%">
+								<md-radio-button value="Personal Conversation" aria-label="Personal Conversation">
+								  Personal Conversation
+								</md-radio-button>
+								<md-radio-button value="Telephonic Conversation" aria-label="Telephonic Conversation">
+								  Telephonic Conversation
+								</md-radio-button>
+							</md-radio-group>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p>Works Involved</p>
+							<md-chips ng-model="task.works" md-autocomplete-snap
+				              md-require-match="true" style = "width : 70%">
+						      <md-autocomplete
+						          md-selected-item="selectedItem"
+						          md-search-text="searchText"
+						          md-items="item in filterResults(searchText)"
+						          md-min-length="0"
+						          placeholder="Search for a task" style = "width: 300px">
+						          <md-item-template>[[item.name]]</md-item-template>
+						          <md-not-found>
+				    				No Works found.
+								</md-not-found>
+						      </md-autocomplete>
+						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
+						    </md-chips>
+						</div>
+						<div layout = "row" layout-align = "space-around" layout-wrap flex class = "margin_top_40">
+							<p>Documents status</p>
+							<p ng-show = "reqDocs.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
+							<div style = "width : 70%" layout = "column" ng-show = "reqDocs.length > 0">
+								<md-checkbox ng-repeat = "doc in reqDocs" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+							</div>
+						</div>
+						<div layout = "row" layout-align = "center center">
+							<md-button class = "md-primary md-raised margin_top_20" ng-click = "updateTask()" ng-disabled = "updateTaskLoading" style = "width : 150px">Update Task</md-button>
+							<md-progress-circular md-mode="[[updateTaskLoading]]"></md-progress-circular>
+							<md-button class = "md-primary md-raised margin_top_20" ng-click = "updateTask(true);" ng-disabled = "updateTaskLoading" >Update Task and Go Back</md-button>
+			            </div>
+					</div>
+				</form>
+			</fieldset>
+		</md-card-content>
+	</md-card>
+</md-content>

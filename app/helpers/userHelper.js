@@ -67,7 +67,7 @@ exports.checkUserExists = checkUserExists;
 exports.addUser = function(request) {
 	var addUserDefer = q.defer();
 	var insertUser = "INSERT INTO users (first_name, last_name, email, user_role, is_verified, created_at, modified_at, \
-		reset_password_hash, request_password_hash_active) VALUES (?,?,?,?,?,?,?,?,?)";
+		reset_password_hash, request_password_hash_active, branch) VALUES (?,?,?,?,?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
 		checkUserExists(connection, request.email).then(function(data) {
 			console.log("asdgasdg");
@@ -79,7 +79,7 @@ exports.addUser = function(request) {
 					role : 'User'
 				}, request.email, "Team Consultancy - Set Password for the Account");
 				connection.query(insertUser, [request.first_name, request.last_name, request.email,
-				request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), hash, 1]
+				request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), hash, 1, request.branch]
 				, function(err, results) {
 					console.log("query");
 					if(err) {
@@ -127,6 +127,9 @@ exports.updateUser = function(id, requestParams) {
 					query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
 						+ "'":" SET first_name = '" + requestParams.first_name + "'");
 				}
+				if(requestParams.branch) {
+					query = query + (query.indexOf('SET') > -1?", branch = " + requestParams.branch :" SET branch = " + requestParams.branch);
+				}
 				generateHash('#' + requestParams.email + '-' + moment().format('YYYY-MM-DD HH:mm:ss')).then(function(hash){
 					emailer.send('public/templates/_emailTemplate.html', {
 						name : "asdfasd",
@@ -159,6 +162,9 @@ exports.updateUser = function(id, requestParams) {
 			if(requestParams.first_name) {
 				query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
 					+ "'":" SET first_name = '" + requestParams.first_name + "'");
+			}
+			if(requestParams.branch) {
+				query = query + (query.indexOf('SET') > -1?", branch = " + requestParams.branch :" SET branch = " + requestParams.branch);
 			}
 			query = query + (" where id = " + id);
 			console.log(query);
@@ -271,9 +277,15 @@ exports.sendResetPassword = function(req) {
 
 exports.getUsers = function(req) {
 	var getUsersDefer = q.defer();
-	var query = "SELECT id, first_name, user_role, email, is_verified from users where user_role <> 'CLIENT' and deleted_at is NULL";
+	var params = [];
+	if(req.query.branch_id) {
+		params.push([req.query.branch_id]);
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch from users where branch = ? and user_role <> 'CLIENT' and deleted_at is NULL";
+	} else {
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch from users where user_role <> 'CLIENT' and deleted_at is NULL";	
+	}
 	db.getConnection().then(function(connection) {
-		connection.query(query, function(err, results) {
+		connection.query(query, params, function(err, results) {
 			connection.release();
 			if(err) {
 				getUsersDefer.reject(err);

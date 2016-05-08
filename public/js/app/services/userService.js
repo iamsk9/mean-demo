@@ -17,9 +17,12 @@ Caweb.factory('UserService', function(Restangular, $q){
 			})
 			return logoutDefer.promise;
 		},
-		getUsers : function() {
+		isAdmin : function() {
+			return user.user_role == 'admin';
+		},
+		getUsers : function(payload) {
 			var usersDefer = $q.defer();
-			Restangular.one('/users').get().then(function(data) {
+			Restangular.one('/users').get(payload).then(function(data) {
 				if(data.returnCode == "SUCCESS") {
 					usersDefer.resolve(data.data);
 				} else {

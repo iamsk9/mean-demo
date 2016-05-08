@@ -1,0 +1,78 @@
+<md-content class="md-padding" flex>
+	<div layout = "column" layout-align = "center center">
+		<h2>Manage Branches</h2>
+		<md-table-container md-row-select style = "margin-bottom : 40px">
+	        <table md-table>
+	            <thead md-head >
+	                <tr md-row >
+	                    <th md-column class = "font_18 center" style = "width : 100px">Id</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Name</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Address</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Office Landline</th>
+	                    <th md-column class = "font_18 center" style = "width : 100px">Action</th>
+	                </tr>
+	            </thead>
+	            <tbody md-body>
+		            <tr md-row ng-show = "branches.length > 0" ng-repeat = "branch in branches">
+		                <td md-cell class = "font_16 center">#[[branch.id]]</td>
+		                <td md-cell class = "font_16 center">[[branch.name]]</td>
+		                <td md-cell class = "font_16 center">[[branch.address]]</td>
+		              	<td md-cell class = "font_16 center">[[branch.office_landline]]</td>
+		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateBranchDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveBranchDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
+		            </tr>
+		            <tr md-row ng-show = "branches.length == 0">
+		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no branches to show.</td>
+		            </tr>
+		        </tbody>
+		    </table>
+		</md-table-container>
+	</div>
+</md-content>
+<md-button class="md-fab md-fab-bottom-right" aria-label="Add Branch" ng-click = "showAddBranchDialog()">
+	<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
+</md-button>
+<script type = "text/ng-template" id = "branch.tmpl.html">
+	<md-dialog aria-label="branch">
+			<md-toolbar>
+		      <div class="md-toolbar-tools">
+		        <h2>[[::theScope.dialogType]] Branch <span ng-if = "theScope.dialogType == 'Edit'">- [[theScope.currentBranch.first_name]]</span></h2>
+		        <span flex></span>
+		        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+		          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+		        </md-button>
+		      </div>
+		    </md-toolbar>
+		    <md-dialog-content style="width:400px;max-height:810px;margin-top:20px">
+		        <form name = "branchForm">
+		    	<div layout = "column" layout-align = "center center">
+		            <md-input-container style = "width : 300px" class = "md-block">
+					  <label>Name of the Branch</label>
+					  <input type="text" required="" name = "name" ng-model = "theScope.currentBranch.name">
+					  <div ng-messages = "branchForm.name.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width : 300px" class = "md-block">
+					  <label>Address of the Branch</label>
+					  <input type="text" required="" name = "name" ng-model = "theScope.currentBranch.address">
+					  <div ng-messages = "branchForm.address.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+		            <md-input-container style = "width : 300px">
+					  <label>Office Landline</label>
+					  <input type="text" required name = "officeLandline" ng-model = "theScope.currentBranch.office_landline">
+					  <div ng-messages = "userBranch.email.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+					<div layout = "row" layout-align = "center center">
+						<md-button class = "md-primary" style = "font-size : 1.3em"
+						ng-click = "theScope.branchAction(theScope.dialog)" ng-disabled = "theScope.branchActionLoading">[[::theScope.dialogType]] Branch</md-button>
+						<md-progress-circular md-mode="[[theScope.branchActionLoading]]"></md-progress-circular>
+		            </div>
+				</div>
+			</form>
+		</md-dialog-content>
+    </md-dialog>
+</script>

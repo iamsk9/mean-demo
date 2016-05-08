@@ -19,6 +19,19 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 		});
 	}
 	getUsers();
+	CAService.getBranches().then(function(data) {
+		$scope.branches = data;
+		var branches = {};
+		for(var i = 0; i < $scope.branches.length; i++) {
+			branches[$scope.branches[i].id] = $scope.branches[i];
+		}
+		$scope.branches = branches;
+	}, function(err) {
+		$mdToast.show($mdToast.simple()
+		.textContent("Error occurred in getting Branches.")
+		.position("top right")
+		.hideDelay(5000));
+	});
 	function showDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
@@ -63,7 +76,8 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 			var payload = {
 				first_name : $scope.currentUser.first_name,
 				email : $scope.currentUser.email,
-				user_role : $scope.currentUser.user_role
+				user_role : $scope.currentUser.user_role,
+				branch : $scope.currentUser.branch
 			};
 			UserService.addUser(payload).then(function(){
 				$mdToast.show($mdToast.simple()

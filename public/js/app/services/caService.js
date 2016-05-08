@@ -284,6 +284,204 @@ Caweb.factory('CAService', function(Restangular, $q){
 				createFolderDefer.reject(err);
 			});
 			return createFolderDefer.promise;
+		},
+
+		getBranches: function() {
+			var branchesDefer = $q.defer();
+			Restangular.one('/branches').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					branchesDefer.resolve(data.data);
+				} else {
+					branchesDefer.reject();
+				}
+			}, function(err){
+				branchesDefer.reject(err);
+			})
+			return branchesDefer.promise;
+		},
+		createBranch : function(payload) {
+			var createBranchDefer = $q.defer();
+			Restangular.one('/branches').post('', payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					createBranchDefer.resolve(data.data);
+				} else {
+					createBranchDefer.reject(data);
+				}
+			}, function(err) {
+				createBranchDefer.reject(err);
+			});
+			return createBranchDefer.promise;
+		},
+		removeBranch : function(id) {
+			var removeBranchDefer = $q.defer();
+			Restangular.one('/branches/' + id).remove().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					removeBranchDefer.resolve(data.data);
+				} else {
+					removeBranchDefer.reject(data);
+				}
+			});
+			return removeBranchDefer.promise;
+		},
+		updateBranch : function(id, payload) {
+			var updateBranchDefer = $q.defer();
+			Restangular.one('/branches/' + id).patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateBranchDefer.resolve(data);
+				} else {
+					updateBranchDefer.reject(data);
+				}
+			}, function(err) {
+				updateBranchDefer.reject(err);
+			})
+			return updateBranchDefer.promise;
+		},
+		getTasks : function() {
+			var getTasksDefer = $q.defer();
+			Restangular.one('/tasks').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getTasksDefer.resolve(data.data);
+				} else {
+					getTasksDefer.reject(data);
+				}
+			}, function(err) {
+				getTasksDefer.reject(err);
+			});
+			return getTasksDefer.promise;
+		},
+		assignTask : function(payload) {
+			var assignTaskDefer = $q.defer();
+			Restangular.one('/task').post('', payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					assignTaskDefer.resolve(data);
+				} else {
+					assignTaskDefer.reject(data);
+				}
+			}, function(err) {
+				assignTaskDefer.reject(err);
+			});
+			return assignTaskDefer.promise;
+		},
+		updateTaskStatus : function(payload) {
+			var updateTaskStatusDefer = $q.defer();
+			Restangular.one('/taskStatus').patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateTaskStatusDefer.resolve(data);
+				} else {
+					updateTaskStatusDefer.reject(data);
+				}
+			}, function(err) {
+				updateTaskStatusDefer.reject(err);
+			});
+			return updateTaskStatusDefer.promise;
+		},
+		getTask : function(id) {
+			var taskDetailsDefer = $q.defer();
+			Restangular.one('/task/' + id).get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					taskDetailsDefer.resolve(data.data);
+				} else {
+					taskDetailsDefer.reject(data);
+				}
+			}, function(err) {
+				taskDetailsDefer.reject(err);
+			});
+			return taskDetailsDefer.promise;
+		},
+		getMasterWorks : function() {
+			var masterTasksDefer = $q.defer();
+			Restangular.one('/mastertasks').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					masterTasksDefer.resolve(data.data);
+				} else {
+					masterTasksDefer.reject(data);
+				}
+			}, function(err) {
+				masterTasksDefer.reject(err);
+			});
+			return masterTasksDefer.promise;
+		},
+		getObjectDiff : function(original, updated) {
+			var payload = {};
+			for(var i in updated) {
+				if(typeof(updated[i]) == 'object') {
+					if(updated[i] instanceof Array) {
+						var obj = {};
+						obj.added = updated[i].filter(function(el) {
+							for(var j=0;j < original[i].length;j++) {
+								if(angular.equals(original[i][j], el) || original[i][j].id == el.id) {
+									return false;
+								}
+							};
+							return true;
+						});
+						obj.updated = updated[i].filter(function(el) {
+							for(var j = 0;j < original[i].length;j++) {
+								if(!angular.equals(original[i][j], el) && original[i][j].id == el.id) {
+									return true;
+								}
+							}
+							return false;
+						});
+						obj.deleted = original[i].filter(function(el) {
+							for(var j = 0; j < updated[i].length; j++) {
+								if(angular.equals(updated[i][j], el) || updated[i][j].id == el.id) {
+									return false;
+								}
+							}
+							return true;
+						});
+						console.log(obj);
+						if(obj.added.length > 0 || obj.deleted.length > 0 || obj.updated.length > 0) {
+							payload[i] = obj;
+						}
+					} else {
+						if(angular.equals(updated[i], original[i])) {
+							payload[i] = updated[i];
+						}
+					}
+				} else if(updated[i] != original[i]){
+					payload[i] = updated[i];
+				}
+			}
+			return payload;
+		},
+		updateTask : function(id, payload) {
+			var updateTaskDefer = $q.defer();
+			Restangular.one('/task/' + id).patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateTaskDefer.resolve(data.data);	
+				} else {
+					updateTaskDefer.reject(data);
+				}
+			}, function(err) {
+				updateTaskDefer.reject(err);
+			});
+			return updateTaskDefer.promise;
+		},
+		getReqDocs : function(id) {
+			var getReqDocsDefer = $q.defer();
+			Restangular.one('/task/' + id + '/reqDocs').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getReqDocsDefer.resolve(data.data);
+				} else {
+					getReqDocsDefer.reject(data);
+				}
+			}, function(err) {
+				getReqDocsDefer.reject(err);
+			});
+			return getReqDocsDefer.promise;
+		},
+		removeTask : function(id) {
+			var removeTaskDefer = $q.defer();
+			Restangular.one('/task/' + id).remove().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					removeTaskDefer.resolve(data.data);
+				} else {
+					removeTaskDefer.reject(data);
+				}
+			});
+			return removeTaskDefer.promise;
 		}
 
 	}

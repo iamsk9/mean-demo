@@ -1,0 +1,90 @@
+<md-content class="md-padding" flex style = "width = 70%">
+	<div layout = "row">
+		<div class="crumbs-container">
+			<ul class="crumbs">
+				<li><a href="javascript:void(0)" ng-click = "back()">Tasks List</a></li>
+				<li class = "last"><a href="javascript:void(0)">Task #[[task.id]]</a></li>
+			</ul>
+		</div>
+		<h2 style = "text-align : center" flex>Task #[[task.id]]</h2>
+		<md-button class = "md-primary md-raised" ng-click = "updateTask()" style = "height:10px">Update Task</md-button>
+	</div>
+	<md-card>
+		<md-card-content>
+			<div layout = "column">
+				<div layout = "row" layout-align = "space-around center">
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Client Name</p>
+						<p class = "font_14">[[task.client_name]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Client Contact Number</p>
+						<p class = "font_14">[[task.contact_number]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Client Pan Card</p>
+						<p class = "font_14" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></p>
+						<p class = "font_14" ng-show = "task.pan_card">[[task.pan_card]]</p>
+					</div>
+				</div>
+				<md-divider></md-divider>
+				<div layout = "row" layout-align = "space-around center">
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Date Of Appointment</p>
+						<p class = "font_14">[[task.date_of_appointment]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Time Of Appointment</p>
+						<p class = "font_14">[[task.time_of_appointment]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Type Of Appointment</p>
+						<p class = "font_14">[[task.type_of_appointment]]</p>
+					</div>
+				</div>
+				<md-divider></md-divider>
+				<div layout = "row" layout-align = "space-around center">
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Task Status</p>
+						<p class = "font_14">[[task.task_status]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Task Description</p>
+						<p class = "font_14">[[task.task_description]]</p>
+					</div>
+				</div>
+				<md-divider></md-divider>
+				<div layout = "row" layout-align = "space-around center">
+					
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Assigned By</p>
+						<p class = "font_14">[[task.assigned_by_name]]</p>
+					</div>
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Assigned To</p>
+						<p class = "font_14">[[task.user_name]]</p>
+					</div>
+				</div>
+				<md-divider></md-divider>
+				<div layout = "row" layout-align = "space-around center">
+						<p class = "font_14 label">Works involved</p>
+						<div layout = "column" style = "width : 50%">
+							<p class = "font_14" ng-show = "task.works.length == 0">There are not works added to this task yet.</p>
+							<p class = "font_14" ng-repeat = "work in task.works">[[work.name]]</p>
+						</div>
+				</div>
+				<md-divider></md-divider>
+				<div layout = "row" layout-align = "space-around">
+					<p class = "font_14 label">Documents Status</p>
+					<div layout = "column" style = "width : 50%">
+						<p class = "font_14" ng-show = "reqDocs.length == 0">Add a task to View the checklist</p>
+						<div layout = "row" ng-repeat = "doc in reqDocs">
+							<p class = "font_14" style = "width : 80%">[[doc.doc_name]] [[doc.label]]</p>
+							<p style = "width : 20%;text-align : center"> - <span ng-show = "docStatus[doc.doc_id].status == 1">Submitted</span><span ng-hide = "docStatus[doc.doc_id].status == 1">Not Submitted</span></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</md-card-content>
+	</md-card>
+</md-content>

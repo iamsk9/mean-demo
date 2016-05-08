@@ -1,7 +1,7 @@
 var basepath = "/templates";
 
 var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ngMessages', 
-	'md.data.table', 'ngFileUpload']);
+	'md.data.table', 'ngFileUpload', 'mdPickers']);
 
 Caweb.constant('Tabs', [
 	'Dashboard',
@@ -10,7 +10,18 @@ Caweb.constant('Tabs', [
 	'Client Area',
 	'Download Count',
 	'Manage Users',
+	'Branches',
+	'Assign Task',
+	'Tasks',
 	'Reports'
+])
+.constant('TaskStatus', [
+	'Visit Pending',
+	'Checklist Pending',
+	'Checklist Done',
+	'Documents Submitted',
+	'Waiting For Approval',
+	'Completed'
 ]);
 
 Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $interpolateProvider){
@@ -59,6 +70,31 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         	templateUrl : basepath + "/_users.html",
         	controller : "usersController"
         })
+        .when('/branches', {
+        	templateUrl : basepath + "/_branches.html",
+        	controller : "branchesController"
+        })
+        .when('/tasks', {
+        	templateUrl : basepath + "/_tasks.html",
+        	controller : "tasksController"
+        })
+        .when('/task/:taskId', {
+        	templateUrl : basepath + "/_viewTask.html",
+        	controller : "viewTaskController"
+        })
+        .when('/task/:taskId/edit', {
+        	templateUrl : basepath + "/_editTask.html",
+        	controller : "editTaskController"
+        })
+        .when('/assigntask', {
+        	templateUrl : basepath + "/_assignTask.html",
+        	controller : "assignTaskController",
+        	resolve : {
+        		access : ['UserService' , function(UserService) {
+        			return UserService.isAdmin();
+        		}]
+        	}
+        })
         .otherwise('/dashboard');
 });
 
@@ -71,6 +107,13 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location){
 	}
 	$rootScope.openUserMenu = function($mdOpenMenu, ev) {
 		$mdOpenMenu(ev);
+	}
+	$rootScope.toggleNotifications = function(event) {
+		if($rootScope.notificationsOpen) {
+			$rootScope.notificationsOpen = false;
+		} else {
+			$rootScope.notificationsOpen = true;
+		}
 	}
 	$rootScope.logout = function(){
 		UserService.logout().then(function(){
@@ -106,6 +149,12 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location){
 			case $rootScope.tabsMap['Download Count'] : $location.path('/downloadCount');
 				break;
 			case $rootScope.tabsMap['Manage Users'] : $location.path('/users');
+				break;
+			case $rootScope.tabsMap['Branches'] : $location.path('/branches');
+				break;
+			case $rootScope.tabsMap['Assign Task'] : $location.path('/assigntask');
+				break;
+			case $rootScope.tabsMap['Tasks'] : $location.path('/tasks');
 				break;
 			case $rootScope.tabsMap['Reports'] : $location.path('/reports');
 				break;

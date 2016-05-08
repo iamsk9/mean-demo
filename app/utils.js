@@ -7,7 +7,7 @@ exports.runQuery = function(connection, query, params, notRelease) {
 	if(!params) {
 		params = [];
 	}
-	connection.query(query, params, function(err, results, fields){
+	var temp = connection.query(query, params, function(err, results, fields){
 		if(!notRelease) {
 			connection.release();	
 		}
@@ -20,5 +20,6 @@ exports.runQuery = function(connection, query, params, notRelease) {
 		queryDefer.reject(err);
 		connection.release;
 	});
+	console.log(temp.sql);
 	return queryDefer.promise;
 }

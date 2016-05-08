@@ -1,0 +1,125 @@
+<md-content class="md-padding" flex>
+	<md-card>
+		<md-card-content>
+		    <form name = "assignTaskForm">
+		    	<fieldset>
+		    		<div layout = "column">
+			    		<h2 style = "text-align:center">Assign a New Task</h2>
+			    		<div layout = "row" layout-align = "space-around center" ng-show = "!otherClient">
+			    			<p style = "margin-top : 0px">Select Client*</p>
+				            <md-autocomplete
+				            	  md-floating-label="Select Client"
+						          md-selected-item="task.client"
+						          md-search-text="searchText"
+						          md-selected-item-change="selectedClientChanged(item)"
+						          md-items="item in querySearch(searchText)"
+						          md-item-text="item.name"
+						          md-min-length="0"
+						          placeholder="Select a client"
+						          md-menu-class="autocomplete-custom-template" style = "width : 70%" 
+						          md-input-name="client"
+						          required>
+						        <md-item-template>
+						          <span class="item-title">
+						            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> #[[item.id]] - [[item.company_name]] - [[item.name]] - [[item.company_pan_number]] </span>
+						          </span>
+						        </md-item-template>
+						        <md-not-found>
+				    				No clients found.
+								</md-not-found>
+								<div ng-messages="assignTaskForm.client.$error">
+									<div ng-message="required">This is required</div>
+								</div>
+						    </md-autocomplete>
+						</div>
+			    		<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
+			    			<p style = "margin-top : 0px">Client Name*</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" required="" name = "clientName" ng-model = "task.clientName" ng-disabled = "!otherClient">
+							  <div ng-messages = "assignTaskForm.clientName.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
+							<p style = "margin-top : 0px">Contact Number*</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" required="" name = "contactNumber" ng-model = "task.contactNumber" ng-disabled = "!otherClient">
+							  <div ng-messages = "assignTaskForm.contactNumber.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "start center" class = "margin_left_20">
+					     	<md-switch class="md-primary" aria-label="Not a Registered Client" ng-model="otherClient" ng-change = "clientTypeChanged()">
+						    	Not a Registered Client
+							</md-switch>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Select Branch*</p>
+				            <md-input-container style = "width : 70%">
+								<md-select name = 'branch' ng-model="task.branch" ng-change = "branchChanged()" required>
+									<md-option ng-repeat="branch in branches" value="[[branch.id]]">
+									[[branch.name]]
+									</md-option>
+								</md-select>
+								<div ng-messages = "assignTaskForm.branch.$error">
+								  	<div ng-message = "required">This is required</div>
+								  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Select Employee*</p>
+							<md-input-container style = "width : 70%">
+								<md-select name = "employee" ng-model="task.assignee" required>
+									<md-option ng-repeat="emp in employees" value="[[emp.id]]">
+									[[emp.first_name]]
+									</md-option>
+								</md-select>
+								<div ng-messages = "assignTaskForm.employee.$error">
+								  	<div ng-message = "required">This is required</div>
+								  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Task Description*</p>
+							<md-input-container style = "width : 70%">
+							  <input type="text" name = "taskDescription" ng-model = "task.description" required>
+							  <div ng-messages = "assignTaskForm.taskDescription.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Date of Appointment</p>
+				            <md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" name = "dateOfAppointment" ng-model = "task.dateOfAppointment" ng-focus = "showDatePicker()">
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Time Of Appointment</p>
+							<md-input-container style = "width : 70%" class = "md-block">
+							  <input type="text" name = "timeOfAppointment" ng-model = "task.timeOfAppointment" ng-focus = "showTimePicker()">
+							</md-input-container>
+						</div>
+						<div layout = "row" ng-if = "reset" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Type Of Appointment</p>
+							<md-radio-group layout = "row" layout-align = "space-around center" style = "width : 70%" ng-model="$parent.task.typeOfAppointment">
+								<md-radio-button value="Personal Conversation" aria-label="Personal Conversation">
+								  Personal Conversation
+								</md-radio-button>
+								<md-radio-button value="Telephonic Conversation" aria-label="Telephonic Conversation">
+								  Telephonic Conversation
+								</md-radio-button>
+							</md-radio-group>
+						</div>
+						<div layout = "row" layout-align = "center center">
+							<md-button class = "md-primary md-raised margin_top_20" ng-click = "assignTask()" ng-disabled = "assignTaskLoading" style = "width : 150px">Assign Task</md-button>
+							<md-progress-circular md-mode="[[assignTaskLoading]]"></md-progress-circular>
+			            </div>
+					</div>
+		    	</fieldset>
+			</form>
+		</md-card-content>
+	</md-card>
+</md-content>

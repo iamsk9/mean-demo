@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css"/>
     <link href="bower_components/angular-material-data-table/dist/md-data-table.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/bower_components/mdPickers/dist/mdPickers.min.css"/>
     <link rel="stylesheet" href="/css/style.css"/>
 
     <script src="/bower_components/angular/angular.js"></script>
@@ -25,7 +26,9 @@
     <script type="text/javascript" src="/bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
     <script type="text/javascript" src="/bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <script type="text/javascript" src="/js/plugins/pdfobject.js"></script>
-    
+    <script type="text/javascript" src="/bower_components/moment/moment.js"></script>
+    <script type="text/javascript" src="/bower_components/mdPickers/dist/mdPickers.min.js"></script>
+
     <script src = "/js/app/app.js"></script>
     <script type="text/javascript" src = "/js/app/services/userService.js"></script>
     <script type="text/javascript" src = "/js/app/services/caService.js"></script>
@@ -37,6 +40,14 @@
     <script type="text/javascript" src = "/js/app/controllers/downloadCountController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/reportsController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/usersController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/branchesController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/assignTaskController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/tasksController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/viewTaskController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/editTaskController.js"></script>
+
+
+
     <style type="text/css">
         /**
          * Hide when Angular is not yet loaded and initialized
@@ -62,6 +73,15 @@
 	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px">
 			<h2 style = "margin-left : 2em">Team Consultancy</h2>
 			<span flex></span>
+            <md-button class="md-primary" ng-click = "toggleNotifications($event)">
+                <md-icon md-menu-origin md-font-icon="fa-bell-o" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
+                <span id="notification_count">3</span>
+            </md-button>
+            <div id="notificationContainer" ng-show = "notificationsOpen">
+                <div id="notificationTitle">Notifications</div>
+                <div id="notificationsBody" class="notifications"></div>
+                <div id="notificationFooter"><a href="#">See All</a></div>
+            </div>
 			<md-menu>
 				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
 				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
@@ -85,7 +105,7 @@
 	    </md-toolbar>
     </header>
     <main class = "md-padding" layout = "column" flex>
-    	<md-tabs md-stretch-tabs md-selected="selectedTab">
+    	<md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
 			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Client Area')"></md-tab>
 		</md-tabs>
     	<div ng-view flex></div>

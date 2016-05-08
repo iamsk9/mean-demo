@@ -21,6 +21,10 @@ var DocsController = require('./controllers/docsController.js');
 
 var UserController = require('./controllers/userController.js');
 
+var BranchesController = require('./controllers/branchesController.js');
+
+var TaskController = require('./controllers/taskController.js');
+
 module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/', IndexController.handle);
@@ -70,6 +74,32 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/user/:userId', UserController.updateUser);
 
 	apiRoutes.post('/createDirectory', DocsController.createDirectory);
+
+	apiRoutes.get('/branches', BranchesController.getBranches);
+
+	apiRoutes.post('/branches', BranchesController.createBranch);
+
+	apiRoutes.get('/branches/:branchId', BranchesController.getBranch);
+
+	apiRoutes.patch('/branches/:branchId', BranchesController.updateBranch);
+
+	apiRoutes.delete('/branches/:branchId', BranchesController.removeBranch);
+
+	apiRoutes.post('/task', TaskController.assignTask);
+
+	apiRoutes.get('/tasks', TaskController.getTasks);
+
+	apiRoutes.get('/task/:taskId', TaskController.getTask);
+
+	apiRoutes.get('/mastertasks', TaskController.getMasterTasks);
+
+	apiRoutes.patch('/task/:taskId', TaskController.updateTask);
+
+	apiRoutes.get('/task/:taskId/reqDocs', TaskController.getReqDocs);
+
+	apiRoutes.patch('/taskStatus', TaskController.updateTaskStatus);
+
+	apiRoutes.delete('/task/:taskId', TaskController.removeTask);
 
 	// apiRoutes.post('updateMasterAttributes', attributesController.updateAttributes);
 
