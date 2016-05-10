@@ -257,12 +257,11 @@ border: 1px solid rgba(100, 100, 100, .4);
 -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
 overflow: visible;
 position: absolute;
-top: 50px;
+top: 58px;
 margin-left: -200px;
 width: 400px;
 z-index: -1;
 }
-// Popup Arrow
 #notificationContainer:before {
 content: '';
 display: block;
@@ -273,15 +272,15 @@ color: transparent;
 border: 10px solid black;
 border-color: transparent transparent white;
 margin-top: -20px;
-margin-left: 10px;
+margin-left: 135px;
 }
 #notificationTitle
 {
 font-weight: bold;
+color : #565656;
 padding: 8px;
 font-size: 13px;
 background-color: #ffffff;
-position: fixed;
 z-index: 1000;
 width: 384px;
 border-bottom: 1px solid #dddddd;
