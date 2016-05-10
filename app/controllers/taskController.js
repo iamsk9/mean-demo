@@ -1,5 +1,5 @@
 
-var TaskHelper = require('../helpers/TaskHelper.js');
+var TaskHelper = require('../helpers/taskHelper.js');
 
 exports.getTasks = function(req,res){
 	TaskHelper.getTasks(req.user).then(function(result){
