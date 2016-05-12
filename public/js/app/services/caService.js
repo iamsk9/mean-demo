@@ -482,6 +482,50 @@ Caweb.factory('CAService', function(Restangular, $q){
 				}
 			});
 			return removeTaskDefer.promise;
+		},
+		getNotifications : function(page) {
+			var getNotificationsDefer = $q.defer();
+			Restangular.one('/notifications').get({page : page}).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getNotificationsDefer.resolve(data.data);
+				} else {
+					getNotificationsDefer.reject(data);
+				}
+			});
+			return getNotificationsDefer.promise;
+		},
+		markAllNotificationsAsRead : function() {
+			var markAllNotificationsAsReadDefer = $q.defer();
+			Restangular.one('/notifications/read').patch().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					markAllNotificationsAsReadDefer.resolve(data.data);
+				} else {
+					markAllNotificationsAsReadDefer.reject(data);
+				}
+			});
+			return markAllNotificationsAsReadDefer.promise;
+		},
+		markNotificationAsRead : function(id) {
+			var markNotificationAsReadDefer = $q.defer();
+			Restangular.one('/notifications/read/' + id).patch().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					markNotificationAsReadDefer.resolve(data.data);
+				} else {
+					markNotificationAsReadDefer.reject(data);
+				}
+			});
+			return markNotificationAsReadDefer.promise;
+		},
+		getNotificationsCount : function() {
+			var getNotificationsCountDefer = $q.defer();
+			Restangular.one('/notificationscount').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getNotificationsCountDefer.resolve(data.data);
+				} else {
+					getNotificationsCountDefer.reject(data);
+				}
+			});
+			return getNotificationsCountDefer.promise;
 		}
 
 	}

@@ -25,6 +25,8 @@ var BranchesController = require('./controllers/branchesController.js');
 
 var TaskController = require('./controllers/taskController.js');
 
+var NotificationsController = require('./controllers/notificationsController.js');
+
 module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/', IndexController.handle);
@@ -101,6 +103,12 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.delete('/task/:taskId', TaskController.removeTask);
 
-	// apiRoutes.post('updateMasterAttributes', attributesController.updateAttributes);
+	apiRoutes.get('/notifications', NotificationsController.getNotifications);
+
+	apiRoutes.get('/notificationscount', NotificationsController.getNotificationsCount);
+
+	apiRoutes.patch('/notifications/read', NotificationsController.markAllNotificationsAsRead);
+
+	apiRoutes.patch('/notifications/read/:notificationId', NotificationsController.markNotificationAsRead);
 
 }

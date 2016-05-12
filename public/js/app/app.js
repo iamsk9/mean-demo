@@ -98,13 +98,71 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         .otherwise('/dashboard');
 });
 
-Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location){
+Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
 	$rootScope.user = UserService.getUserDetails();
 	$rootScope.tabs = Tabs;
 	$rootScope.tabsMap = {};
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
 	}
+    var Notifications = function() {
+        this.loadedPages = {};
+        /** @type {number} Total number of items. */
+        this.numItems = 0;
+        /** @const {number} Number of items to fetch per request. */
+        this.PAGE_SIZE = 10;
+        this.fetchNumItems_();
+    };
+        // Required.
+        Notifications.prototype.getItemAtIndex = function(index) {
+          var pageNumber = Math.ceil(index / this.PAGE_SIZE)?Math.ceil(index / this.PAGE_SIZE):1;
+          var page = this.loadedPages[pageNumber];
+          if (page) {
+            return page[index % this.PAGE_SIZE];
+          } else if (page !== null) {
+            this.fetchPage_(pageNumber);
+          }
+        };
+        // Required.
+        Notifications.prototype.getLength = function() {
+          return this.numItems;
+        };
+        Notifications.prototype.fetchPage_ = function(pageNumber) {
+          // Set the page to null so we know it is already being fetched.
+          this.loadedPages[pageNumber] = null;
+          var obj = this;
+          // For demo purposes, we simulate loading more items with a timed
+          // promise. In real code, this function would likely contain an
+          // $http request.
+            CAService.getNotifications(pageNumber).then(function(data) {
+                obj.loadedPages[pageNumber] = data;
+            });
+        };
+        Notifications.prototype.fetchNumItems_ = function() {
+          // For demo purposes, we simulate loading the item count with a timed
+          // promise. In real code, this function would likely contain an
+          // $http request.
+          var obj = this;
+          CAService.getNotificationsCount().then(function(data) {
+                obj.numItems = data[0].totalCount;
+                $rootScope.unreadNotificationsCount = data[0].unreadCount;
+            });
+        };
+	$rootScope.notifications = new Notifications();
+    $rootScope.markAllNotificationsAsRead = function() {
+    	CAService.markAllNotificationsAsRead().then(function() {
+    		angular.forEach($rootScope.notifications.notifications, function(notification) {
+    			$rootScope.unreadNotificationsCount = 0;
+    			notification.is_read = 1;
+    		});
+    	});
+    }
+    $rootScope.markNotificationAsRead = function(notification) {
+    	CAService.markNotificationAsRead(notification.id).then(function() {
+    		$rootScope.unreadNotificationsCount -= 1;
+    		notification.is_read = 1;
+    	});
+    }
 	$rootScope.openUserMenu = function($mdOpenMenu, ev) {
 		$mdOpenMenu(ev);
 	}
