@@ -33,6 +33,9 @@ Caweb.factory('CAService', function(Restangular, $q){
 		getClients : function(search) {
 			var getClientsDefer = $q.defer();
 			var payload = {};
+			if(search.clientId && search.clientId !== "") {
+				payload.client_id = search.clientId;
+			}
 			if(search.companyName && search.companyName !== "") {
 				payload.company_name = search.companyName;
 			}

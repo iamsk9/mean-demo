@@ -68,6 +68,12 @@
   </head>
 
   <body ng-app="Caweb" layout="column" layout-fill style = "height:auto">
+    <div class = "app-loader" ng-show = "showAppLoader">
+        <div layout = "column" layout-align = "center center" class = "spinner">
+            <md-progress-circular md-mode="indeterminate" md-diameter = "128px"></md-progress-circular>
+        </div>
+        <div class = "overlay"></div>
+    </div>
   <div layout = "column" flex>
   	<header>
 	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px">

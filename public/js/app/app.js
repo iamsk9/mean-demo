@@ -191,6 +191,12 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 
 	}
 
+    $rootScope.$on('$routeChangeStart', function() {
+        $rootScope.showAppLoader = true;
+    });
+    $rootScope.$on('$routeChangeSuccess', function() {
+        $rootScope.showAppLoader = false;
+    });
 	$rootScope.switchTab = function(index) {
 		if($rootScope.user.role == "CLIENT") {
 			index = $rootScope.tabsMap['Client Area'];
