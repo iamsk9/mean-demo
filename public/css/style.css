@@ -1,7 +1,18 @@
 md-toast {
   position : fixed !important;
 }
-
+.app-loader {
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 1001;
+	width: 100vw;
+	height: 100vh;
+}
+.app-loader .spinner{
+	width : 100%;
+	height : 100%;
+}
 .font_16 {
 	font-size : 16px !important;
 }
