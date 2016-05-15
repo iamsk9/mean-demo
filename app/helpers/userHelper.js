@@ -67,7 +67,7 @@ exports.checkUserExists = checkUserExists;
 exports.addUser = function(request) {
 	var addUserDefer = q.defer();
 	var insertUser = "INSERT INTO users (first_name, last_name, email, user_role, is_verified, created_at, modified_at, \
-		reset_password_hash, request_password_hash_active, branch) VALUES (?,?,?,?,?,?,?,?,?)";
+		reset_password_hash, request_password_hash_active, branch) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
 		checkUserExists(connection, request.email).then(function(data) {
 			console.log("asdgasdg");
