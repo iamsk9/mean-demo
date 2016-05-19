@@ -16,6 +16,7 @@ exports.assignTask = function(request, user) {
 		type_of_appointment : request.type_of_appointment,
 		task_status : "Visit Pending",
 		assigned_by : user.id,
+		remarks : request.remarks,
 		created_at : moment().format('YYYY-MM-DD HH:mm:ss'),
 		modified_at : moment().format('YYYY-MM-DD HH:mm:ss'),
 	};
@@ -53,7 +54,7 @@ exports.updateTask = function(id, requestParams, user) {
 	var now = moment().format('YYYY-MM-DD HH:mm:ss');
 	var taskParams = {};
 	var taskParamsList = ['client_id', 'client_name', 'contact_number', 'pan_card', 
-	'type_of_appointment', 'task_description'];
+	'type_of_appointment', 'task_description', 'remarks'];
 	var getTaskQuery = "SELECT * from tasks where id = ?";
 	var connection;
 	db.getConnection().then(function(conn) {
@@ -233,7 +234,7 @@ exports.updateTask = function(id, requestParams, user) {
 
 exports.getTasks = function(user) {
 	var getTasksDefer = q.defer();
-	var query = "SELECT t.id, t.client_id, t.client_name, t.contact_number, t.pan_card, t.user_id, t.task_description, t.date_of_appointment, t.time_of_appointment, t.task_status, c.name as primary_client_name, c.phone_number as client_contact_number, c.company_pan_number as client_pan_card, t.assigned_by, u.first_name as assigned_by_name\
+	var query = "SELECT t.id, t.client_id, t.client_name, t.contact_number, t.pan_card, t.user_id, t.task_description, t.date_of_appointment, t.time_of_appointment, t.task_status, t.remarks, c.name as primary_client_name, c.phone_number as client_contact_number, c.company_pan_number as client_pan_card, t.assigned_by, u.first_name as assigned_by_name\
 	from tasks t LEFT JOIN clients c on t.client_id = c.id\
 	 INNER JOIN users u on t.assigned_by = u.id \
 	 where (t.user_id = ? or t.assigned_by = ? ) and t.deleted_at is NULL";
@@ -264,7 +265,7 @@ exports.getTasks = function(user) {
 var getTask = function(id, user) {
 	var getTaskDefer = q.defer();
 	var query = "SELECT t.id, t.client_id, t.client_name, t.contact_number, t.pan_card, t.user_id, \
-	t.task_description, t.date_of_appointment, t.time_of_appointment, t.type_of_appointment, t.task_status, \
+	t.task_description, t.date_of_appointment, t.time_of_appointment, t.type_of_appointment, t.task_status, t.remarks,\
 	c.name as primary_client_name, c.phone_number as client_contact_number, c.company_pan_number as client_pan_card\
 	, t.assigned_by, au.first_name as assigned_by_name, uu.first_name as user_name, uu.branch as branch, tw.work_id, mt.task_name as work_name, \
 	tds.doc_id, md.name as document_name, mtdm.custom_label as label, tds.status as document_status \
@@ -291,6 +292,7 @@ var getTask = function(id, user) {
 				date_of_appointment : moment(results[0].date_of_appointment).format('DD-MM-YYYY'),
 				time_of_appointment : moment(results[0].time_of_appointment, 'HH:mm').format('hh:mm A'),
 				type_of_appointment : results[0].type_of_appointment,
+				remarks: results[0].remarks,
 				task_status : results[0].task_status,
 				assigned_by : results[0].assigned_by,
 				assigned_by_name : results[0].assigned_by_name,

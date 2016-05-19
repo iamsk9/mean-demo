@@ -8,7 +8,6 @@ Caweb.constant('Tabs', [
 	'Add Client',
 	'Search Client',
 	'Client Area',
-	'Download Count',
 	'Manage Users',
 	'Branches',
 	'Assign Task',
@@ -17,6 +16,8 @@ Caweb.constant('Tabs', [
 ])
 .constant('TaskStatus', [
 	'Visit Pending',
+    'Visit Done',
+    'No Response',
 	'Checklist Pending',
 	'Checklist Done',
 	'Documents Submitted',

@@ -65,7 +65,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	}
 
 	$scope.getName = function(item) {
-		return "#" + item.id + " - " + item.name;
+		return "#" + item.id + " - " + item.company_name;
 	}
 
 	$scope.selectedClientChanged = function(client) {

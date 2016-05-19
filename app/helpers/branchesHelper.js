@@ -37,7 +37,7 @@ exports.updateBranch = function(id, requestParams) {
 
 exports.getBranches = function() {
 	var getBranchesDefer = q.defer();
-	var query = "SELECT id, name, address, office_landline from branches where deleted_at is NULL";
+	var query = "SELECT id, name, address, office_landline,mobile_number from branches where deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, query);
 	}).then(function(results) {
@@ -50,7 +50,7 @@ exports.getBranches = function() {
 
 exports.getBranch = function(id) {
 	var getBranchDefer = q.defer();
-	var getBranch = "SELECT id, name, address, office_landline from branches where id = ? and deleted_at is NULL";
+	var getBranch = "SELECT id, name, address, office_landline,mobile_number from branches where id = ? and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, getbranch, [id]);
 	}).then(function(results) {

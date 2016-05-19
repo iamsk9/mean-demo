@@ -65,6 +65,13 @@
 						<p class = "font_14">[[task.user_name]]</p>
 					</div>
 				</div>
+				<div layout = "row" layout-align = "space-around center">
+					<div layout = "column" layout-align = "center center" style = "width : 200px">
+						<p class = "font_14 label">Remarks</p>
+						<p class = "font_14" ng-hide = "task.remarks"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></p>
+						<p class = "font_14" ng-show = "task.remarks">[[task.remarks]]</p>
+					</div>
+				</div>
 				<md-divider></md-divider>
 				<div layout = "row" layout-align = "space-around center">
 						<p class = "font_14 label">Works involved</p>

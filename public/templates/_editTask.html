@@ -145,6 +145,12 @@
 							</md-radio-group>
 						</div>
 						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Remarks</p>
+							<md-input-container style = "width : 70%" class = "md-block">
+							  <textarea name = "remarks" ng-model = "task.remarks" md-maxlength="150" rows="5" md-select-on-focus></textarea>
+							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
 							<p>Works Involved</p>
 							<md-chips ng-model="task.works" md-autocomplete-snap
 				              md-require-match="true" style = "width : 70%">

@@ -9,6 +9,7 @@
 	                    <th md-column class = "font_18 center" style = "width : 200px">Name</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Address</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Office Landline</th>
+	                   	<th md-column class = "font_18 center" style = "width : 200px">Mobile Number</th>
 	                    <th md-column class = "font_18 center" style = "width : 100px">Action</th>
 	                </tr>
 	            </thead>
@@ -18,6 +19,7 @@
 		                <td md-cell class = "font_16 center">[[branch.name]]</td>
 		                <td md-cell class = "font_16 center">[[branch.address]]</td>
 		              	<td md-cell class = "font_16 center">[[branch.office_landline]]</td>
+		             	<td md-cell class = "font_16 center">[[branch.mobile_number]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateBranchDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveBranchDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
 		            </tr>
 		            <tr md-row ng-show = "branches.length == 0">
@@ -62,7 +64,14 @@
 		            <md-input-container style = "width : 300px">
 					  <label>Office Landline</label>
 					  <input type="text" required name = "officeLandline" ng-model = "theScope.currentBranch.office_landline">
-					  <div ng-messages = "userBranch.email.$error">
+					  <div ng-messages = "userBranch.officeLandline.$error">
+					  	<div ng-message = "required">This is required</div>
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width : 300px">
+					  <label>Mobile Number</label>
+					  <input type="text" required name = "mobileNumber" ng-model = "theScope.currentBranch.mobile_number">
+					  <div ng-messages = "userBranch.mobileNumber.$error">
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>

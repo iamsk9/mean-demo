@@ -37,6 +37,11 @@
 					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Alt Phone Number </p> <p flex = "70"> - [[clientDetails.alt_phone_number]]</p></div>
 					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Pan Card </p> <p flex = "70"> - [[clientDetails.company_pan_number]]</p></div>
 				</div>
+				<div layout = "column">
+					<div layout = "row" layout-align = "end center">
+						<md-button class = "md-primary" ng-click = "theScope.createFolder()" ng-disabled = "theScope.folderLoading">Block Client</md-button>
+					</div>
+				</div>
 			</div>
 			<div layout = "column" class = "margin_left_20" flex = "70">
 				<div layout = "row">
