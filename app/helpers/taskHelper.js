@@ -4,7 +4,28 @@ var db = require('../../db');
 
 var moment = require('moment');
 
+var config = require('../../config/config');
+
 var utils = require('../utils');
+
+var emailer = require('../emailer');
+
+function sendEmail(user_id, details) {
+	var userQuery = "SELECT * from users where user_id = ?";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, userQuery, [user_id]);
+	}).then(function(results) {
+		if(results.length > 0) {
+			var user = results[0];
+			emailer.send('public/templates/_notificationTemplate.html', {
+				name : user.first_name,
+				url : config.domain + '/#/task/' + details.task_id
+			}, user.email, details.description);
+		}
+	}).catch(function(err) {
+		console.log(err);
+	});
+}
 
 exports.assignTask = function(request, user) {
 	var assignTaskDefer = q.defer();
@@ -40,6 +61,7 @@ exports.assignTask = function(request, user) {
 	}).then(function(result) {
 		notification.task_id = result.insertId;
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
+		sendEmail(notification.user_id, notification);
 		return utils.runQuery(connection, newNotification, notification);
 	}).then(function(results) {
 		assignTaskDefer.resolve();
