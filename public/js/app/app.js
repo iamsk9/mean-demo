@@ -145,7 +145,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
           // $http request.
           var obj = this;
           CAService.getNotificationsCount().then(function(data) {
-                obj.numItems = data[0].totalCount;
+                obj.numItems = data[0].unreadCount;
                 $rootScope.unreadNotificationsCount = data[0].unreadCount;
             });
         };
