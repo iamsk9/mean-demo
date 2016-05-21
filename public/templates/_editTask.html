@@ -169,7 +169,10 @@
 						    </md-chips>
 						</div>
 						<div layout = "row" layout-align = "space-around" layout-wrap flex class = "margin_top_40">
-							<p>Documents status</p>
+							<div layout = "column">
+								<p>Documents status</p>
+								<a href = "javascript:void(0)" ng-click = "selectAllDocuments()" ng-show = "reqDocs.length > 0">Select All</a>
+							</div>
 							<p ng-show = "reqDocs.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
 							<div style = "width : 70%" layout = "column" ng-show = "reqDocs.length > 0">
 								<md-checkbox ng-repeat = "doc in reqDocs" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)">[[doc.doc_name]] [[doc.label]]</md-checkbox>

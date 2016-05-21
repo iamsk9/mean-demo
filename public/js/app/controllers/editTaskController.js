@@ -133,6 +133,11 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	$scope.back = function() {
 		$location.path('/tasks');
 	}
+	$scope.selectAllDocuments = function() {
+		for(var i = 0;i <= $scope.reqDocs.length;i++) {
+			$scope.docStatus[$scope.reqDocs[i].doc_id].status = 1;
+		}
+	}
 	$scope.updateTask = function(goBack) {
 		var payload = CAService.getObjectDiff(originalTask, $scope.task);
 		console.log(payload);
