@@ -13,6 +13,8 @@ var config = require('../../config/config');
 
 var bcrypt = require('bcrypt-nodejs');
 
+var utils  = require('../utils');
+
 var SALT_WORK_FACTOR = 19204;
 
 function generateHash(string) {
@@ -59,7 +61,7 @@ exports.addClient = function(req) {
 	var addClientDeferred = q.defer();
 	var insertUser = "INSERT INTO users (first_name, email, user_role, created_at, modified_at, is_verified, reset_password_hash, request_password_hash_active) VALUES (?,?,?,?,?,?,?,?)";
 	var insertClient = "INSERT into clients (user_id, name, company_name, email, phone_number, \
-		alt_phone_number, company_pan_number, created_at, modified_at) VALUES (?,?,?,?,?,?,?,?,?)";
+		alt_phone_number, company_pan_number, created_at, modified_at, status) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 	db.getConnection().then(function(connection) {
 		UserHelper.checkUserExists(connection, req.email).then(function() {
@@ -84,7 +86,7 @@ exports.addClient = function(req) {
 						connection.query(insertClient, [result.insertId, req.client_name, req.company_name,
 							req.email, req.phone_number, req.alt_phone_number?req.alt_phone_number:null, 
 							req.company_pan_number, moment().format('YYYY-MM-DD HH:mm:ss'), 
-							moment().format('YYYY-MM-DD HH:mm:ss')], function(err, results) {
+							moment().format('YYYY-MM-DD HH:mm:ss'), 'ACTIVE'], function(err, results) {
 							if(err) {
 								addClientDeferred.reject(err);
 								return;
@@ -349,5 +351,18 @@ exports.getClientByUserId = function(id) {
 		getClientDetailsDefer.reject(err);
 	});
 	return getClientDetailsDefer.promise;
+}
+
+exports.updateClientStatus = function(clientId, status) {
+	var updateClientStatusDefer = q.defer();
+	var query = "UPDATE clients set status = ? where id = ?";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, query, [status, clientId]);
+	}).then(function(results) {
+		updateClientStatusDefer.resolve()
+	}).catch(function(err) {
+		updateClientStatusDefer.reject(err);
+	});
+	return updateClientStatusDefer.promise;
 }
 

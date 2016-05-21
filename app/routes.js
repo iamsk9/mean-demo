@@ -111,4 +111,5 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/notifications/read/:notificationId', NotificationsController.markNotificationAsRead);
 
+	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
 }

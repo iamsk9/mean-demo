@@ -529,6 +529,17 @@ Caweb.factory('CAService', function(Restangular, $q){
 				}
 			});
 			return getNotificationsCountDefer.promise;
+		},
+		updateClientStatus : function(clientId, status) {
+			var updateClientStatusDefer = $q.defer();
+			Restangular.one('/client/' + clientId + '/status').patch({status : status}).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateClientStatusDefer.resolve(data.data);
+				} else {
+					updateClientStatusDefer.reject(data);
+				}
+			});
+			return updateClientStatusDefer.promise;
 		}
 
 	}

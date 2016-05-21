@@ -20,6 +20,9 @@ LoginApp.controller('loginController', function($scope, loginService, $mdToast) 
 				} else if(err.errorCode == 1011) {
 					$scope.loginForm.password.$error.incorrect = true;
 					$scope.loginForm.password.$invalid = true;
+				} else if(err.errorCode == 1029) {
+					$scope.loginForm.password.$error.clientBlocked = true;
+					$scope.loginForm.password.$invalid = true;
 				} else if(err.errorCode == 1014) {
 					$scope.loginForm.password.$error.serverError = true;
 					$scope.loginForm.password.$invalid = true;

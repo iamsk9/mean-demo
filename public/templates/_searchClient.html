@@ -38,6 +38,7 @@
 	                    <th md-column class = "font_18 center" style = "width : 200px">Client Name</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Email</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Pan Card Number</th>
+	                   	<th md-column class = "font_18 center" style = "width : 100px">Status</th>
 	                    <th md-column class = "font_18 center" style = "width : 100px">Action </th>
 	                </tr>
 	            </thead>
@@ -51,6 +52,7 @@
 		                <td md-cell class = "font_16 center">[[client.name]]</td>
 		                <td md-cell class = "font_16 center">[[client.email]]</td>
 		                <td md-cell class = "font_16 center">[[client.company_pan_number]]</td>
+		              	<td md-cell class = "font_16 center">[[client.status]]</td>
 		                <td md-cell class = "font_16 center"><md-button class = "md-primary" ng-click = "openClient(client)">
 		                    Open
 		                </md-button></td>

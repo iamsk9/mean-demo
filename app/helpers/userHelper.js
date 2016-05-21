@@ -183,7 +183,8 @@ exports.updateUser = function(id, requestParams) {
 exports.authenticateUser = function(req) {
 	var authenticateUserDefer = q.defer();
 	db.getConnection().then(function(connection) {
-		var query = 'SELECT * from users WHERE email = ? and deleted_at is NULL';
+		var query = 'SELECT u.id as id, c.id as client_id, c.status as status, u.user_role, u.first_name, u.last_name, u.email, u.password \
+		 from users u LEFT JOIN clients c on u.id = c.user_id WHERE u.email = ? and u.deleted_at is NULL';
 		console.log(req.body.email);
 		connection.query(query, [req.body.email], function(err, results){
 			if(err) {
@@ -194,6 +195,12 @@ exports.authenticateUser = function(req) {
 			console.log(results);
 			if(results.length > 0) {
 				var user = results[0];
+				if(user.status == 'BLOCKED') {
+					console.log("inside this");
+					authenticateUserDefer.reject({errorCode : 1029});
+					return;
+				}
+				console.log("askdjgasd");
 				comparePassword(req.body.password, user.password).then(function(isMatch){
 					if(isMatch) {
 						var userToToken = {
@@ -202,6 +209,7 @@ exports.authenticateUser = function(req) {
 							name : user.first_name + " " + user.last_name,
 							email : user.email
 						};
+						console.log("kajsfk");
 						var token = jwt.sign(userToToken, app.get('secret'))
 						var insertToken = "INSERT into user_tokens (user_id, session_token, created_at, deleted_at) VALUES (?,?,?,?)";
 						connection.query(insertToken, [user.id, token, moment().format('YYYY-MM-DD HH:mm:ss'), null], function(err, result) {
@@ -225,7 +233,7 @@ exports.authenticateUser = function(req) {
 				authenticateUserDefer.reject({errorCode : 1010});
 			}
 		})
-	})
+	});
 	return authenticateUserDefer.promise;
 }
 

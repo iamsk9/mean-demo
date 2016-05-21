@@ -352,6 +352,58 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		});
 	}
 
+	$scope.blockClient = function() {
+		var confirm = $mdDialog.confirm()
+	          .title('Block Client - ' + $scope.clientDetails.name + ', ' + $scope.clientDetails.company_name)
+	          .textContent('Are You sure you want to block the client?')
+	          .ariaLabel('Block Client')
+	          .ok('Confirm')
+	          .cancel('Cancel');
+	    $mdDialog.show(confirm).then(function() {
+	    	$rootScope.showAppLoader = true;
+	    	CAService.updateClientStatus($scope.clientDetails.id, 'BLOCKED').then(function() {
+	    		$scope.clientDetails.status = "BLOCKED";
+	    		$rootScope.showAppLoader = false;
+	    		$mdToast.show($mdToast.simple()
+				.textContent("The Client " + $scope.clientDetails.name + ", " + $scope.clientDetails.company_name + " has been blocked successfully.")
+				.position("top right")
+				.hideDelay(5000));
+	    	}, function(err) {
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Error in blocking the client " + $scope.clientDetails.name)
+				.position("top right")
+				.hideDelay(5000));
+	    	});
+	    }, function() {
+	    });	
+	}
+
+	$scope.unblockClient = function() {
+		var confirm = $mdDialog.confirm()
+	          .title('Unblock Client - ' + $scope.clientDetails.name + ', ' + $scope.clientDetails.company_name)
+	          .textContent('Are You sure you want to unblock the client?')
+	          .ariaLabel('Unblock Client')
+	          .ok('Confirm')
+	          .cancel('Cancel');
+	    $mdDialog.show(confirm).then(function() {
+	    	$rootScope.showAppLoader = true;
+	    	CAService.updateClientStatus($scope.clientDetails.id, 'ACTIVE').then(function() {
+	    		$scope.clientDetails.status = "ACTIVE";
+	    		$rootScope.showAppLoader = false;
+	    		$mdToast.show($mdToast.simple()
+				.textContent("The Client " + $scope.clientDetails.name + ", " + $scope.clientDetails.company_name + " has been unblocked successfully.")
+				.position("top right")
+				.hideDelay(5000));
+	    	}, function(err) {
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Error in unblocking the client " + $scope.clientDetails.name)
+				.position("top right")
+				.hideDelay(5000));
+	    	});
+	    }, function() {
+	    });	
+	}
+
 	$scope.selectDoc = function(doc) {
 		doc.selected = true;
 		angular.forEach($scope.docs, function(thisDoc) {

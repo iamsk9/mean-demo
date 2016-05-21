@@ -51,3 +51,11 @@ exports.updateClient = function(req, res) {
 		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
 	}, handleError.bind(this));
 }
+
+exports.updateClientStatus = function(req, res) {
+	this.res = res;
+	this.req = req;
+	ClientHelper.updateClientStatus(req.params.clientId, req.body.status).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+	}, handleError.bind(this));
+}
