@@ -94,7 +94,7 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 		});
 	}
 	$scope.showDatePicker = function(ev) {
-		var date = $scope.task.dateOfAppointment?moment($scope.task.dateOfAppointment, 'DD-MM-YYYY').toDate():moment().toDate();
+		var date = $scope.task.date_of_appointment?moment($scope.task.date_of_appointment, 'DD-MM-YYYY').toDate():moment().toDate();
 		$mdpDatePicker(date, {
 	        targetEvent: ev
 	    }).then(function(selectedDate) {
@@ -102,7 +102,7 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	    });
 	}
 	$scope.showTimePicker = function(ev) {
-		var time = $scope.task.timeOfAppointment?moment($scope.task.timeOfAppointment, 'hh:mm A').toDate():moment().toDate();
+		var time = $scope.task.time_of_appointment?moment($scope.task.time_of_appointment, 'hh:mm A').toDate():moment().toDate();
 		$mdpTimePicker(time, {
 			targetEvent: ev
 		}).then(function(selectedTime) {

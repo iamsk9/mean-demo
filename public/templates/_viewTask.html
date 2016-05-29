@@ -83,11 +83,14 @@
 				<md-divider></md-divider>
 				<div layout = "row" layout-align = "space-around">
 					<p class = "font_14 label">Documents Status</p>
-					<div layout = "column" style = "width : 50%">
-						<p class = "font_14" ng-show = "reqDocs.length == 0">Add a task to View the checklist</p>
-						<div layout = "row" ng-repeat = "doc in reqDocs">
-							<p class = "font_14" style = "width : 80%">[[doc.doc_name]] [[doc.label]]</p>
-							<p style = "width : 20%;text-align : center"> - <span ng-show = "docStatus[doc.doc_id].status == 1">Submitted</span><span ng-hide = "docStatus[doc.doc_id].status == 1">Not Submitted</span></p>
+					<p class = "font_14" ng-show = "reqDocs.length == 0">Add a task to View the checklist</p>
+					<div ng-show = "reqDocs.length > 0" style = "width : 50%">
+						<div layout = "column" ng-repeat = "work in task.works">
+							<p class = "font_16">[[work.name]]</p>
+							<div layout = "row" ng-repeat = "doc in reqDocs | filter: {work_id : work.id}" style = "margin-left : 40px">
+								<p class = "font_14" style = "width : 80%">[[doc.doc_name]] [[doc.label]]</p>
+								<p style = "width : 20%;text-align : center"> - <span ng-show = "docStatus[doc.doc_id].status == 1">Submitted</span><span ng-hide = "docStatus[doc.doc_id].status == 1">Not Submitted</span></p>
+							</div>
 						</div>
 					</div>
 				</div>
