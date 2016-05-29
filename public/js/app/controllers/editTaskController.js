@@ -123,19 +123,35 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 			return (work.name.toLowerCase().indexOf(lowercaseQuery) > 0);
 		};
     }
+    function checkAllDocumentsStatus() {
+    	for(var i = 0;i < $scope.reqDocs.length;i++) {
+			if($scope.docStatus[$scope.reqDocs[i].doc_id].status == 0) {
+				$scope.selectAllDocs = false;
+				return;
+			}
+		}
+    	$scope.selectAllDocs = true;
+    }
 	$scope.toggle = function (item) {
         if($scope.docStatus[item.doc_id].status) {
         	$scope.docStatus[item.doc_id].status = 0;
         } else {
         	$scope.docStatus[item.doc_id].status = 1;
         }
+        checkAllDocumentsStatus();
     };
 	$scope.back = function() {
 		$location.path('/tasks');
 	}
-	$scope.selectAllDocuments = function() {
-		for(var i = 0;i <= $scope.reqDocs.length;i++) {
-			$scope.docStatus[$scope.reqDocs[i].doc_id].status = 1;
+	$scope.toggleAllDocumentsStatus = function() {
+		if($scope.selectAllDocs) {
+			for(var i = 0;i < $scope.reqDocs.length;i++) {
+				$scope.docStatus[$scope.reqDocs[i].doc_id].status = 1;
+			}
+		} else {
+			for(var i = 0;i < $scope.reqDocs.length;i++) {
+				$scope.docStatus[$scope.reqDocs[i].doc_id].status = 0;
+			}
 		}
 	}
 	$scope.updateTask = function(goBack) {
