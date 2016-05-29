@@ -6,7 +6,7 @@ Caweb.controller('branchesController', function($scope, $rootScope, CAService, $
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Branches'];
 	function getBranches() {
-		CAService.getBranches().then(function(branches){
+		CAService.getBranches(true).then(function(branches){
 			$scope.branches = branches;
 		}, function(err) {
 			$mdToast.show($mdToast.simple()
@@ -96,23 +96,47 @@ Caweb.controller('branchesController', function($scope, $rootScope, CAService, $
 		}
 	}
 
-	$scope.showRemoveBranchDialog = function(index) {
+	$scope.enableBranch = function(branch) {
 		var confirm = $mdDialog.confirm()
-	          .title('Remove Branch - ' + $scope.branches[index].name)
-	          .textContent('Are You sure you want to remove the Branch?')
-	          .ariaLabel('Remove Branch')
-	          .ok('Remove')
+	          .title('Enable Branch - ' + branch.name)
+	          .textContent('Are You sure you want to enable the Branch?')
+	          .ariaLabel('Enable Branch')
+	          .ok('Enable')
 	          .cancel('Cancel');
 	    $mdDialog.show(confirm).then(function() {
-	    	CAService.removeBranch($scope.branches[index].id, index).then(function() {
-	    		$scope.branches.splice(index,1);
+	    	CAService.enableBranch(branch.id).then(function() {
+	    		getBranches();
 	    		$mdToast.show($mdToast.simple()
-				.textContent("Removed the Branch Successfully.")
+				.textContent("Enabled the Branch Successfully.")
 				.position("top right")
 				.hideDelay(5000));
 	    	}, function(err) {
 	    		$mdToast.show($mdToast.simple()
-				.textContent("Error in removing Brnach.")
+				.textContent("Error in enabling Branch.")
+				.position("top right")
+				.hideDelay(5000));
+	    	});
+	    }, function() {
+	    });
+	}
+
+	$scope.showRemoveBranchDialog = function(index) {
+		var confirm = $mdDialog.confirm()
+	          .title('Disable Branch - ' + $scope.branches[index].name)
+	          .textContent('Are You sure you want to disable the Branch?')
+	          .ariaLabel('Disable Branch')
+	          .ok('Disable')
+	          .cancel('Cancel');
+	    $mdDialog.show(confirm).then(function() {
+	    	CAService.removeBranch($scope.branches[index].id, index).then(function() {
+	    		getBranches();
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Disabled the Branch Successfully.")
+				.position("top right")
+				.hideDelay(5000));
+	    	}, function(err) {
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Error in disabling the Branch.")
 				.position("top right")
 				.hideDelay(5000));
 	    	});

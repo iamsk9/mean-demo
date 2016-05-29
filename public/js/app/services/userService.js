@@ -57,6 +57,17 @@ Caweb.factory('UserService', function(Restangular, $q){
 			});
 			return removeUserDefer.promise;
 		},
+		enableUser : function(id) {
+			var enableUserDefer = $q.defer();
+			Restangular.one('/user/' + id + '/enable').patch().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					enableUserDefer.resolve(data.data);
+				} else {
+					enableUserDefer.reject(data);
+				}
+			});
+			return enableUserDefer.promise;
+		},
 		updateUser : function(id, payload) {
 			var updateUserDefer = $q.defer();
 			Restangular.one('/user/' + id).patch(payload).then(function(data) {

@@ -9,7 +9,10 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 		"admin"
 	];
 	function getUsers() {
-		UserService.getUsers().then(function(users){
+		var payload = {
+			get_deleted : true
+		};
+		UserService.getUsers(payload).then(function(users){
 			$scope.users = users;
 		}, function(err) {
 			$mdToast.show($mdToast.simple()
@@ -123,6 +126,30 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 		}
 	}
 
+	$scope.enableUser = function(user) {
+		var confirm = $mdDialog.confirm()
+	          .title('Enable User - ' + user.first_name)
+	          .textContent('Are You sure you want to enable the User?')
+	          .ariaLabel('Enable User')
+	          .ok('Enable')
+	          .cancel('Cancel');
+	    $mdDialog.show(confirm).then(function() {
+	    	UserService.enableUser(user.id).then(function() {
+	    		getUsers();
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Enabled the User Successfully.")
+				.position("top right")
+				.hideDelay(5000));
+	    	}, function(err) {
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Error in enabling User.")
+				.position("top right")
+				.hideDelay(5000));
+	    	});
+	    }, function() {
+	    });	
+	}
+
 	$scope.showRemoveUserDialog = function(index) {
 		var confirm = $mdDialog.confirm()
 	          .title('Remove User - ' + $scope.users[index].first_name)
@@ -132,7 +159,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 	          .cancel('Cancel');
 	    $mdDialog.show(confirm).then(function() {
 	    	UserService.removeUser($scope.users[index].id, index).then(function() {
-	    		$scope.users.splice(index,1);
+	    		getUsers();
 	    		$mdToast.show($mdToast.simple()
 				.textContent("Removed the User Successfully.")
 				.position("top right")

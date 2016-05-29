@@ -73,6 +73,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.delete('/user/:userId', UserController.removeUser);
 
+	apiRoutes.patch('/user/:userId/enable', UserController.enableUser);
+
 	apiRoutes.patch('/user/:userId', UserController.updateUser);
 
 	apiRoutes.post('/createDirectory', DocsController.createDirectory);
@@ -86,6 +88,8 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/branches/:branchId', BranchesController.updateBranch);
 
 	apiRoutes.delete('/branches/:branchId', BranchesController.removeBranch);
+
+	apiRoutes.patch('/branch/:branchId/enable', BranchesController.enableBranch);
 
 	apiRoutes.post('/task', TaskController.assignTask);
 
@@ -112,4 +116,5 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/notifications/read/:notificationId', NotificationsController.markNotificationAsRead);
 
 	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
+
 }

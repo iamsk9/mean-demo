@@ -108,6 +108,19 @@ exports.removeUser = function(req, res) {
 	});
 }
 
+exports.enableUser = function(req, res) {
+	UserHelper.enableUser(req.params.userId).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : null, errorCode : null});
+	}, function(err) {
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+		} else {
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+		}
+	});
+}
+
 exports.updateUser = function(req, res) {
 	UserHelper.updateUser(req.params.userId, req.body).then(function(data){
 		res.json({returnCode: "SUCCESS", data: data, errorCode : null});

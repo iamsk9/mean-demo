@@ -289,9 +289,15 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return createFolderDefer.promise;
 		},
 
-		getBranches: function() {
+		getBranches: function(getDeleted) {
 			var branchesDefer = $q.defer();
-			Restangular.one('/branches').get().then(function(data) {
+			var payload = {};
+			if(getDeleted) {
+				payload.get_deleted = true;
+			} else {
+				payload.get_deleted = false;
+			}
+			Restangular.one('/branches').get(payload).then(function(data) {
 				if(data.returnCode == "SUCCESS") {
 					branchesDefer.resolve(data.data);
 				} else {
@@ -325,6 +331,17 @@ Caweb.factory('CAService', function(Restangular, $q){
 				}
 			});
 			return removeBranchDefer.promise;
+		},
+		enableBranch : function(id) {
+			var enableBranchDefer = $q.defer();
+			Restangular.one('/branch/' + id + '/enable').patch().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					enableBranchDefer.resolve(data.data);
+				} else {
+					enableBranchDefer.reject(data);
+				}
+			});
+			return enableBranchDefer.promise;
 		},
 		updateBranch : function(id, payload) {
 			var updateBranchDefer = $q.defer();

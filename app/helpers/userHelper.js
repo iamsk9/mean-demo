@@ -288,9 +288,12 @@ exports.getUsers = function(req) {
 	var params = [];
 	if(req.query.branch_id) {
 		params.push([req.query.branch_id]);
-		var query = "SELECT id, first_name, user_role, email, is_verified, branch from users where branch = ? and user_role <> 'CLIENT' and deleted_at is NULL";
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch, deleted_at from users where branch = ? and user_role <> 'CLIENT'";
 	} else {
-		var query = "SELECT id, first_name, user_role, email, is_verified, branch from users where user_role <> 'CLIENT' and deleted_at is NULL";	
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch, deleted_at from users where user_role <> 'CLIENT'";	
+	}
+	if(req.query.getDeleted) {
+		query = query + (" and deleted_at is NULL");
 	}
 	db.getConnection().then(function(connection) {
 		connection.query(query, params, function(err, results) {
@@ -325,7 +328,7 @@ exports.removeUser = function(id) {
 	var removeUserDefer = q.defer();
 	var removeUser = "UPDATE users SET deleted_at = ? where id = ? and user_role <> 'CLIENT' and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
-		connection.query(removeUser, [id, moment().format('YYYY-MM-DD HH:mm:ss')], function(err, results) {
+		connection.query(removeUser, [moment().format('YYYY-MM-DD HH:mm:ss'), id], function(err, results) {
 			connection.release();
 			if(err) {
 				removeUserDefer.reject(err);
@@ -335,6 +338,22 @@ exports.removeUser = function(id) {
 		});
 	});
 	return removeUserDefer.promise;
+}
+
+exports.enableUser = function(id) {
+	var enableUserDefer = q.defer();
+	var enableUser = "UPDATE users SET deleted_at = ? where id = ?";
+	db.getConnection().then(function(connection) {
+		connection.query(enableUser, [null, id], function(err, results) {
+			connection.release();
+			if(err) {
+				enableUserDefer.reject(err);
+				return;
+			}
+			enableUserDefer.resolve();
+		});
+	});
+	return enableUserDefer.promise;
 }
 
 exports.resetPassword = function(req) {

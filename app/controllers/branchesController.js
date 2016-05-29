@@ -2,7 +2,7 @@
 var BranchesHelper = require('../helpers/branchesHelper.js');
 
 exports.getBranches = function(req,res){
-	BranchesHelper.getBranches().then(function(result){
+	BranchesHelper.getBranches(req.query).then(function(result){
 		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
 	}, function(err){
 		console.log(err);
@@ -60,6 +60,18 @@ exports.removeBranch = function(req, res) {
 exports.updateBranch = function(req, res) {
 	BranchesHelper.updateBranch(req.params.branchId, req.body).then(function(data){
 		res.json({returnCode: "SUCCESS", data: data, errorCode : null});
+	}, function(err) {
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+		} else {
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+		}
+	});
+}
+
+exports.enableBranch = function(req, res) {
+	BranchesHelper.enableBranch(req.params.branchId).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : null, errorCode : null});
 	}, function(err) {
 		if(err.errorCode) {
 			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});

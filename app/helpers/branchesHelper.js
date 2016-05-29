@@ -35,9 +35,13 @@ exports.updateBranch = function(id, requestParams) {
 	return updateBranchDefer.promise;
 }
 
-exports.getBranches = function() {
+exports.getBranches = function(params) {
 	var getBranchesDefer = q.defer();
-	var query = "SELECT id, name, address, office_landline,mobile_number from branches where deleted_at is NULL";
+	if(params.get_deleted) {
+		var query = "SELECT id, name, address, office_landline,mobile_number,deleted_at from branches;";
+	} else {
+		var query = "SELECT id, name, address, office_landline,mobile_number from branches where deleted_at is NULL";
+	}
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, query);
 	}).then(function(results) {
@@ -72,4 +76,17 @@ exports.removeBranch = function(id) {
 		removeBranchDefer.reject(err);
 	});
 	return removeBranchDefer.promise;
+}
+
+exports.enableBranch = function(branchId) {
+	var enableBranchDefer = q.defer();
+	var enableBranch = "UPDATE branches SET deleted_at = ? where id = ?";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, enableBranch, [null, branchId]);
+	}).then(function(results) {
+		enableBranchDefer.resolve(results);
+	}).catch(function(err) {
+		enableBranchDefer.reject(err);
+	});
+	return enableBranchDefer.promise;
 }
