@@ -131,7 +131,7 @@
     </header>
     <main class = "md-padding" layout = "column" flex>
     	<md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
-			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Client Area')"></md-tab>
+			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Documents')"></md-tab>
 		</md-tabs>
     	<div ng-view flex></div>
     </main>

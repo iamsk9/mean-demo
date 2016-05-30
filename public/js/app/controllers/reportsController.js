@@ -1,7 +1,7 @@
 Caweb.controller('reportsController', function($scope, $rootScope, CAService, $mdToast, $location,
 	$routeParams, $timeout) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Reports'];

@@ -1,7 +1,7 @@
 Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdToast, $location, $mdDialog,
 	UserService, TaskStatus) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$scope.taskStatus = TaskStatus;

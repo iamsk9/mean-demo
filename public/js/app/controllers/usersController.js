@@ -1,7 +1,7 @@
 Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdToast, $location, $mdDialog,
 	UserService) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Manage Users'];
@@ -175,7 +175,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 	}
 
 	$scope.openClient = function(client) {
-		$location.path('/clientArea/' + client.id);
+		$location.path('/documents/' + client.id);
 	}
 
 });

@@ -1,9 +1,10 @@
-Caweb.controller('searchClientController', function($scope, $rootScope, CAService, $mdToast, $location) {
+Caweb.controller('searchClientController', function($scope, $rootScope, CAService, $mdToast, $location, 
+	$mdDialog) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
-	$rootScope.selectedTab = $rootScope.tabsMap['Search Client'];
+	$rootScope.selectedTab = $rootScope.tabsMap['Clients'];
 	$scope.searched = false;
 	$scope.clients = [];
 	$scope.search = {};
@@ -32,11 +33,69 @@ Caweb.controller('searchClientController', function($scope, $rootScope, CAServic
 	}
 
 	$scope.addClient = function() {
-		$location.path('/client/new');
+		if(validateDetails()) {
+			$scope.addClientForm.$setPristine();
+			$scope.addClientLoading = "indeterminate";
+			CAService.addClient($scope.client).then(function(){
+				$scope.addClientLoading = false;
+				$mdToast.show($mdToast.simple()
+					.textContent("Client is successfully Added")
+					.position("top right")
+					.hideDelay(5000));
+				$scope.client = {};
+				$scope.addClientForm.$setPristine(true);
+				$scope.addClientForm.$setDirty(false);
+				$scope.addClientForm.$setUntouched(true);
+			}, function(err) {
+				$scope.addClientLoading = false;
+				if(err.errorCode == 1015) {
+					$scope.addClientForm.email.$error.userExists = true;
+					$scope.addClientForm.email.$invalid = true;
+				} else if(err.errorCode == 1018) {
+					$scope.addClientForm.panCard.$error.panCardExists = true;
+					$scope.addClientForm.panCard.$invalid = true;
+				} else {
+					$mdToast.show($mdToast.simple()
+					.textContent("Error occurred in adding client.")
+					.position("top right")
+					.hideDelay(5000));
+				}
+			});
+		}
+	}
+
+	function validateDetails() {
+		return (($scope.client.companyName && $scope.client.companyName != "") &&
+			($scope.client.clientName && $scope.client.clientName != "") && 
+			($scope.client.email && $scope.client.email != "") &&
+			($scope.client.phoneNumber) && ($scope.client.panCardNumber && $scope.client.panCardNumber != ""));
+	}
+
+	$scope.closeDialog = function() {
+		$mdDialog.cancel();
+		$scope.client = {};
+	}
+
+	$scope.showAddClientDialog = function() {
+		$mdDialog.show({
+	    	controller : function($scope, theScope) {
+	    		$scope.theScope = theScope
+	    		$scope.$watch('addClientForm', function() {
+	    			$scope.theScope.addClientForm = $scope.addClientForm;
+	    		}, true);
+	    	},
+			templateUrl : 'addClient.tmpl.html',
+			parent : angular.element(document.body),
+			clickOutsideToClose:true,
+			locals : {
+				theScope : $scope
+			}
+		}).then(function(){
+		});
 	}
 
 	$scope.openClient = function(client) {
-		$location.path('/clientArea/' + client.id);
+		$location.path('/documents/' + client.id);
 	}
 
 	function validateSearch() {

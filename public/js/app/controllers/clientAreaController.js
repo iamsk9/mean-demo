@@ -3,12 +3,12 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	$scope.isClient = false;
 	if($rootScope.user.role == "CLIENT" && ($routeParams.clientId == undefined || 
 		$routeParams.clientId != $rootScope.user.id)) {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	} else if($rootScope.user.role == "CLIENT") {
 		$scope.isClient = true;
 	}
-	$rootScope.selectedTab = $rootScope.tabsMap['Client Area'];
+	$rootScope.selectedTab = $rootScope.tabsMap['Documents'];
 	$scope.dropAvailable = true;
 	$scope.dragOverClassObj = {accept:'dragover', reject:'dragover-err'}
 	$scope.modelOptionsObj = {debounce:100};
@@ -28,10 +28,10 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 			$scope.clientSelected = true;
 			console.log($scope.clientDetails);
 			$scope.currentPath = {
-				value : null, path : "root/", label : "root"
+				value : null, path : "root", label : "root"
 			};
 			$scope.pathNodes = [{
-				value : null, path : "root/", label : "root"
+				value : null, path : "root", label : "root"
 			}];
 			CAService.getDocsByClientId(data.id, $scope.currentPath.value).then(function(data) {
 				$scope.docs = data;
@@ -72,7 +72,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		console.log(client);
 		if(client) {
 			$timeout(function(){
-				$location.path('/clientArea/' + client.id);
+				$location.path('/documents/' + client.id);
 			}, 500);
 		}
 	}
@@ -198,7 +198,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		$scope.openDocUrl = doc.url;
 		if(doc.is_directory) {
 			$scope.currentPath = {
-				value : doc.id, path : $scope.currentPath.path + doc.description, label : doc.description
+				value : doc.id, path : $scope.currentPath.path + '/' + doc.description, label : doc.description
 			};
 			$scope.pathNodes.push($scope.currentPath);
 			CAService.getDocsByClientId($scope.clientDetails.id, $scope.currentPath.value).then(function(data) {
@@ -226,8 +226,8 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 
 	$scope.changeWorkingDirectory = function(index) {
 		CAService.getDocsByClientId($scope.clientDetails.id, $scope.pathNodes[index].value).then(function(data) {
-			$scope.currentPath = $scope.pathNodes[index];
-			$scope.pathNodes = $scope.pathNodes.slice(0,index-1);
+			$scope.currentPath = $scope.pathNodes[index];	
+			$scope.pathNodes = $scope.pathNodes.slice(0, index + 1);
 			$scope.docs = data;
 		}, function() {
 			$mdToast.show($mdToast.simple()

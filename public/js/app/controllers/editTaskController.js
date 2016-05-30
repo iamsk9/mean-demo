@@ -1,7 +1,7 @@
 Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams, CAService, $mdToast, $location, $mdDialog,
 	UserService, TaskStatus, $mdpDatePicker, $mdpTimePicker) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Tasks'];

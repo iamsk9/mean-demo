@@ -1,6 +1,6 @@
 Caweb.controller('dashboardController', function($rootScope, $scope, CAService, $mdToast, $location){
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Dashboard'];

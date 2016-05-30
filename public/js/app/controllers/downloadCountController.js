@@ -1,7 +1,7 @@
 Caweb.controller('downloadCountController', function($scope, $rootScope, CAService, $mdToast, $location,
 	$routeParams, $timeout) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Download Count'];
@@ -35,7 +35,7 @@ Caweb.controller('downloadCountController', function($scope, $rootScope, CAServi
 	}
 
 	$scope.openClient = function() {
-		$location.path('/clientArea/' + $scope.client.id);
+		$location.path('/documents/' + $scope.client.id);
 	}
 
 	$scope.selectedClientChanged = function(client) {

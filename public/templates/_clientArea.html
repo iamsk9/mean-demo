@@ -48,7 +48,7 @@
 						</ul>
 					</div>
 					<span flex></span>
-					<md-button class = "md-primary" ng-if = "clientSelected" ng-click = "showFolderDialog()" style = "height:10%"><md-icon md-font-icon="fa-plus" class = "fa inline-icon"></md-icon> Create Folder</md-button>
+					<md-button class = "md-primary" ng-if = "clientSelected" ng-show = "!isClient" ng-click = "showFolderDialog()" style = "height:10%"><md-icon md-font-icon="fa-plus" class = "fa inline-icon"></md-icon> Create Folder</md-button>
 				</div>
 				<div layout = "row" layout-align = "space-between" ng-show = "clientSelected" layout-wrap>
 					<div layout = "column" ng-show = "docs.length == 0">

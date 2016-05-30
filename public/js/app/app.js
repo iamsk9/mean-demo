@@ -5,9 +5,8 @@ var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ng
 
 Caweb.constant('Tabs', [
 	'Dashboard',
-	'Add Client',
-	'Search Client',
-	'Client Area',
+	'Clients',
+	'Documents',
 	'Manage Users',
 	'Branches',
 	'Assign Task',
@@ -47,11 +46,11 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         	templateUrl : basepath + "/_searchClient.html",
         	controller : "searchClientController"
         })
-        .when('/clientArea', {
+        .when('/documents', {
         	templateUrl : basepath + "/_clientArea.html",
         	controller : "clientAreaController"
         })
-        .when('/clientArea/:clientId', {
+        .when('/documents/:clientId', {
         	templateUrl : basepath + "/_clientArea.html",
         	controller : "clientAreaController"
         })
@@ -207,9 +206,9 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 				break;
 			case $rootScope.tabsMap['Add Client'] : $location.path('/client/new');
 				break;
-			case $rootScope.tabsMap['Search Client'] : $location.path('/clients');
+			case $rootScope.tabsMap['Clients'] : $location.path('/clients');
 				break;
-			case $rootScope.tabsMap['Client Area'] : $location.path('/clientArea');
+			case $rootScope.tabsMap['Documents'] : $location.path('/documents');
 				break;
 			case $rootScope.tabsMap['Download Count'] : $location.path('/downloadCount');
 				break;

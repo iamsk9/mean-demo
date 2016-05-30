@@ -1,7 +1,7 @@
 Caweb.controller('viewTaskController', function($scope, $rootScope, $routeParams, CAService, $mdToast, $location, $mdDialog,
 	UserService) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Tasks'];
