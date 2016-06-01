@@ -206,7 +206,7 @@ exports.authenticateUser = function(req) {
 						var userToToken = {
 							id : user.id,
 							role : user.user_role,
-							name : user.first_name + " " + user.last_name,
+							name : user.first_name,
 							email : user.email
 						};
 						console.log("kajsfk");

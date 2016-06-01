@@ -22,7 +22,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				}
 			}, function(err) {
 				addClientDefer.reject(err);
-			})
+			});
 			return addClientDefer.promise;
 		},
 
@@ -33,22 +33,22 @@ Caweb.factory('CAService', function(Restangular, $q){
 		getClients : function(search) {
 			var getClientsDefer = $q.defer();
 			var payload = {};
-			if(search.clientId && search.clientId !== "") {
+			if(search && search.clientId && search.clientId !== "") {
 				payload.client_id = search.clientId;
 			}
-			if(search.companyName && search.companyName !== "") {
+			if(search && search.companyName && search.companyName !== "") {
 				payload.company_name = search.companyName;
 			}
-			if(search.clientName && search.clientName !== "") {
+			if(search && search.clientName && search.clientName !== "") {
 				payload.client_name = search.clientName;
 			}
-			if(search.email && search.email !== "") {
+			if(search && search.email && search.email !== "") {
 				payload.email = search.email;
 			}
-			if(search.phoneNumber && search.phoneNumber) {
+			if(search && search.phoneNumber) {
 				payload.phone_number = search.phoneNumber;
 			}
-			if(search.panCardNumber && search.panCardNumber) {
+			if(search && search.panCardNumber) {
 				payload.company_pan_number = search.panCardNumber;
 			}
 			this.getClientsService(payload).then(function(data) {

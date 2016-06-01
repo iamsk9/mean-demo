@@ -9,21 +9,29 @@ Caweb.controller('searchClientController', function($scope, $rootScope, CAServic
 	$scope.clients = [];
 	$scope.search = {};
 	$scope.clientsLoading = false;
-
+	$scope.enableSearchClient = false;
+	function getClients(search) {
+		CAService.getClients(search).then(function(data){
+			$scope.clientsLoading = false;
+			$scope.clients = data;
+		}, function(err) {
+			$scope.clientsLoading = false;
+			$mdToast.show($mdToast.simple()
+				.textContent("Error occurred while fetching clients.")
+				.position("top right")
+				.hideDelay(5000));
+		});
+	}
+	if(!$scope.enableSearchClient) {
+		$scope.clientLoading = "indeterminate";
+		$scope.searched = true;
+		getClients();
+	}
 	$scope.search = function() {
 		if(validateSearch()) {
 			$scope.clientsLoading = "indeterminate";
 			$scope.searched = true;
-			CAService.getClients($scope.search).then(function(data){
-				$scope.clientsLoading = false;
-				$scope.clients = data;
-			}, function(err) {
-				$scope.clientsLoading = false;
-				$mdToast.show($mdToast.simple()
-					.textContent("Error occurred while fetching clients.")
-					.position("top right")
-					.hideDelay(5000));
-			});
+			getClients($scope.search);
 		} else {
 			$mdToast.show($mdToast.simple()
 					.textContent("Enter any of the options to search.")
