@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Contact Us|DM Rao & Co </title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" charset="utf-8">
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
+    <link rel="stylesheet" href="css/master.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="css/chosen.css" media="screen" title="no title" charset="utf-8">
+  </head>
+
+  <body data-spy="scroll">
+    <!--Carousel on the page-->
+    <div class="container">
+    <div class="carousel slide" id="mycarousel" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#mycarousel" data-slide-to="1"></li>
+          <li data-target="#mycarousel" data-slide-to="2"></li>
+        </ol>
+
+        <div class="carousel-inner">
+          <div class="item active">
+            <img src="images/inner-banner.jpg" alt="sk" class="img-responsive logo3"/>
+          </div>
+          <div class="item">
+            <img src="images/inner-banner2.jpg" alt="sk" class="img-responsive logo3"/>
+          </div>
+          <div class="item">
+            <img src="images/inner-banner3.jpg" alt="sk" class="img-responsive logo3"/>
+          </div>
+        </div>
+        <a href="#mycarousel" class="carousel-control left" data-slide="prev">
+      <span class="icon-prev"></span>
+      </a>
+
+      <a href="#mycarousel" class="carousel-control right" data-slide="next">
+      <span class="icon-next"></span>
+      </a>
+    </div><br><br>
+    <center><h2>D.M.Rao & Co</h2></center>
+    <center><h3>Contact Us</h3></center>
+    <div class="row">
+      <div class="col-md-6">
+          <table width="80%" id="details">
+              <caption>Registered Office</caption>
+            <tr>
+              <td rowspan="3"><span class="glyphicon glyphicon-map-marker logo3"></span></td>
+              <td>305, 2nd Floor, GVK Plaza</td>
+            </tr>
+            <tr>
+              <td>Seethammapeta</td>
+            </tr>
+            <tr>
+              <td>Visakhapatnam - 530016 <br></td>
+            </tr>
+            <tr>
+              <td><span class="glyphicon glyphicon-phone logo3"></span></td>
+              <td>+91 986 61 56 365</td>
+            </tr>
+            <tr>
+              <td><span class="glyphicon glyphicon-envelope logo3"></span></td>
+              <td>madhu@dmrao.com</td>
+            </tr>
+          </table>
+      </div>
+      <div class="col-md-6">
+          <table width="80%">
+              <caption>Corporate Office</caption>
+            <tr>
+              <td rowspan="3"><span class="glyphicon glyphicon-map-marker logo3"></span></td>
+              <td>9th Floor, Raghava Ratna Towers</td>
+            </tr>
+            <tr>
+              <td>Chirag Ali Lane, Abids</td>
+            </tr>
+            <tr>
+              <td>Hyderabad - 5300001 <br></td>
+            </tr>
+            <tr>
+              <td><span class="glyphicon glyphicon-phone logo3"></span></td>
+              <td>+91 888 67 56 222</td>
+            </tr>
+          </table>
+      </div>
+      </div>
+    </div>
+<br>
+
+    <!--Contact Details on the page-->
+      <div class="container bg-grey" id="contact">
+        <br><br><br>
+        <div class="container-fluid">
+        <div class="row form-group">
+          <div class="col-md-4">
+            <center><h3>Enquiry Form</h3></center>
+            <input type="text" name="name" name="name" placeholder="Name" class="form-control"><br>
+            <input type="text" name="company" name="company" placeholder="Company" class="form-control"><br>
+            <input type="email" name="email" name="email" placeholder="Email" class="form-control"><br>
+            <input type="text" name="mobile" name="mobile" placeholder="Mobile No" class="form-control"><br>
+            <input type="text" name="name" name="name" placeholder="Subject" class="form-control"><br>
+            <textarea name="comment" id="comment" rows="5" class="form-control comment" placeholder="Comments"></textarea><br>
+            <select class="chzn-select" multiple="true" name="tasks" style="width:100%;" data-placeholder="Select Some Tasks">
+              <option value="1">Registration of Proprietership Firm</option>
+              <option value="2">Registration of Partnership Firm</option>
+              <option value="3">Registration of LLP Firm</option>
+              <option value="4">Government Undertaking</option>
+              <option value="5">Registration of a Public Limited Company</option>
+              <option value="6">Registration of a Private Limited Company</option>
+              <option value="7">Section 25 Company</option>
+              <option value="8">Registered Society</option>
+              <option value="9">Trust</option>
+              <option value="10">HUF Firms</option>
+              <option value="11">Drug License</option>
+              <option value="12">VAT & CST Proprietership</option>
+              <option value="13">VAT & CST Partnership Firm</option>
+              <option value="14">VAT & CST Private Limited/Limited companies</option>
+            </select><br>
+            <div class = "checkbox">
+              <label><input type = "checkbox"> Send Me a Copy</label>
+            </div><br><br>
+            <button type="button" class="btn btn-success">Submit</button><br>
+            <hr width="1" size="500">
+          </div>
+          <!--office location on the page-->
+          <div class="col-md-8">
+            <center><h3>Office Location</h3></center>
+            <div id="googleMap" style="height:400px; width:100%;"></div>
+          <!-- Add Google Maps -->
+          <!--<script src="http://maps.googleapis.com/maps/api/js"></script>-->
+          <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+          <script>
+          var locations = [
+                ['Hyderabad Corporate Office', 17.394358, 78.476849],
+                ['Visakhapatnam Registered Office', 17.730884, 83.306582],
+              ];
+
+              var map = new google.maps.Map(document.getElementById('googleMap'), {
+                zoom: 6,
+                center: new google.maps.LatLng(17.394358, 78.476849),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+              });
+
+              var infowindow = new google.maps.InfoWindow();
+
+              var marker, i;
+
+              for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                  map: map
+                });
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                  return function() {
+                    infowindow.setContent(locations[i][0]);
+                    infowindow.open(map, marker);
+                  }
+                })(marker, i));
+              }
+          </script>
+        </div>
+      </div>
+    </div>
+
+  </div>
+      <br><br>
+      <!--Footer on the page-->
+      <div class="container">
+        <hr>
+        <footer class="container" >
+          <p>&copy;2016. All Rights Reserved by DM Rao & Co.</p>
+        </footer>
+      </div>
+
+      <!--Script for the chosen option menu-->
+      <script type="text/javascript">
+        $(function() {
+          $(".chzn-select").chosen();
+        });
+        </script>
+  </body>
+</html>
