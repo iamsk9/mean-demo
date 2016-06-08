@@ -1,0 +1,33 @@
+.bg-grey{
+  background-color: #f6f6f6;
+}
+
+.logo3{
+  font-size: 20px;
+  color: #532862;
+}
+
+body{
+  font: 400 15px sans-serif;
+}
+
+caption{
+  font-weight: bold;
+  color: #532862;
+}
+
+h2,h3{
+  color: #532862;
+}
+
+footer{
+  font-size: 12px;
+}
+
+td {
+    padding: 5px;
+}
+
+.checkbox{
+  float: right;
+}
