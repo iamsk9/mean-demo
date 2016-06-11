@@ -5,10 +5,12 @@ var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ng
 
 Caweb.constant('Tabs', [
 	'Dashboard',
-	'Clients',
-	'Documents',
+	'Add Client',
+	'Search Client',
+	'Client Area',
 	'Manage Users',
 	'Branches',
+    'Master Management',
 	'Assign Task',
 	'Tasks',
 	'Reports'
@@ -46,11 +48,11 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         	templateUrl : basepath + "/_searchClient.html",
         	controller : "searchClientController"
         })
-        .when('/documents', {
+        .when('/clientArea', {
         	templateUrl : basepath + "/_clientArea.html",
         	controller : "clientAreaController"
         })
-        .when('/documents/:clientId', {
+        .when('/clientArea/:clientId', {
         	templateUrl : basepath + "/_clientArea.html",
         	controller : "clientAreaController"
         })
@@ -73,6 +75,10 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         .when('/branches', {
         	templateUrl : basepath + "/_branches.html",
         	controller : "branchesController"
+        })
+        .when('/departments', {
+            templateUrl : basepath + "/_departments.html",
+            controller : "departmentsController"
         })
         .when('/tasks', {
         	templateUrl : basepath + "/_tasks.html",
@@ -107,8 +113,8 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 	}
     var Notifications = function() {
         this.loadedPages = {};
-        /** @type {number} Total number of items. */
-        this.numItems = 0;
+        /** @type {number} Total number of items. *
+/        this.numItems = 0;
         /** @const {number} Number of items to fetch per request. */
         this.PAGE_SIZE = 10;
         this.fetchNumItems_();
@@ -206,9 +212,9 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 				break;
 			case $rootScope.tabsMap['Add Client'] : $location.path('/client/new');
 				break;
-			case $rootScope.tabsMap['Clients'] : $location.path('/clients');
+			case $rootScope.tabsMap['Search Client'] : $location.path('/clients');
 				break;
-			case $rootScope.tabsMap['Documents'] : $location.path('/documents');
+			case $rootScope.tabsMap['Client Area'] : $location.path('/clientArea');
 				break;
 			case $rootScope.tabsMap['Download Count'] : $location.path('/downloadCount');
 				break;
@@ -216,7 +222,9 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 				break;
 			case $rootScope.tabsMap['Branches'] : $location.path('/branches');
 				break;
-			case $rootScope.tabsMap['Assign Task'] : $location.path('/assigntask');
+			case $rootScope.tabsMap['Master Management'] : $location.path('/departments');
+                break;
+            case $rootScope.tabsMap['Assign Task'] : $location.path('/assigntask');
 				break;
 			case $rootScope.tabsMap['Tasks'] : $location.path('/tasks');
 				break;
