@@ -12,6 +12,8 @@ var utils = require('../utils');
 
 var moment = require('moment');
 
+const fs = require('fs');
+
 function uploadToAzureStorage(request) {
 	var azureUploadDefer = q.defer();
 	blobService.createBlockBlobFromLocalFile(config.storage.containerName, request.file.filename, request.file.path, function(error, result, response) {
@@ -19,7 +21,7 @@ function uploadToAzureStorage(request) {
 			azureUploadDefer.reject(error);
 			return;
 		}
-		azureUploadDefer.resolve(config.storage.domainName + 
+		azureUploadDefer.resolve(config.storage.domainName +
 			config.storage.containerName + '/' + result);
 	});
 	return azureUploadDefer.promise;
@@ -32,7 +34,7 @@ exports.saveDoc = function(request) {
 		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, parent) VALUES (?,?,?,?,?,?)";
 		db.getConnection().then(function(connection) {
 			console.log("Obtained the connection");
-			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url, 
+			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url,
 				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.body.parent], function(err, result){
 					console.log("Inside Query");
 					if(err) {
@@ -43,6 +45,13 @@ exports.saveDoc = function(request) {
 					}
 					console.log("Query Successful");
 					saveDocDefer.resolve({url : url});
+					fs.unlink('uploads/'+request.file.filename, (err) => {
+  				if (err)
+						{
+							console.log("Couldnot Delete file from uploads");
+						}
+  					console.log('Successfully Deleted file from Uploads');
+					});
 					connection.release();
 				});
 			console.log(query.sql);
@@ -56,9 +65,9 @@ exports.saveDoc = function(request) {
 exports.getDocumentsByClientId = function(id, parent) {
 	var documentsDefer = q.defer();
 	if(parent) {
-		var docsByClientId = "SELECT * from docs where client_id = ? and parent = ? and deleted_at is NULL";	
+		var docsByClientId = "SELECT * from docs where client_id = ? and parent = ? and deleted_at is NULL";
 	} else {
-		var docsByClientId = "SELECT * from docs where client_id = ? and parent is NULL and deleted_at is NULL";	
+		var docsByClientId = "SELECT * from docs where client_id = ? and parent is NULL and deleted_at is NULL";
 
 	}
 	db.getConnection().then(function(connection) {
@@ -236,7 +245,7 @@ exports.getTotalDocs = function(obj) {
 				return;
 			}
 			if(results.length > 0) {
-				obj.totalMetrics.docsCount = results[0].docsCount;	
+				obj.totalMetrics.docsCount = results[0].docsCount;
 			} else {
 				obj.totalMetrics.docsCount = 0;
 			}
@@ -316,7 +325,7 @@ exports.createDirectory = function(user, params) {
 		};
 		console.log("inside connection");
 		console.log(utils);
-		utils.runQuery(connection, query, [values.user_id, values.url, values.created_at, 
+		utils.runQuery(connection, query, [values.user_id, values.url, values.created_at,
 			values.modified_at, values.client_id, values.is_directory, values.parent, values.description]).then(function(results){
 			values.id = results.insertId;
 			console.log("uakasdjgas");

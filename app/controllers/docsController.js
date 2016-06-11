@@ -6,6 +6,7 @@ var config = require('../../config/config');
 
 var request = require('request');
 
+
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
