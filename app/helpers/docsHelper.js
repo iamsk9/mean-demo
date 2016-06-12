@@ -45,12 +45,11 @@ exports.saveDoc = function(request) {
 					}
 					console.log("Query Successful");
 					saveDocDefer.resolve({url : url});
-					fs.unlink('uploads/'+request.file.filename, (err) => {
-  				if (err)
-						{
-							console.log("Couldnot Delete file from uploads");
+					fs.unlink('uploads/'+request.file.filename, function(err) {
+  						if (err) {
+							console.log("Could not Delete file from uploads");
 						}
-  					console.log('Successfully Deleted file from Uploads');
+  						console.log('Successfully Deleted file from Uploads');
 					});
 					connection.release();
 				});
