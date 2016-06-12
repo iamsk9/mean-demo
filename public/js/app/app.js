@@ -103,7 +103,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 	$rootScope.tabs = Tabs;
 	$rootScope.tabsMap = {};
 	$rootScope.viewTask = function(item) {
-		$location.path('/task/'+[[item.task_id]]);
+		$location.path('/task/'+item.task_id);
 	}
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
