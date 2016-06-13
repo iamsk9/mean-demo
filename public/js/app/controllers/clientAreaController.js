@@ -275,12 +275,16 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	$scope.upload = function() {
 		console.log($scope.images);
 		$scope.fileUploading = "indeterminate";
+		var data = {doc : $scope.images, client_id : $scope.client.id};
+		if($scope.currentPath.value) {
+			data.parent = $scope.currentPath.value;
+		}
 		Upload.upload({
 			url : '/api/upload',
 			headers : {
 				'x-ca-api-token' : apiKey
 			},
-			data : {doc : $scope.images, client_id : $scope.client.id, parent : $scope.currentPath.value}
+			data : data
 		}).then(function(response) {
 			console.log(response);
 			$scope.fileUploading = false;
