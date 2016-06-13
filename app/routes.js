@@ -17,6 +17,8 @@ var DashboardController = require('./controllers/dashBoardController.js');
 
 var ClientController = require('./controllers/clientController.js');
 
+var DepartmentsController = require('./controllers/departmentsController.js');
+
 var DocsController = require('./controllers/docsController.js');
 
 var UserController = require('./controllers/userController.js');
@@ -91,6 +93,14 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/branch/:branchId/enable', BranchesController.enableBranch);
 
+	apiRoutes.post('/departments', DepartmentsController.createDepartment);
+
+    apiRoutes.get('/departments', DepartmentsController.getDepartments);
+
+    apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);
+
+    apiRoutes.delete('/departments/:departmentId', DepartmentsController.removeDepartment);	
+
 	apiRoutes.post('/task', TaskController.assignTask);
 
 	apiRoutes.get('/tasks', TaskController.getTasks);
@@ -116,5 +126,4 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/notifications/read/:notificationId', NotificationsController.markNotificationAsRead);
 
 	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
-
 }

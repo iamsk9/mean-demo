@@ -41,6 +41,7 @@
     <script type="text/javascript" src = "/js/app/controllers/reportsController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/usersController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/branchesController.js"></script>
+    <script type="text/javascript" src = "/js/app/controllers/departmentsController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/assignTaskController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/tasksController.js"></script>
     <script type="text/javascript" src = "/js/app/controllers/viewTaskController.js"></script>
@@ -76,8 +77,8 @@
     </div>
   <div layout = "column" flex>
   	<header>
-	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px">
-			<h2 style = "margin-left : 2em">Team Consultancy</h2>
+	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px;background-color:#2B65EC">
+			<h2 style = "margin-left : 1em;font-family : Baskerville Old Face;font-size:2em">Team Consultancy</h2>
 			<span flex></span>
             <md-button class="md-primary" ng-click = "toggleNotifications($event)">
                 <md-icon md-menu-origin md-font-icon="fa-bell-o" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
@@ -132,7 +133,7 @@
     </header>
     <main class = "md-padding" layout = "column" flex>
     	<md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
-			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Documents')"></md-tab>
+			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Client Area')"></md-tab>
 		</md-tabs>
     	<div ng-view flex></div>
     </main>

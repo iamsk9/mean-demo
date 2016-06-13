@@ -176,6 +176,60 @@ Caweb.factory('CAService', function(Restangular, $q){
 			docsCache[id].docs.push(angular.copy(data));
 		},
 
+        getDepartments: function() {
+			var departmentsDefer = $q.defer();
+			Restangular.one('/departments').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					departmentsDefer.resolve(data.data);
+				} else {
+					departmentsDefer.reject();
+				}
+			}, function(err){
+				departmentsDefer.reject(err);
+			});
+			return departmentsDefer.promise;
+		},
+
+        createDepartment : function(payload) {
+			var createDepartmentDefer = $q.defer();
+			Restangular.one('/departments').post('', payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					createDepartmentDefer.resolve(data.data);
+				} else {
+					createDepartmentDefer.reject(data);
+				}
+			}, function(err) {
+				createDepartmentDefer.reject(err);
+			});
+			return createDepartmentDefer.promise;
+		},    
+
+        removeDepartment : function(id) {
+			var removeDepartmentDefer = $q.defer();
+			Restangular.one('/departments/' + id).remove().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					removeDepartmentDefer.resolve(data.data);
+				} else {
+					removeDepartmentDefer.reject(data);
+				}
+			});
+			return removeDepartmentDefer.promise;
+		},
+
+        updateDepartment : function(id, payload) {
+			var updateDepartmentDefer = $q.defer();
+			Restangular.one('/departments/' + id).patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateDepartmentDefer.resolve(data);
+				} else {
+					updateDepartmentDefer.reject(data);
+				}
+			}, function(err) {
+				updateDepartmentDefer.reject(err);
+			})
+			return updateDepartmentDefer.promise;
+		},
+
 		removeDocument : function(clientId, index) {
 			var removeDefer = $q.defer();
 			Restangular.one('/document/' + docsCache[clientId].docs[index].id).remove().then(function(data) {
