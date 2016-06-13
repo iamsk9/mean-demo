@@ -31,11 +31,12 @@ exports.saveDoc = function(request) {
 	var saveDocDefer = q.defer();
 	uploadToAzureStorage(request).then(function(url) {
 		console.log("Uploaded to azure " + url);
-		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, parent) VALUES (?,?,?,?,?,?)";
+		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, description, parent) VALUES (?,?,?,?,?,?,?)";
 		db.getConnection().then(function(connection) {
 			console.log("Obtained the connection");
 			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url,
-				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.body.parent], function(err, result){
+				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.file.filename, request.body.parent], function(err, result){
+					console.log(request.file.filename);
 					console.log("Inside Query");
 					if(err) {
 						console.log("Query Error");
