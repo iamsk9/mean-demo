@@ -51,9 +51,10 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.clientTypeChanged = function() {
 		if($scope.otherClient) {
 			delete $scope.task['client']
-		  } //else {
-		 // 	$scope.currentClient = client;
-		 // }
+		  } else {
+		  	$scope.currentClient.name = item.name;
+		  	$scope.otherClient="otherClient";
+		  }
 	}
 
 	$scope.branchChanged = function() {
@@ -71,9 +72,8 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		});
 	}
 	$scope.selectedClientChanged = function(client){
-		console.log(client);
 		$scope.currentClient = client;
-        $scope.otherClient = "!otherClient";
+		//$scope.otherClient = "otherClient";
 	}
 	function setAllInputsDirty(form) {
 		angular.forEach(form, function(value, key) {
