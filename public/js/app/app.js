@@ -1,6 +1,6 @@
 var basepath = "/templates";
 
-var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ngMessages', 
+var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ngMessages',
 	'md.data.table', 'ngFileUpload', 'mdPickers']);
 
 Caweb.constant('Tabs', [
@@ -101,13 +101,16 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         		}]
         	}
         })
-        .otherwise('/dashboard');
+                  .otherwise('/dashboard');
 });
 
 Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
 	$rootScope.user = UserService.getUserDetails();
 	$rootScope.tabs = Tabs;
 	$rootScope.tabsMap = {};
+	$rootScope.viewTask = function(item) {
+		$location.path('/task/'+item.task_id);
+	}
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
 	}
@@ -119,6 +122,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         this.PAGE_SIZE = 10;
         this.fetchNumItems_();
     };
+
         // Required.
         Notifications.prototype.getItemAtIndex = function(index) {
           var pageNumber = Math.ceil(index / this.PAGE_SIZE)?Math.ceil(index / this.PAGE_SIZE):1;
