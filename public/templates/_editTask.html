@@ -50,6 +50,34 @@
 								</div>
 						    </md-autocomplete>
 						</div>
+
+                        <div layout = "row" layout-align = "space-around" ng-show = "task.client_name" ng-hide="otherClient">
+			    			<div layout="column" layout-align = "space-around">
+			    				<p style = "margin-top : 0px">Company Name</p>
+				                <md-input-container style = "width : 30%" class = "md-block">
+							       <p>[[ClientDetails.company_name]]</p>
+             					</md-input-container>
+             				</div>
+             				<div layout="column" layout-align = "space-around">
+								<p style = "margin-top : 0px">Contact Number</p>
+					            <md-input-container style = "width : 30%" class = "md-block">
+								  <p>[[ClientDetails.phone_number]]</p>
+								</md-input-container>
+							</div>
+							<div layout="column" layout-align = "space-around">
+								<p style = "margin-top : 0px">Email Id</p>
+					            <md-input-container style = "width : 30%" class = "md-block">
+								  <p>[[ClientDetails.email]]</p>
+								</md-input-container>
+							</div>
+							<div layout="column" layout-align = "space-around">
+								<p style = "margin-top : 0px">Company Pan Number</p>
+					            <md-input-container style = "width : 30%" class = "md-block">
+								   <p>[[ClientDetails.company_pan_number]]</p>
+								</md-input-container>
+							</div>
+						</div>
+
 			    		<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
 			    			<p style = "margin-top : 0px">Client Name*</p>
 				            <md-input-container style = "width : 30%" class = "md-block">
