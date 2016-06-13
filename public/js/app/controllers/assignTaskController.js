@@ -1,12 +1,13 @@
-Caweb.controller('assignTaskController', function($scope, $rootScope, CAService, $mdToast, UserService, $timeout,
+Caweb.controller('assignTaskController', function($scope, $rootScope, CAService, $mdToast, UserService, $timeout,$location,
 	$mdpDatePicker, $mdpTimePicker) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/documents/' + $rootScope.user.id);
+		$location.path('/clientArea/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Assign Task'];
 	$scope.reset = true;
 	$scope.task = {};
+	$scope.currentClient = {};
 	$scope.assignTask = function() {
 		if(validateDetails()) {
 			$scope.assignTaskForm.$setPristine();
@@ -44,16 +45,15 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		.hideDelay(5000));
 	});
 	$scope.querySearch = function(searchText) {
-		return CAService.searchClients(searchText);
+		   return CAService.searchClients(searchText);
 	}
 
 	$scope.clientTypeChanged = function() {
 		if($scope.otherClient) {
 			delete $scope.task['client']
-		} else {
-			delete $scope.task['clientName'];
-			delete $scope.task['contactNumber'];
-		}
+		  } //else {
+		 // 	$scope.currentClient = client;
+		 // }
 	}
 
 	$scope.branchChanged = function() {
@@ -69,6 +69,11 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 			.position("top right")
 			.hideDelay(5000));
 		});
+	}
+	$scope.selectedClientChanged = function(client){
+		console.log(client);
+		$scope.currentClient = client;
+        $scope.otherClient = "!otherClient";
 	}
 	function setAllInputsDirty(form) {
 		angular.forEach(form, function(value, key) {
