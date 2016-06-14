@@ -29,6 +29,8 @@ var TaskController = require('./controllers/taskController.js');
 
 var NotificationsController = require('./controllers/notificationsController.js');
 
+var ClientFormController = require('./controllers/clientFormController');
+
 module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/', IndexController.handle);
@@ -99,7 +101,7 @@ module.exports = function(app, apiRoutes, blobService) {
 
     apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);
 
-    apiRoutes.delete('/departments/:departmentId', DepartmentsController.removeDepartment);	
+    apiRoutes.delete('/departments/:departmentId', DepartmentsController.removeDepartment);
 
 	apiRoutes.post('/task', TaskController.assignTask);
 
@@ -126,4 +128,8 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/notifications/read/:notificationId', NotificationsController.markNotificationAsRead);
 
 	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
+
+	apiRoutes.post('/clientform', ClientFormController.postClient);
+
+apiRoutes.get('/clientform', ClientFormController.getClient);
 }

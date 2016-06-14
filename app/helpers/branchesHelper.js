@@ -8,11 +8,11 @@ var utils = require('../utils');
 
 exports.createBranch = function(request) {
 	var createBranchDefer = q.defer();
-	var insertBranch = "INSERT INTO branches (name, address, office_landline, created_at, modified_at) \
-	VALUES (?,?,?,?,?)";
+	var insertBranch = "INSERT INTO branches (name, address, office_landline, created_at, modified_at,mobile_number) \
+	VALUES (?,?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, insertBranch, [request.name, request.address, request.office_landline, 
-			moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]);
+		return utils.runQuery(connection, insertBranch, [request.name, request.address, request.office_landline,
+			moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'),request.mobile_number]);
 	}).then(function(results) {
 		createBranchDefer.resolve();
 	}).catch(function(err) {

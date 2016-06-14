@@ -28,12 +28,12 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 	function filterResults(query) {
 		alert("testing");
 		if(query) {
-			var results = $scope.masterWorks.filter(createFilterFor(query));	
+			var results = $scope.masterWorks.filter(createFilterFor(query));
 		} else {
 			var results = $scope.masterWorks;
 		}
 	}
-	function showDialog(){       
+	function showDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
 	    		$scope.theScope = theScope
@@ -70,16 +70,25 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		showDialog();
 	}
 
+	var selectedChip = "";
+
+	$scope.selectedItem = function(chip){
+		if(selectedChip === "")
+			selectedChip = chip;
+		else {
+			selectedChip = selectedChip + "-" + chip;
+		}
+	}
+
 	$scope.departmentAction = function() {
-		if(!$scope.currentDepartment.name && !$scope.currentDepartment.user && !$scope.currentDepartment.task && !$scope.currentDepartment.email) {
+		if(!$scope.currentDepartment.name && !$scope.currentDepartment.task && !$scope.currentDepartment.email) {
 			return;
 		}
 		if($scope.dialogType == 'Add') {
 			var payload = {
 				name : $scope.currentDepartment.name,
-				head : $scope.currentDepartment.head,
-				task : $scope.task_works[0].name,
-	            email : $scope.currentDepartment.email			
+				task : selectedChip,
+	      email : $scope.currentDepartment.email
 			};
 			CAService.createDepartment(payload).then(function(){
 				$mdToast.show($mdToast.simple()
@@ -99,9 +108,8 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 			//var payload = CAService.calculateDiff($scope.currentDepartment, original);
 			var payload = {
 				name : $scope.currentDepartment.name,
-				head : $scope.currentDepartment.head,
-				task : $scope.task_works[0].name,
-	            email : $scope.currentDepartment.email			
+				task : selectedChip,
+	      email : $scope.currentDepartment.email
 			};
 			if(!angular.equals(payload,{})) {
 				CAService.updateDepartment($scope.currentDepartment.id, payload).then(function(){
@@ -142,6 +150,6 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 });

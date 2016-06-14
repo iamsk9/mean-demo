@@ -3,7 +3,7 @@ module.exports = {
 	database : {
 		hostName : 'localhost',
 		user : 'root',
-		password : '',
+		password : 'sairam',
 		dbName : 'caweb'
 	},
 	storage : {

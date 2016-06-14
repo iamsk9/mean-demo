@@ -53,14 +53,15 @@ Caweb.controller('branchesController', function($scope, $rootScope, CAService, $
 	}
 
 	$scope.branchAction = function() {
-		if(!$scope.currentBranch.name && !$scope.currentBranch.address && !$scope.currentBranch.office_landline) {
+		if(!$scope.currentBranch.name && !$scope.currentBranch.address && !$scope.currentBranch.office_landline && !$scope.currentBranch.mobile_number) {
 			return;
 		}
 		if($scope.dialogType == 'Add') {
 			var payload = {
 				name : $scope.currentBranch.name,
 				address : $scope.currentBranch.address,
-				office_landline : $scope.currentBranch.office_landline
+				office_landline : $scope.currentBranch.office_landline,
+				mobile_number : $scope.currentBranch.mobile_number
 			};
 			CAService.createBranch(payload).then(function(){
 				$mdToast.show($mdToast.simple()
@@ -141,6 +142,6 @@ Caweb.controller('branchesController', function($scope, $rootScope, CAService, $
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 });
