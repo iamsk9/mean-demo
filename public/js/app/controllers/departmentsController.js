@@ -96,7 +96,13 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 			});
 		} else if($scope.dialogType == 'Edit') {
 			var branchAction = CAService.editUser;
-			var payload = CAService.calculateDiff($scope.currentDepartment, original);
+			//var payload = CAService.calculateDiff($scope.currentDepartment, original);
+			var payload = {
+				name : $scope.currentDepartment.name,
+				head : $scope.currentDepartment.head,
+				task : $scope.task_works[0].name,
+	            email : $scope.currentDepartment.email			
+			};
 			if(!angular.equals(payload,{})) {
 				CAService.updateDepartment($scope.currentDepartment.id, payload).then(function(){
 					$mdToast.show($mdToast.simple()
