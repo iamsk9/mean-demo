@@ -4,7 +4,7 @@ var utils = require('../app/utils.js');
 
 exports.up = function(next) {
 	var createDepartments = "CREATE TABLE departments (id int NOT NULL AUTO_INCREMENT,\
-		name varchar(255) NOT NULL, head varchar(255) NOT NULL, task varchar(225) NOT NULL, email varchar(225) NOT NULL,\
+		name varchar(255) NOT NULL, task varchar(225) NOT NULL, email varchar(225) NOT NULL,\
 		created_at DATETIME, deleted_at DATETIME, modified_at DATETIME, PRIMARY KEY (id))";
 	var connection;
 	db.getConnection().then(function(conn){

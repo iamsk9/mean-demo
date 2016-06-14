@@ -7,7 +7,6 @@
 	                <tr md-row >
 	                    <th md-column class = "font_18 center" style = "width : 100px">Id</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Name</th>
-	                    <th md-column class = "font_18 center" style = "width : 200px">Dept head</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Task</th>
 	                   	<th md-column class = "font_18 center" style = "width : 200px">Email</th>
 	                    <th md-column class = "font_18 center" style = "width : 100px">Action</th>
@@ -17,7 +16,6 @@
 		            <tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
 		                <td md-cell class = "font_16 center">#[[department.id]]</td>
 		                <td md-cell class = "font_16 center">[[department.name]]</td>
-		                <td md-cell class = "font_16 center">[[department.head]]</td>
 		              	<td md-cell class = "font_16 center">[[department.task]]</td>
 		             	<td md-cell class = "font_16 center">[[department.email]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
@@ -54,13 +52,6 @@
 					  <label>Name of the Department</label>
 					  <input type="text" required="" name = "departmentName" ng-model = "theScope.currentDepartment.name">
 					  <div ng-messages = "department.name.$error">
-					  	<div ng-message = "required">This is required</div>
-					  </div>
-					</md-input-container>
-					<md-input-container style = "width : 300px" class = "md-block">
-					  <label>Department head</label>
-					  <input type="text" required="" name = "userName" ng-model = "theScope.currentDepartment.head">
-					  <div ng-messages = "department.departmentHead.$error">
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>

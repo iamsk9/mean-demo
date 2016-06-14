@@ -81,13 +81,12 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 	}
 
 	$scope.departmentAction = function() {
-		if(!$scope.currentDepartment.name && !$scope.currentDepartment.user && !$scope.currentDepartment.task && !$scope.currentDepartment.email) {
+		if(!$scope.currentDepartment.name && !$scope.currentDepartment.task && !$scope.currentDepartment.email) {
 			return;
 		}
 		if($scope.dialogType == 'Add') {
 			var payload = {
 				name : $scope.currentDepartment.name,
-				head : $scope.currentDepartment.head,
 				task : selectedChip,
 	      email : $scope.currentDepartment.email
 			};
@@ -109,7 +108,6 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 			//var payload = CAService.calculateDiff($scope.currentDepartment, original);
 			var payload = {
 				name : $scope.currentDepartment.name,
-				head : $scope.currentDepartment.head,
 				task : selectedChip,
 	      email : $scope.currentDepartment.email
 			};
