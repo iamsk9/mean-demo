@@ -1,25 +1,103 @@
 <md-content class="md-padding" flex>
-	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
+	<div ng-app= " app" layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
+		<h2>Reports</h2>
 		<div layout = "column" layout-align = "center center">
-			<md-autocomplete
-					md-floating-label = "Select a Client"
-		          md-selected-item="client"
-		          md-search-text="searchText"
-		          md-selected-item-change="selectedClientChanged(item)"
-		          md-items="item in querySearch(searchText)"
-		          md-item-text="getName(item)"
-		          md-min-length="0"
-		          placeholder="Select a client"
-		          md-menu-class="autocomplete-custom-template" style = "width : 500px" >
-		        <md-item-template>
-		          <span class="item-title">
-		            <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i"> #[[item.id]] - [[item.company_name]] - [[item.name]] - [[item.company_pan_number]] </span>
-		          </span>
-		        </md-item-template>
-		        <md-not-found>
-    				No clients found.
-				</md-not-found>
-		    </md-autocomplete>
 		</div>
+		<div layout="column" layout-align="center">
+		<div layout = "row" layout-align = "space-around center">
+			<p style = "margin-top : 0px">Select Branch</p>
+						<md-input-container style = "width : 70%">
+				<md-select name = "branch" ng-model="task.branch"  ng-change="branchChanged()" required>
+					<md-option ng-repeat="branch in branches" value="[[branch.id]]">
+					[[branch.name]]
+					</md-option>
+				</md-select>
+				<div ng-messages = "assignTaskForm.employee.$error">
+				<div ng-message = "required">This is required</div>
+					</div>
+			</md-input-container>
+		</div>
+		<div layout = "row" layout-align = "space-around center">
+			<p style = "margin-top : 0px">Select Employee</p>
+			<md-input-container style = "width : 70%">
+				<md-select name = "employee" ng-model="task.assignee" required>
+					<md-option ng-repeat="emp in employees" >
+					[[emp.first_name]]
+					</md-option>
+				</md-select>
+				<div ng-messages = "assignTaskForm.employee.$error">
+						<div ng-message = "required">This is required</div>
+					</div>
+			</md-input-container>
+		</div>
+		<div layout = "row" layout-align = "space-around center">
+			<p style = "margin-top : 0px">Task Status</p>
+			<md-input-container style = "width : 70%">
+				<md-select name = "taskstatus" ng-model="task.assigne" required>
+					<md-option value="visit_pending"> visit pending</md-option>
+					<md-option value="visit_done"> visit done</md-option>
+					<md-option value="No_response"> No response</md-option>
+					<md-option value="checklist_pending"> Checklist pending</md-option>
+					<md-option value="checklist_done"> Checklist done</md-option>
+					<md-option value="document_submitted"> Document submitted</md-option>
+					<md-option value="waiting_for_approval"> Waiting for approval</md-option>
+					<md-option value="completed"> Completed</md-option>
+				</md-select>
+				<div ng-messages = "assignTaskForm.employee.$error">
+						<div ng-message = "required">This is required</div>
+					</div>
+
+			</md-input-container>
+		</div>
+		<div layout = "row" layout-align = "space-around center">
+
+			<span>
+			<p style = "margin-top : 0px">From:</p>
+		</span>
+		<span>
+						<md-input-container style = "width : 70%" class = "md-block">
+				<input type="text" name = "dateOfStart" ng-model = "task.dateOfStart" ng-focus = "showDatePicker()">
+			</md-input-container>
+		</span>
+		<span>
+			<p style = "margin-top : 0px">To:</p>
+		</span>
+		<span>
+						<md-input-container style = "width : 70%" class = "md-block">
+				<input type="text" name = "dateOfEnd" ng-model = "task.dateOfEnd" ng-focus = "showDatePick()">
+			</md-input-container>
+		</span>
+		</div>
+		<div layout = "row" layout-align = "space-around center">
+			<md-button class="md-primary md-raise" style = "font-size : 1.3em;width:130px" ng-click="generate()">Generate</md-button>
+    </div>
+
 	</div>
+</div>
 </md-content>
+<div layout = "column" layout-align = "center center" ng-show="views">
+	<md-table-container md-row-select style = "margin-bottom : 40px">
+				<table md-table>
+						<thead md-head >
+								<tr md-row >
+										<th md-column class = "font_18 center" style = "width : 100px">Branch</th>
+										<th md-column class = "font_18 center" style = "width : 200px">Employee</th>
+										<th md-column class = "font_18 center" style = "width : 200px">Task Status</th>
+										<th md-column class = "font_18 center" style = "width : 200px">From Date</th>
+										<th md-column class = "font_18 center" style = "width : 200px">To Date</th>
+
+								</tr>
+						</thead>
+						<tbody md-body>
+							<tr>
+									<td md-cell class = "font_16 center">[[task.branch]]</td>
+									<td md-cell class = "font_16 center">[[task.assignee]]</td>
+									<td md-cell class = "font_16 center">[[task.assigne]]</td>
+									<td md-cell class = "font_16 center">[[task.dateOfStart]]</td>
+								<td md-cell class = "font_16 center">[[task.dateOfEnd]]</td>
+							</tr>
+					</tbody>
+			</table>
+
+	</md-table-container>
+</div>
