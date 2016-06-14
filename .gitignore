@@ -1,2 +1,4 @@
 node_modules
 public/bower_components
+migrations/.migrate
+config/config.js
