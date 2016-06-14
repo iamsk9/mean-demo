@@ -1,4 +1,4 @@
-var ClientFormHelper=require('../helpers/ClientFormHelper.js');
+var ClientFormHelper=require('../helpers/clientFormHelper.js');
 
 
 exports.postClient = function(req,res){
