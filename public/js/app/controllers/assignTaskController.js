@@ -1,7 +1,7 @@
 Caweb.controller('assignTaskController', function($scope, $rootScope, CAService, $mdToast, UserService, $timeout,$location,
 	$mdpDatePicker, $mdpTimePicker) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Assign Task'];

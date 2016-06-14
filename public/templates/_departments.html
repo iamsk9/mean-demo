@@ -56,16 +56,16 @@
 					  </div>
 					</md-input-container>
                         <md-input-container  style = "width : 300px" class = "md-block">
-					         <label>task</label>
 					      <md-chips ng-model="theScope.task_works" md-autocomplete-snap
 				              md-require-match="true" style = "width : 70%">
 						        <md-autocomplete
+						        	md-floating-label="Select Tasks"
 						           md-selected-item="selectedItem"
 						           md-search-text="searchText"
 						           md-items="item in theScope.masterWorks"
 											 md-selected-item-change = "theScope.selectedItem([[item.name]])"
 						           md-min-length="0"
-						           placeholder="Search for a task" style = "width: 300px">
+						           style = "width: 300px">
 						           <md-item-template>[[item.name]]</md-item-template>
 						           <md-not-found>
 				    				 No Works found.
@@ -80,7 +80,7 @@
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>
-					<div layout = "row" layout-align = "center center">
+					<div layout = "row" class = "margin_bottom_20" layout-align = "center center">
 						<md-button class = "md-primary" style = "font-size : 1.3em"
 						ng-click = "theScope.departmentAction(theScope.dialog)" ng-disabled = "theScope.departmentActionLoading">[[::theScope.dialogType]] Department</md-button>
 						<md-progress-circular md-mode="[[theScope.departmenthActionLoading]]"></md-progress-circular>

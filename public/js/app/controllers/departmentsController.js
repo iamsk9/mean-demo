@@ -1,10 +1,10 @@
 Caweb.controller('departmentsController', function($scope, $rootScope, CAService, $mdToast, $location, $mdDialog,
 	UserService) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
-	$rootScope.selectedTab = $rootScope.tabsMap['Departments'];
+	$rootScope.selectedTab = $rootScope.tabsMap['Master Management'];
 	$scope.task_works = [];
 	function getDepartments() {
 		CAService.getDepartments().then(function(departments){
