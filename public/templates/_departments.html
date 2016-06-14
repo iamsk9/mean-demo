@@ -26,7 +26,7 @@
 		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no departments to show.</td>
 		            </tr>
                     <tr>
-		            
+
                     </tr>
 		        </tbody>
 		    </table>
@@ -72,6 +72,7 @@
 						           md-selected-item="selectedItem"
 						           md-search-text="searchText"
 						           md-items="item in theScope.masterWorks"
+											 md-selected-item-change = "theScope.selectedItem([[item.name]])"
 						           md-min-length="0"
 						           placeholder="Search for a task" style = "width: 300px">
 						           <md-item-template>[[item.name]]</md-item-template>
@@ -80,7 +81,7 @@
 								   </md-not-found>
 						        </md-autocomplete>
 						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
-						     </md-chips></md-input-container>  
+						     </md-chips></md-input-container>
 					 <md-input-container style = "width : 300px">
 					  <label>mail id</label>
 					  <input type="text" required name = "email" ng-model = "theScope.currentDepartment.email">
