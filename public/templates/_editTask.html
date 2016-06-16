@@ -50,6 +50,26 @@
 								</div>
 						    </md-autocomplete>
 						</div>
+
+                        <div layout = "row" layout-align = "space-around" ng-show = "task.client_name" ng-hide="otherClient">
+			    			<div layout="column" layout-align = "center center">
+			    				<p class = "label" style = "margin-top : 0px">Company Name</p>
+							    <p>[[ClientDetails.company_name]]</p>
+             				</div>
+             				<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Contact Number</p>
+								<p>[[ClientDetails.phone_number]]</p>
+							</div>
+							<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Email Id</p>
+								<p>[[ClientDetails.email]]</p>
+							</div>
+							<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Company Pan Number</p>
+								<p>[[ClientDetails.company_pan_number]]</p>
+							</div>
+						</div>
+
 			    		<div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
 			    			<p style = "margin-top : 0px">Client Name*</p>
 				            <md-input-container style = "width : 30%" class = "md-block">

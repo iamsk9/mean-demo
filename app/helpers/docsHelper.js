@@ -31,11 +31,14 @@ exports.saveDoc = function(request) {
 	var saveDocDefer = q.defer();
 	uploadToAzureStorage(request).then(function(url) {
 		console.log("Uploaded to azure " + url);
-		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, parent) VALUES (?,?,?,?,?,?)";
+		console.log(request.file.filename);
+		console.log(request.body);
+		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, description, parent) VALUES (?,?,?,?,?,?,?)";
 		db.getConnection().then(function(connection) {
 			console.log("Obtained the connection");
 			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url,
-				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.body.parent], function(err, result){
+				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.file.originalname, request.body.parent], function(err, result){
+					console.log(request.file.filename);
 					console.log("Inside Query");
 					if(err) {
 						console.log("Query Error");
@@ -44,7 +47,7 @@ exports.saveDoc = function(request) {
 						return;
 					}
 					console.log("Query Successful");
-					saveDocDefer.resolve({url : url});
+					saveDocDefer.resolve({url : url, description: request.file.originalname});
 					fs.unlink('uploads/'+request.file.filename, function(err) {
   						if (err) {
 							console.log("Could not Delete file from uploads");

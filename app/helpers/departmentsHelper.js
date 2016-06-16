@@ -8,10 +8,10 @@ var utils = require('../utils');
 
 exports.createDepartment = function(request) {
 	var createDepartmentDefer = q.defer();
-	var insertDepartment = "INSERT INTO departments (name, head, task, email, created_at, modified_at) \
-	VALUES (?,?,?,?,?,?)";
+	var insertDepartment = "INSERT INTO departments (name, task, email, created_at, modified_at) \
+	VALUES (?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, insertDepartment, [request.name, request.head, request.task, request.email,
+		return utils.runQuery(connection, insertDepartment, [request.name, request.task, request.email,
 			moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]);
 	}).then(function(results) {
 		createDepartmentDefer.resolve();
@@ -37,7 +37,7 @@ exports.updateDepartment = function(id, requestParams) {
 
 exports.getDepartments = function() {
 	var getDepartmentsDefer = q.defer();
-	var query = "SELECT id, name, head, task,email from departments where deleted_at is NULL";
+	var query = "SELECT id, name, task,email from departments where deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, query);
 	}).then(function(results) {
@@ -50,7 +50,7 @@ exports.getDepartments = function() {
 
 exports.getDepartment = function(id) {
 	var getDepartmentDefer = q.defer();
-	var getDepartment = "SELECT id, name, head, task, email from departments where id = ? and deleted_at is NULL";
+	var getDepartment = "SELECT id, name, task, email from departments where id = ? and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, getdepartment, [id]);
 	}).then(function(results) {

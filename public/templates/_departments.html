@@ -7,7 +7,6 @@
 	                <tr md-row >
 	                    <th md-column class = "font_18 center" style = "width : 100px">Id</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Name</th>
-	                    <th md-column class = "font_18 center" style = "width : 200px">Dept head</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Task</th>
 	                   	<th md-column class = "font_18 center" style = "width : 200px">Email</th>
 	                    <th md-column class = "font_18 center" style = "width : 100px">Action</th>
@@ -17,7 +16,6 @@
 		            <tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
 		                <td md-cell class = "font_16 center">#[[department.id]]</td>
 		                <td md-cell class = "font_16 center">[[department.name]]</td>
-		                <td md-cell class = "font_16 center">[[department.head]]</td>
 		              	<td md-cell class = "font_16 center">[[department.task]]</td>
 		             	<td md-cell class = "font_16 center">[[department.email]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
@@ -26,7 +24,7 @@
 		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no departments to show.</td>
 		            </tr>
                     <tr>
-		            
+
                     </tr>
 		        </tbody>
 		    </table>
@@ -57,30 +55,24 @@
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>
-					<md-input-container style = "width : 300px" class = "md-block">
-					  <label>Department head</label>
-					  <input type="text" required="" name = "userName" ng-model = "theScope.currentDepartment.head">
-					  <div ng-messages = "department.departmentHead.$error">
-					  	<div ng-message = "required">This is required</div>
-					  </div>
-					</md-input-container>
                         <md-input-container  style = "width : 300px" class = "md-block">
-					         <label>task</label>
 					      <md-chips ng-model="theScope.task_works" md-autocomplete-snap
 				              md-require-match="true" style = "width : 70%">
 						        <md-autocomplete
+						        	md-floating-label="Select Tasks"
 						           md-selected-item="selectedItem"
 						           md-search-text="searchText"
 						           md-items="item in theScope.masterWorks"
+											 md-selected-item-change = "theScope.selectedItem([[item.name]])"
 						           md-min-length="0"
-						           placeholder="Search for a task" style = "width: 300px">
+						           style = "width: 300px">
 						           <md-item-template>[[item.name]]</md-item-template>
 						           <md-not-found>
 				    				 No Works found.
 								   </md-not-found>
 						        </md-autocomplete>
 						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
-						     </md-chips></md-input-container>  
+						     </md-chips></md-input-container>
 					 <md-input-container style = "width : 300px">
 					  <label>mail id</label>
 					  <input type="text" required name = "email" ng-model = "theScope.currentDepartment.email">
@@ -88,7 +80,7 @@
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>
-					<div layout = "row" layout-align = "center center">
+					<div layout = "row" class = "margin_bottom_20" layout-align = "center center">
 						<md-button class = "md-primary" style = "font-size : 1.3em"
 						ng-click = "theScope.departmentAction(theScope.dialog)" ng-disabled = "theScope.departmentActionLoading">[[::theScope.dialogType]] Department</md-button>
 						<md-progress-circular md-mode="[[theScope.departmenthActionLoading]]"></md-progress-circular>

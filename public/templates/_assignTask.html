@@ -5,11 +5,11 @@
 		    	<fieldset>
 		    		<div layout = "column">
 			    		<h2 style = "text-align:center">Assign a New Task</h2>
-			    		<div layout = "row" layout-align = "space-around center">
+			    		<div layout = "row" layout-align = "space-around center" ng-hide="otherClient">
 			    			<p style = "margin-top : 0px">Select Client*</p>
 				            <md-autocomplete
 				            	  md-floating-label="Select Client"
-						          md-selected-item="task.client"
+						          md-selected-item="task.works"
 						          md-search-text="searchText"
 						          md-selected-item-change="selectedClientChanged(item)"
 						          md-items="item in querySearch(searchText)"
@@ -32,32 +32,41 @@
 								</div>
 						    </md-autocomplete>
 						</div>
-						<div layout="row" layout-align = "space around">
-						<div layout = "column" layout-align = "space-around center" ng-show = "otherClient">
-			    			<p style = "margin-top : 0px ; font-weight : bold">Company name</p>
-				            <md-input-container style = "width : 70%" class = "md-block">
-							  <p layout-align = "space around" ng-disabled = "!otherClient">[[currentClient.company_name]]</p>
+						 <div layout = "row" layout-align = "space-around" ng-show="!otherClient">
+			    			<div layout="column" layout-align = "center center">
+			    				<p class = "label" style = "margin-top : 0px">Company Name</p>
+							    <p>[[currentClient.company_name]]</p>
+             				</div>
+             				<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Contact Number</p>
+								<p>[[currentClient.phone_number]]</p>
+							</div>
+							<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Email Id</p>
+								<p>[[currentClient.email]]</p>
+							</div>
+							<div layout="column" layout-align = "center center">
+								<p class = "label" style = "margin-top : 0px">Company Pan Number</p>
+								<p>[[currentClient.company_pan_number]]</p>
+							</div>
+						</div>
+                        <div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
+			    			<p style = "margin-top : 0px">Client Name*</p>
+				            <md-input-container style = "width : 30%" class = "md-block">
+							  <input type="text" required="" name = "clientName" ng-model = "item.name" >
+							  <div ng-messages = "assignTaskForm.clientName.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
+							<p style = "margin-top : 0px">Contact Number*</p>
+				            <md-input-container style = "width : 30%" class = "md-block">
+							  <input type="text" required="" name = "contactNumber" ng-model = "task.number">
+							  <div ng-messages = "assignTaskForm.contactNumber.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
 							</md-input-container>
 						</div>
-						<div layout = "column" layout-align = "space-around center" ng-show = "otherClient">
-			    			<p style = "margin-top : 0px ; font-weight : bold">Mail id</p>
-				            <md-input-container style = "width : 70%" class = "md-block">
-							  <p layout-align = "space around" ng-disabled = "!otherClient">[[currentClient.email]]</p>
-							</md-input-container>
-						</div>
-						<div layout = "column" layout-align = "space-around center" ng-show = "otherClient">
-			    			<p style = "margin-top : 0px ; font-weight : bold">Contact Number</p>
-				            <md-input-container style = "width : 70%" class = "md-block">
-							  <p layout-align = "space around" ng-disabled = "!otherClient">[[currentClient.phone_number]]</p>
-							</md-input-container>
-						</div>
-						<div layout = "column" layout-align = "space-around center" ng-show = "otherClient">
-							<p style = "margin-top : 0px ; font-weight : bold">Client Pan card*</p>
-				            <md-input-container style = "width : 70%" class = "md-block">
-							   <p layout-align = "space around" ng-disabled = "!otherClient">[[currentClient.company_pan_number]]</p>
-							</md-input-container>
-						</div>
-					</div>
+			    		
 						<div layout = "row" layout-align = "start center" class = "margin_left_20">
 					     	<md-switch class="md-primary" aria-label="Not a Registered Client" ng-model="otherClient" ng-change = "clientTypeChanged()">
 						    	Not a Registered Client
@@ -65,7 +74,7 @@
 						</div>
 						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Select Branch*</p>
-				            <md-input-container style = "width : 70%">
+				            <md-input-container style = "width : 30%">
 								<md-select name = 'branch' ng-model="task.branch" ng-change = "branchChanged()" required>
 									<md-option ng-repeat="branch in branches" value="[[branch.id]]">
 									[[branch.name]]
@@ -75,10 +84,8 @@
 								  	<div ng-message = "required">This is required</div>
 								  </div>
 							</md-input-container>
-						</div>
-						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Select Employee*</p>
-							<md-input-container style = "width : 70%">
+							<md-input-container style = "width : 30%">
 								<md-select name = "employee" ng-model="task.assignee" required>
 									<md-option ng-repeat="emp in employees" value="[[emp.id]]">
 									[[emp.first_name]]
@@ -90,25 +97,17 @@
 							</md-input-container>
 						</div>
 						<div layout = "row" layout-align = "space-around center">
-							<p style = "margin-top : 0px">Task Description*</p>
-							<md-input-container style = "width : 70%">
-							  <input type="text" name = "taskDescription" ng-model = "task.description" required>
-							  <div ng-messages = "assignTaskForm.taskDescription.$error">
-							  	<div ng-message = "required">This is required</div>
-							  </div>
-							</md-input-container>
-						</div>
-						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Date of Appointment</p>
-				            <md-input-container style = "width : 70%" class = "md-block">
+				            <md-input-container style = "width : 30%" class = "md-block">
 							  <input type="text" name = "dateOfAppointment" ng-model = "task.dateOfAppointment" ng-focus = "showDatePicker()">
 							</md-input-container>
-						</div>
-						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Time Of Appointment</p>
-							<md-input-container style = "width : 70%" class = "md-block">
+							<md-input-container style = "width : 30%" class = "md-block">
 							  <input type="text" name = "timeOfAppointment" ng-model = "task.timeOfAppointment" ng-focus = "showTimePicker()">
 							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							
 						</div>
 						<div layout = "row" ng-if = "reset" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Type Of Appointment</p>
@@ -120,6 +119,15 @@
 								  Telephonic Conversation
 								</md-radio-button>
 							</md-radio-group>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p style = "margin-top : 0px">Task Description*</p>
+							<md-input-container style = "width : 70%">
+							  <input type="text" name = "taskDescription" ng-model = "task.description" required>
+							  <div ng-messages = "assignTaskForm.taskDescription.$error">
+							  	<div ng-message = "required">This is required</div>
+							  </div>
+							</md-input-container>
 						</div>
 						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Remarks</p>

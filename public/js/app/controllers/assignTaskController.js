@@ -1,7 +1,7 @@
 Caweb.controller('assignTaskController', function($scope, $rootScope, CAService, $mdToast, UserService, $timeout,$location,
 	$mdpDatePicker, $mdpTimePicker) {
 	if($rootScope.user.role == "CLIENT") {
-		$location.path('/clientArea/' + $rootScope.user.id);
+		$location.path('/documents/' + $rootScope.user.id);
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Assign Task'];
@@ -51,9 +51,10 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.clientTypeChanged = function() {
 		if($scope.otherClient) {
 			delete $scope.task['client']
-		  } //else {
-		 // 	$scope.currentClient = client;
-		 // }
+		  } else {
+		  	$scope.currentClient.name = item.name;
+		  	$scope.otherClient="otherClient";
+		  }
 	}
 
 	$scope.branchChanged = function() {
@@ -71,9 +72,8 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		});
 	}
 	$scope.selectedClientChanged = function(client){
-		console.log(client);
 		$scope.currentClient = client;
-        $scope.otherClient = "!otherClient";
+		//$scope.otherClient = "otherClient";
 	}
 	function setAllInputsDirty(form) {
 		angular.forEach(form, function(value, key) {

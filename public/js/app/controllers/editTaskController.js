@@ -7,6 +7,7 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	$rootScope.selectedTab = $rootScope.tabsMap['Tasks'];
 	var originalTask;
 	$scope.taskStatus = TaskStatus;
+	$scope.ClientDetails = {};
 	function updateTaskModel(task){
 		originalTask = angular.copy(task);
 		$scope.task = task;
@@ -35,6 +36,15 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 		} else {
 			$scope.otherClient = true;
 		}
+		CAService.getClientById($scope.task.client_id).then(function(data) {
+		  $scope.ClientDetails = data;
+	     }, function(err) {
+			$mdToast.show($mdToast.simple()
+			.textContent("Unable to fetch client details")
+			.position("top right")
+			.hideDelay(5000));
+	     });
+		$scope.SelectedTasks = $scope.task.works;
 	}
 	function getTask() {
 		CAService.getTask($routeParams.taskId).then(updateTaskModel, function(err) {
