@@ -3,7 +3,7 @@ var db = require('../db');
 
 exports.up = function(next) {
     var alterQuery = "ALTER TABLE users ADD COLUMN department int(11) NULL, \
-    ADD FOREIGN KEY department(department) references departments(id)";
+    ADD FOREIGN KEY (department) references departments(id)";
     db.getConnection().then(function(connection){
       connection.query(alterQuery, function(err, results){
         if(err) {

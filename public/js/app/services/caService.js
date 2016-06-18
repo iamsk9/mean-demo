@@ -30,6 +30,34 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return Restangular.one('/clients').get(payload);
 		},
 
+		getDepartmentsList : function(){
+            var departmentListDefer = $q.defer();
+            Restangular.one('/departmentsList').get().then(function(data){
+            	if(data.returnCode == "SUCCESS") {
+					departmentListDefer.resolve(data.data);
+				} else {
+					departmentListDefer.reject();
+				}
+			}, function(err){
+				gdepartmentListDefer.reject(err);
+			});
+			return departmentListDefer.promise;
+        },
+
+        getTaskList : function(id){
+        	var getTaskListDefer = $q.defer();
+        	Restangular.one('/departments/' + id).get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getTaskListDefer.resolve(data.data);
+				} else {
+					getTaskListDefer.reject();
+				}
+			}, function(err){
+				getTaskListDefer.reject(err);
+			});
+			return getTaskListDefer.promise;
+        },
+
 		getClients : function(search) {
 			var getClientsDefer = $q.defer();
 			var payload = {};
@@ -316,9 +344,12 @@ Caweb.factory('CAService', function(Restangular, $q){
 		calculateDiff : function(updated, original) {
 			var payload = {};
 			for(var key in updated) {
-				if(updated[key] != original[key]) {
-					payload[key] = updated[key]; 
-				}
+				if(key == "name" || "email"){
+	                if(updated[key] != original[key])
+				    {
+							payload[key] = updated[key]; 
+					}
+			    }
 			}
 			return payload;
 		},

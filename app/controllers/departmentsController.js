@@ -16,8 +16,38 @@ exports.getDepartments = function(req,res){
 	});
 };
 
+exports.getDepartmentsList = function(req,res){
+   DepartmentsHelper.getDepartmentsList().then(function(result){
+		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
+	}, function(err){
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode})
+		} else {
+			console.log(err);
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014})
+
+		}
+	});
+};
+
 exports.getDepartment = function(req,res){
 	DepartmentsHelper.getDepartment(req.params.departmentId).then(function(result){
+		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
+	}, function(err){
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode})
+		} else {
+			console.log(err);
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014})
+
+		}
+	});
+};
+
+exports.getDepartmentTasks = function(req,res){
+	DepartmentsHelper.getDepartmentTasks(req.params.id).then(function(result){
 		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
 	}, function(err){
 		console.log(err);

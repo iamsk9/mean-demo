@@ -21,6 +21,11 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 			.hideDelay(5000));
 		});
 	}
+	function getDepartmentsList(){
+		CAService.getDepartmentsList().then(function(result){
+           $scope.DepartmentsList = result;
+		});
+	}
 	getUsers();
 	CAService.getBranches().then(function(data) {
 		$scope.branches = data;
@@ -35,6 +40,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 		.position("top right")
 		.hideDelay(5000));
 	});
+	getDepartmentsList();
 	function showDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
@@ -80,7 +86,8 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 				first_name : $scope.currentUser.first_name,
 				email : $scope.currentUser.email,
 				user_role : $scope.currentUser.user_role,
-				branch : $scope.currentUser.branch
+				branch : $scope.currentUser.branch,
+				department : $scope.currentUser.department
 			};
 			UserService.addUser(payload).then(function(){
 				$mdToast.show($mdToast.simple()
