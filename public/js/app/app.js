@@ -9,7 +9,7 @@ Caweb.constant('Tabs', [
 	'Documents',
 	'Manage Users',
 	'Branches',
-    'Master Management',
+    'Department Management',
 	'Assign Task',
 	'Tasks',
 	'Reports'
@@ -223,7 +223,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 				break;
 			case $rootScope.tabsMap['Branches'] : $location.path('/branches');
 				break;
-			case $rootScope.tabsMap['Master Management'] : $location.path('/departments');
+			case $rootScope.tabsMap['Department Management'] : $location.path('/departments');
                 break;
             case $rootScope.tabsMap['Assign Task'] : $location.path('/assigntask');
 				break;
