@@ -40,7 +40,7 @@ exports.addFormClient = function(request){
       return addClientFormDefer.promise;
   }
 
-  exports.getclient= function(params) {
+exports.getclient= function(params) {
   	var getClientFormDefer = q.defer();
   	if(params.get_deleted) {
   		var query = "SELECT id, name, company, email,mobile,tasklist,deleted_at from clients_enquiry;";
@@ -55,4 +55,4 @@ exports.addFormClient = function(request){
   		getClientFormDefer.reject(err);
   	});
   	return getClientFormDefer.promise;
-  }
+}

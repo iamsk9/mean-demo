@@ -39,6 +39,10 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/client/resetpassword', UserController.sendResetPassword);
 
+	app.get('/clientform', ClientFormController.getClient);
+
+	app.post('/clientform', ClientFormController.postClient);
+
 	app.get('/user/resetpassword', UserController.sendResetPassword);
 
 	app.post('/resetPassword/:userId', UserController.resetPassword);
@@ -133,7 +137,4 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
 
-	apiRoutes.post('/clientform', ClientFormController.postClient);
-
-apiRoutes.get('/clientform', ClientFormController.getClient);
 }

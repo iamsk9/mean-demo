@@ -2,7 +2,7 @@ var ClientFormHelper=require('../helpers/clientFormHelper.js');
 
 
 exports.postClient = function(req,res){
- departmentHelper.addFormClient(req.body).then(function(result) {
+ ClientFormHelper.addFormClient(req.body).then(function(result) {
         res.json({returnCode : "SUCCESS", data : data, errorCode : null});
     }, function(err) {
         console.log(err);
@@ -15,7 +15,7 @@ exports.postClient = function(req,res){
 }
 
 exports.getClient = function(req,res){
- departmentHelper.getclient(req.body).then(function(result) {
+ ClientFormHelper.getclient(req.body).then(function(result) {
         res.json({returnCode : "SUCCESS", data : data, errorCode : null});
     }, function(err) {
         console.log(err);
