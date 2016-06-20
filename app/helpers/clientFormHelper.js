@@ -8,26 +8,35 @@ var utils = require('../utils');
 
 var emailer = require('../emailer');
 
-function sendEmail(task) {
-	var userQuery = "SELECT dept_id FROM departments_tasks LEFT JOIN master_tasks on master_tasks.task_name = ?";
+function sendEmail(task,name) {
+	var userQuery = "SELECT id FROM master_tasks where task_name = ?";
+  var taskName = task;
+  var clientName = name;
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, userQuery,[task]);
   	}).then(function(results) {
+      taskId = results[0].id;
+      db.getConnection().then(function(connection) {
+    return utils.runQuery(connection, "SELECT dept_id from departments_tasks where task_id = ? and deleted_at is NULL",[taskId]);
+    }).then(function(results) {
      var id = results[0].dept_id;
-     var mailQuery = "SELECT email FROM departments where id = ?";
+     var mailQuery = "SELECT email FROM departments where id = ? and deleted_at is Null";
       db.getConnection().then(function(connection) {
         return utils.runQuery(connection, mailQuery,[id]);
-      });
-    }).then(function(results) {
-		if(results.length > 0) {
-			var queries = results[0];
-			emailer.send('public/templates/_taskEmail.html', {
-				tasks : queries.task
-			}, queries.email,"Task assigned for department");
-		}
-	}).catch(function(err) {
-		console.log(err);
-	});
+      }).then(function(results) {
+        
+		     if(results.length > 0) {
+  			   var queries = results[0];
+  			    emailer.send('public/templates/_taskEmail.html', {
+  				    task : task,
+              name : clientName
+  			     }, queries.email,"Task assigned for department");
+		     }
+	   });
+    });
+  }).catch(function(err) {
+		   console.log(err);
+	   });
 }
 //var d= "SELECT email FROM departments  INNER JOIN dept_task_mapping on departments.id=dept_task_mapping.dept_id INNER JOIN tasks on dept_task_mapping.tasklist=request.tasklist";
 exports.addFormClient = function(request){
@@ -41,23 +50,13 @@ exports.addFormClient = function(request){
       }).catch(function(err) {
           addClientFormDefer.reject(err);
       });
-      sendEmail(request.task);
+      sendEmail(request.task,request.name);
       return addClientFormDefer.promise;
   }
 
-exports.getclient= function(params) {
-  	var getClientFormDefer = q.defer();
-  	if(params.get_deleted) {
-  		var query = "SELECT id, name, company, email,mobile,tasklist,deleted_at from clients_enquiry;";
-  	} else {
-  		var query = "SELECT id, name, company, email,mobile,tasklist from clients_enquiry where deleted_at is NULL";
-  	}
-  	db.getConnection().then(function(connection) {
-  		return utils.runQuery(connection, query);
-  	}).then(function(results) {
-  		getClientFormDefer.resolve(results);
-  	}).catch(function(err) {
-  		getClientFormDefer.reject(err);
-  	});
-  	return getClientFormDefer.promise;
-}
+// exports.getClientEnquiryForm= function() {
+//   	var getClientFormDefer = q.defer();
+    
+//     getClientFormDefer.resolve(results);
+//   	return getClientFormDefer.promise;
+// }

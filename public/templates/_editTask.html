@@ -192,7 +192,7 @@
 							<div ng-show = "reqDocs.length > 0" style = "width:70%">
 								<div layout = "column" ng-repeat = "work in task.works">
 									<p class = "font_16">[[work.name]]</p>
-									<md-checkbox ng-repeat = "doc in reqDocs | filter:{ work_id : work.id}" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+									<md-checkbox ng-repeat = "doc in reqDocs" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
 								</div>
 							</div>
 						</div>

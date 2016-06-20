@@ -73,7 +73,6 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	}
 	$scope.selectedClientChanged = function(client){
 		$scope.currentClient = client;
-		//$scope.otherClient = "otherClient";
 	}
 	function setAllInputsDirty(form) {
 		angular.forEach(form, function(value, key) {

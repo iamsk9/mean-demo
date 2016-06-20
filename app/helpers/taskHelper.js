@@ -47,7 +47,11 @@ exports.assignTask = function(request, user) {
 		is_read : 0
 	};
 	if(request.client) {
+		console.log(request.client);
 		payload.client_id = request.client.id;
+		payload.client_name = request.client.name;
+		payload.contact_number = request.client.phone_number;
+		payload.pan_card = request.client.company_pan_number;
 	} else {
 		payload.client_name = request.clientName;
 		payload.contact_number = request.contactNumber;
