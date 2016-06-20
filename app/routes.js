@@ -107,8 +107,6 @@ module.exports = function(app, apiRoutes, blobService) {
 
     apiRoutes.get('/departments', DepartmentsController.getDepartments);
 
-    apiRoutes.get('/departmentsList', DepartmentsController.getDepartmentsList);    
-
     apiRoutes.get('/departments/:id', DepartmentsController.getDepartmentTasks);    
 
     apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);

@@ -8,6 +8,7 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	var originalTask;
 	$scope.taskStatus = TaskStatus;
 	$scope.ClientDetails = {};
+	$scope.taskDocCount = [];
 	function updateTaskModel(task){
 		originalTask = angular.copy(task);
 		$scope.task = task;
@@ -89,6 +90,7 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	$scope.querySearch = function(searchText) {
 		return CAService.searchClients(searchText);
 	}
+	
 	$scope.branchChanged = function() {
 		var payload = {
 			branch_id : $scope.task.branch

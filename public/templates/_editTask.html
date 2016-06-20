@@ -171,6 +171,7 @@
 				              md-require-match="true" style = "width : 70%">
 						      <md-autocomplete
 						          md-selected-item="selectedItem"
+						          md-selected-item-change=""
 						          md-search-text="searchText"
 						          md-items="item in filterResults(searchText)"
 						          md-min-length="0"
@@ -192,7 +193,9 @@
 							<div ng-show = "reqDocs.length > 0" style = "width:70%">
 								<div layout = "column" ng-repeat = "work in task.works">
 									<p class = "font_16">[[work.name]]</p>
-									<md-checkbox ng-repeat = "doc in reqDocs" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+									<div ng-repeat = "doc in reqDocs">
+									<md-checkbox ng-checked = "docStatus[doc.doc_id].status" ng-if="doc.work_name == work.name" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+								    </div>
 								</div>
 							</div>
 						</div>

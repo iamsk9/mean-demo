@@ -22,7 +22,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 		});
 	}
 	function getDepartmentsList(){
-		CAService.getDepartmentsList().then(function(result){
+		CAService.getDepartments().then(function(result){
            $scope.DepartmentsList = result;
 		});
 	}
@@ -65,6 +65,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 	}
 
 	$scope.showAddUserDialog = function() {
+		$scope.currentUser = {};
 		$scope.dialogType = 'Add';
 		showDialog();
 	}

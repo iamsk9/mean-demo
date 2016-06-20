@@ -94,19 +94,6 @@ exports.updateDepartment = function(id, requestParams) {
 	return updateDepartmentDefer.promise;
 }
 
-exports.getDepartmentsList = function(){
-	var getDepartmentsListDefer = q.defer();
-	var query = "SELECT id, name from departments where deleted_at is NULL";
-	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, query);
-	}).then(function(results) {
-		getDepartmentsListDefer.resolve(results);
-	}).catch(function(err) {
-		getDepartmentsListDefer.reject(err);
-	});
-	return getDepartmentsListDefer.promise;
-}
-
 exports.getDepartments = function() {
 	var getDepartmentsDefer = q.defer();
 	var query = "SELECT id, name, email from departments where deleted_at is NULL";
