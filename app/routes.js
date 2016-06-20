@@ -41,8 +41,6 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/clientform', ClientFormController.getClient);
 
-	app.post('/clientform', ClientFormController.postClient);
-
 	app.get('/user/resetpassword', UserController.sendResetPassword);
 
 	app.post('/resetPassword/:userId', UserController.resetPassword);
@@ -50,6 +48,8 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.post('/authenticate', UserController.authenticate);
 
 	apiRoutes.post('/register', UserController.register);
+
+    apiRoutes.post('/clientform', ClientFormController.postClient);
 
 	apiRoutes.use(AuthorizationMiddleware.authorize);
 

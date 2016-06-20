@@ -47,7 +47,7 @@ Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdT
 		});
 	}
 	$scope.updateTask = function(task) {
-		$location.path('/task/' + task.id + "/edit");
+		$location.path('/task/' + task.id + '/edit');
 	}
 	$scope.viewTask = function(task) {
 		$location.path('/task/' + task.id);
