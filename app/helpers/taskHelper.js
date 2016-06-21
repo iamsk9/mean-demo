@@ -387,7 +387,7 @@ exports.getReqDocs = getReqDocs;
 
 var getTaskDocs = function(taskId) {
 	var getTaskDocsDefer = q.defer();
-	var getTaskDocsQuery = "SELECT md.name as doc_name, mtdm.custom_label as label, mt.task_name as work_name from master_documents md \
+	var getTaskDocsQuery = "SELECT md.name as doc_name, mtdm.id as doc_id, mtdm.custom_label as label, mt.task_name as work_name from master_documents md \
 	INNER JOIN master_task_document_mapping mtdm ON mtdm.req_doc_id = md.id \
 	INNER JOIN master_tasks mt ON mt.id = mtdm.task_id\
 	 where md.deleted_at is NULL";
