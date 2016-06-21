@@ -12,6 +12,10 @@ var utils = require('../utils');
 
 var moment = require('moment');
 
+var kue = require('kue');
+
+var jobs = kue.createQueue();
+
 const fs = require('fs');
 
 function uploadToAzureStorage(request) {
@@ -29,38 +33,57 @@ function uploadToAzureStorage(request) {
 
 exports.saveDoc = function(request) {
 	var saveDocDefer = q.defer();
-	uploadToAzureStorage(request).then(function(url) {
-		console.log("Uploaded to azure " + url);
-		console.log(request.file.filename);
-		console.log(request.body);
-		var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, description, parent) VALUES (?,?,?,?,?,?,?)";
-		db.getConnection().then(function(connection) {
-			console.log("Obtained the connection");
-			var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url,
-				moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.file.originalname, request.body.parent], function(err, result){
-					console.log(request.file.filename);
-					console.log("Inside Query");
-					if(err) {
-						console.log("Query Error");
-						saveDocDefer.reject(err);
-						connection.release();
-						return;
-					}
-					console.log("Query Successful");
-					saveDocDefer.resolve({url : url, description: request.file.originalname});
-					fs.unlink('uploads/'+request.file.filename, function(err) {
-  						if (err) {
-							console.log("Could not Delete file from uploads");
-						}
-  						console.log('Successfully Deleted file from Uploads');
-					});
-					connection.release();
-				});
-			console.log(query.sql);
-		}, function() {
+	console.log(request.file);
+	if(request.file.mimetype == "application/zip" || request.file.mimetype == "application/x-rar") {
+		var job = jobs.create('extractRar', {
+			file : request.file,
+			client_id : request.body.client_id,
+			user_id : request.user.id,
+			parent : request.body.parent
+		}).save();
+		job.on('complete', function(data) {
+			console.log("The file " + request.file.originalname + " has been extracted and files have been uploaded to azure.");
+			saveDocDefer.resolve();
+		});
+		job.on('failed', function() {
+			console.log("The file " + request.file.originalname + " extraction job failed.");
 			saveDocDefer.reject();
-		})
-	});
+		});
+		return saveDocDefer.promise;
+	} else {
+		uploadToAzureStorage(request).then(function(url) {
+			console.log("Uploaded to azure " + url);
+			console.log(request.file.filename);
+			console.log(request.body);
+			var docsQuery = "INSERT into docs (user_id, client_id, url, created_at, modified_at, description, parent) VALUES (?,?,?,?,?,?,?)";
+			db.getConnection().then(function(connection) {
+				console.log("Obtained the connection");
+				var query = connection.query(docsQuery, [request.user.id, parseInt(request.body.client_id), url,
+					moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), request.file.originalname, request.body.parent], function(err, result){
+						console.log(request.file.filename);
+						console.log("Inside Query");
+						if(err) {
+							console.log("Query Error");
+							saveDocDefer.reject(err);
+							connection.release();
+							return;
+						}
+						console.log("Query Successful");
+						saveDocDefer.resolve({url : url, description: request.file.originalname});
+						fs.unlink('uploads/'+request.file.filename, function(err) {
+	  						if (err) {
+								console.log("Could not Delete file from uploads");
+							}
+	  						console.log('Successfully Deleted file from Uploads');
+						});
+						connection.release();
+					});
+				console.log(query.sql);
+			}, function() {
+				saveDocDefer.reject();
+			})
+		});
+	}
 	return saveDocDefer.promise;
 }
 
