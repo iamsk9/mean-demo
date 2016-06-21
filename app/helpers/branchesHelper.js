@@ -24,9 +24,9 @@ exports.createBranch = function(request) {
 exports.updateBranch = function(id, requestParams) {
 	var updateBranchDefer = q.defer();
 	requestParams.modified_at = moment().format('YYYY-MM-DD HH:mm:ss');
-	var query = "UPDATE branches SET ?";
+	var query = "UPDATE branches SET ? where id = ?";
 	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, query, requestParams);
+		return utils.runQuery(connection, query, [requestParams,id]);
 	}).then(function(results) {
 		updateBranchDefer.resolve(results);
 	}).catch(function(err) {

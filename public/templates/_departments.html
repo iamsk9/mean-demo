@@ -16,7 +16,7 @@
 		            <tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
 		                <td md-cell class = "font_16 center">#[[department.id]]</td>
 		                <td md-cell class = "font_16 center">[[department.name]]</td>
-		              	<td md-cell class = "font_16 center">[[department.task]]</td>
+		              	<td md-cell class = "font_16 center"><md-button ng-click="getTasks(department.id)">view tasks</md-button></td>
 		             	<td md-cell class = "font_16 center">[[department.email]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
 		            </tr>
@@ -24,7 +24,7 @@
 		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no departments to show.</td>
 		            </tr>
                     <tr>
-
+		            
                     </tr>
 		        </tbody>
 		    </table>
@@ -34,6 +34,30 @@
 <md-button class="md-fab md-fab-bottom-right" aria-label="Add Branch" ng-click = "showAddDepartmentDialog()">
 	<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
 </md-button>
+<script type = "text/ng-template" id = "task.tmpl.html">
+	 <md-dialog>
+	   <md-toolbar>
+			      <div class="md-toolbar-tools">
+			        <h2>Department Tasks </h2>
+			        <span flex></span>
+			        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+			          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+			        </md-button>
+			      </div>
+	   </md-toolbar>
+	   <md-dialog-content style="width:400px;max-height:810px;margin-top:20px">
+	       <div layout = "column" layout-align = "center center">
+	            <md-list>
+				  <md-list-item class="md-2-line" ng-repeat="item in theScope.deptTasks">
+				    <div class="md-list-item-text">
+				            <p style="font-size:18px">[[item.name]]</p>				       
+				    </div>
+				  </md-list-item>
+				</md-list>
+	       </div>
+	   </md-dialog-content>
+	 </md-dialog>  
+</script>
 <script type = "text/ng-template" id = "department.tmpl.html">
 	<md-dialog aria-label="branch">
 			<md-toolbar>
@@ -56,23 +80,23 @@
 					  </div>
 					</md-input-container>
                         <md-input-container  style = "width : 300px" class = "md-block">
+					         <label>task</label>
 					      <md-chips ng-model="theScope.task_works" md-autocomplete-snap
-				              md-require-match="true" style = "width : 70%">
+				              md-require-match="true" md-on-remove="theScope.removeTask($chip.id,$chip.name)" style = "width : 70%">
 						        <md-autocomplete
-						        	md-floating-label="Select Tasks"
-						           md-selected-item="selectedItem"
+						           md-selected-item="selectedItems"
 						           md-search-text="searchText"
-						           md-items="item in theScope.masterWorks"
-											 md-selected-item-change = "theScope.selectedItem([[item.name]])"
+						           md-selected-item-change="theScope.tasksSelected(selectedItems,item.id)"
+						           md-items="item in theScope.filterResults(searchText)"
 						           md-min-length="0"
-						           style = "width: 300px">
+						           placeholder="Search for a task" style = "width: 300px">
 						           <md-item-template>[[item.name]]</md-item-template>
 						           <md-not-found>
 				    				 No Works found.
 								   </md-not-found>
 						        </md-autocomplete>
 						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
-						     </md-chips></md-input-container>
+						     </md-chips></md-input-container>  
 					 <md-input-container style = "width : 300px">
 					  <label>mail id</label>
 					  <input type="text" required name = "email" ng-model = "theScope.currentDepartment.email">
@@ -80,9 +104,9 @@
 					  	<div ng-message = "required">This is required</div>
 					  </div>
 					</md-input-container>
-					<div layout = "row" class = "margin_bottom_20" layout-align = "center center">
+					<div layout = "row" layout-align = "center center">
 						<md-button class = "md-primary" style = "font-size : 1.3em"
-						ng-click = "theScope.departmentAction(theScope.dialog)" ng-disabled = "theScope.departmentActionLoading">[[::theScope.dialogType]] Department</md-button>
+						ng-click = "theScope.departmentAction(theScope.dialogType)" ng-disabled = "theScope.departmentActionLoading">[[::theScope.dialogType]] Department</md-button>
 						<md-progress-circular md-mode="[[theScope.departmenthActionLoading]]"></md-progress-circular>
 		            </div>
 				</div>

@@ -9,6 +9,7 @@
 	                    <th md-column class = "font_16 center" style = "width : 200px">Name</th>
 	                    <th md-column class = "font_16 center" style = "width : 200px">Email</th>
 	                    <th md-column class = "font_16 center" style = "width : 200px">Branch</th>
+	                    <th md-column class = "font_18 center" style = "width : 200px">Department</th>
 	                    <th md-column class = "font_16 center" style = "width : 200px">Role</th>
 	                    <th md-column class = "font_16 center" style = "width : 200px">Verified</th>
 	                	<th md-column class = "font_16 center" style = "width : 100px">Status</th>
@@ -22,6 +23,13 @@
 		                <td md-cell class = "font_14 center">[[user.email]]</td>
 		                <td md-cell class = "font_14 center" ng-hide = "branches[user.branch]"> - </td>
 		                <td md-cell class = "font_14 center" ng-show = "branches[user.branch]">[[branches[user.branch].name ]]</td>
+		                <td md-cell class = "font_16 center">
+
+		                   <div  ng-repeat= "eachDepaartment in DepartmentsList" ng-show = " user.department == eachDepaartment.id">
+		                    	[[eachDepaartment.name]] 
+		                   </div>
+		                   
+		                </td> 
 		                <td md-cell class = "font_14 center">[[user.user_role.toUpperCase()]]</td>
 		                <td md-cell class = "font_14 center"><p ng-show = 'user.is_verified'>Verified</p><p ng-show = '!user.is_verified'>Not Verified</p></td>
 		                <td md-cell class = "font_14 center">[[user.deleted_at?'Disabled':'Active']]</td>
@@ -75,6 +83,14 @@
 							[[role.toUpperCase()]]
 							</md-option>
 				        </md-select>
+				    </md-input-container>
+				    <md-input-container style = "width: 300px">
+				       <label>Department</label>
+				       <md-select ng-model="theScope.currentUser.department">
+                          <md-option ng-repeat="dept in theScope.DepartmentsList" value="[[dept.id]]">
+                             [[dept.name]]
+                          </md-option>
+				       </md-select>
 				    </md-input-container>
 				    <md-input-container style = "width: 300px">
 				        <label>Branch</label>

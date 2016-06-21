@@ -39,17 +39,21 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	app.get('/client/resetpassword', UserController.sendResetPassword);
 
-	app.get('/clientform', ClientFormController.getClient);
-
-	app.post('/clientform', ClientFormController.postClient);
+	//app.get('/clientform', );
 
 	app.get('/user/resetpassword', UserController.sendResetPassword);
 
 	app.post('/resetPassword/:userId', UserController.resetPassword);
 
+	apiRoutes.get('/clientform', function(req,res){
+		res.sendfile('public/Enquiry_Form/client_enquiry_form.html');
+	});
+
 	apiRoutes.post('/authenticate', UserController.authenticate);
 
 	apiRoutes.post('/register', UserController.register);
+
+    apiRoutes.post('/clientform', ClientFormController.postClient);
 
 	apiRoutes.use(AuthorizationMiddleware.authorize);
 
@@ -103,6 +107,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
     apiRoutes.get('/departments', DepartmentsController.getDepartments);
 
+    apiRoutes.get('/departments/:id', DepartmentsController.getDepartmentTasks);    
+
     apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);
 
     apiRoutes.delete('/departments/:departmentId', DepartmentsController.removeDepartment);
@@ -118,6 +124,8 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/task/:taskId', TaskController.updateTask);
 
 	apiRoutes.get('/task/:taskId/reqDocs', TaskController.getReqDocs);
+
+	apiRoutes.get('/task/:Id/taskDocs', TaskController.getTaskDocs);
 
 	apiRoutes.patch('/taskStatus', TaskController.updateTaskStatus);
 

@@ -171,6 +171,7 @@
 				              md-require-match="true" style = "width : 70%">
 						      <md-autocomplete
 						          md-selected-item="selectedItem"
+						          md-selected-item-change="getTaskDocs(selectedItem)"
 						          md-search-text="searchText"
 						          md-items="item in filterResults(searchText)"
 						          md-min-length="0"
@@ -186,13 +187,15 @@
 						<div layout = "row" layout-align = "space-around" layout-wrap flex class = "margin_top_40">
 							<div layout = "column">
 								<p>Documents status</p>
-								<md-checkbox ng-change = "toggleAllDocumentsStatus()" ng-model = "selectAllDocs">Select All</md-checkbox>
+								<md-checkbox ng-show = "task.works.length > 0" ng-change = "toggleAllDocumentsStatus()" ng-model = "selectAllDocs">Select All</md-checkbox>
 							</div>
-							<p ng-show = "reqDocs.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
-							<div ng-show = "reqDocs.length > 0" style = "width:70%">
+							<p ng-show = "task.works.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
+							<div ng-show = "task.works.length > 0" style = "width:70%">
 								<div layout = "column" ng-repeat = "work in task.works">
 									<p class = "font_16">[[work.name]]</p>
-									<md-checkbox ng-repeat = "doc in reqDocs | filter:{ work_id : work.id}" ng-checked = "docStatus[doc.doc_id].status" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+									<div ng-repeat = "doc in reqDocs">
+									<md-checkbox ng-checked = "docStatus[doc.doc_id].status" ng-if="doc.work_name == work.name" ng-click = "toggle(doc)" style = "margin-left : 40px">[[doc.doc_name]] [[doc.label]]</md-checkbox>
+								    </div>
 								</div>
 							</div>
 						</div>

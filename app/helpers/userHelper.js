@@ -51,7 +51,7 @@ var checkUserExists = function(connection, email) {
 			}
 			if(results.length > 0) {
 				connection.release();
-				userExistsDefer.reject({userExists: true})	
+				userExistsDefer.reject({userExists: true})
 			} else {
 				userExistsDefer.resolve();
 			}
@@ -65,9 +65,9 @@ var checkUserExists = function(connection, email) {
 exports.checkUserExists = checkUserExists;
 
 exports.addUser = function(request) {
-	var addUserDefer = q.defer();
+	var addUserDefer = q.defer();	
 	var insertUser = "INSERT INTO users (first_name, last_name, email, user_role, is_verified, created_at, modified_at, \
-		reset_password_hash, request_password_hash_active, branch) VALUES (?,?,?,?,?,?,?,?,?,?)";
+		reset_password_hash, request_password_hash_active, branch,department) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
 		checkUserExists(connection, request.email).then(function(data) {
 			console.log("asdgasdg");
@@ -79,7 +79,7 @@ exports.addUser = function(request) {
 					role : 'User'
 				}, request.email, "Team Consultancy - Set Password for the Account");
 				connection.query(insertUser, [request.first_name, request.last_name, request.email,
-				request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), hash, 1, request.branch]
+				request.user_role, 0, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), hash, 1, request.branch,request.department]
 				, function(err, results) {
 					console.log("query");
 					if(err) {
@@ -91,6 +91,7 @@ exports.addUser = function(request) {
 					connection.release();
 					console.log("User successfully inserted");
 				});
+				
 			}, function(err) {
 				connection.release();
 				addUserDefer.reject(err);
@@ -116,19 +117,22 @@ exports.updateUser = function(id, requestParams) {
 			console.log(requestParams.email);
 			checkUserExists(connection, requestParams.email).then(function() {
 				console.log("asdkgakljsdg");
-				query = query + (query.indexOf('SET') > -1?", email = '" + requestParams.email + 
+				query = query + (query.indexOf('SET') > -1?", email = '" + requestParams.email +
 					"'":" SET email = '" + requestParams.email + "'");
 				console.log(query);
 				if(requestParams.user_role) {
-					query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role + 
+					query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role +
 						"'":" SET user_role = '" + requestParams.user_role + "'");
 				}
 				if(requestParams.first_name) {
-					query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
+					query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name
 						+ "'":" SET first_name = '" + requestParams.first_name + "'");
 				}
 				if(requestParams.branch) {
 					query = query + (query.indexOf('SET') > -1?", branch = " + requestParams.branch :" SET branch = " + requestParams.branch);
+				}
+				if(requestParams.department) {
+					query = query + (query.indexOf('SET') > -1?", department = " + requestParams.department :" SET department = " + requestParams.department);
 				}
 				generateHash('#' + requestParams.email + '-' + moment().format('YYYY-MM-DD HH:mm:ss')).then(function(hash){
 					emailer.send('public/templates/_emailTemplate.html', {
@@ -156,15 +160,18 @@ exports.updateUser = function(id, requestParams) {
 			});
 		} else {
 			if(requestParams.user_role) {
-				query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role + 
+				query = query + (query.indexOf('SET') > -1?", user_role = '" + requestParams.user_role +
 					"'":" SET user_role = '" + requestParams.user_role + "'");
 			}
 			if(requestParams.first_name) {
-				query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name 
+				query = query + (query.indexOf('SET') > -1?", first_name = '" + requestParams.first_name
 					+ "'":" SET first_name = '" + requestParams.first_name + "'");
 			}
 			if(requestParams.branch) {
 				query = query + (query.indexOf('SET') > -1?", branch = " + requestParams.branch :" SET branch = " + requestParams.branch);
+			}
+			if(requestParams.department) {
+				query = query + (query.indexOf('SET') > -1?", department = " + requestParams.department :" SET department = " + requestParams.department);
 			}
 			query = query + (" where id = " + id);
 			console.log(query);
@@ -206,7 +213,7 @@ exports.authenticateUser = function(req) {
 						var userToToken = {
 							id : user.id,
 							role : user.user_role,
-							name : user.first_name,
+							name : user.first_name + " " + user.last_name,
 							email : user.email
 						};
 						console.log("kajsfk");
@@ -242,7 +249,7 @@ exports.logoutUser = function(req) {
 	var logoutQuery = "UPDATE user_tokens set deleted_at = ? where user_id = ? and session_token = ?";
 	db.getConnection().then(function(connection) {
 		console.log("ahsdkgjojunzos");
-		connection.query(logoutQuery, [moment().format('YYYY-MM-DD HH:mm:ss'), req.user.id, 
+		connection.query(logoutQuery, [moment().format('YYYY-MM-DD HH:mm:ss'), req.user.id,
 			req.cookies['x-ca-api-token']], function(err, results) {
 				console.log("asdgadshash");
 				if(err) {
@@ -288,12 +295,9 @@ exports.getUsers = function(req) {
 	var params = [];
 	if(req.query.branch_id) {
 		params.push([req.query.branch_id]);
-		var query = "SELECT id, first_name, user_role, email, is_verified, branch, deleted_at from users where branch = ? and user_role <> 'CLIENT'";
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch, department from users where branch = ? and user_role <> 'CLIENT' and deleted_at is NULL";
 	} else {
-		var query = "SELECT id, first_name, user_role, email, is_verified, branch, deleted_at from users where user_role <> 'CLIENT'";	
-	}
-	if(req.query.getDeleted) {
-		query = query + (" and deleted_at is NULL");
+		var query = "SELECT id, first_name, user_role, email, is_verified, branch, department from users where user_role <> 'CLIENT' and deleted_at is NULL";
 	}
 	db.getConnection().then(function(connection) {
 		connection.query(query, params, function(err, results) {
@@ -328,7 +332,7 @@ exports.removeUser = function(id) {
 	var removeUserDefer = q.defer();
 	var removeUser = "UPDATE users SET deleted_at = ? where id = ? and user_role <> 'CLIENT' and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
-		connection.query(removeUser, [moment().format('YYYY-MM-DD HH:mm:ss'), id], function(err, results) {
+		connection.query(removeUser, [id, moment().format('YYYY-MM-DD HH:mm:ss')], function(err, results) {
 			connection.release();
 			if(err) {
 				removeUserDefer.reject(err);
@@ -338,22 +342,6 @@ exports.removeUser = function(id) {
 		});
 	});
 	return removeUserDefer.promise;
-}
-
-exports.enableUser = function(id) {
-	var enableUserDefer = q.defer();
-	var enableUser = "UPDATE users SET deleted_at = ? where id = ?";
-	db.getConnection().then(function(connection) {
-		connection.query(enableUser, [null, id], function(err, results) {
-			connection.release();
-			if(err) {
-				enableUserDefer.reject(err);
-				return;
-			}
-			enableUserDefer.resolve();
-		});
-	});
-	return enableUserDefer.promise;
 }
 
 exports.resetPassword = function(req) {

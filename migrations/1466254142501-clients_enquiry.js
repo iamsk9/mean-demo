@@ -3,14 +3,14 @@ var db = require('../db');
 var utils = require('../app/utils.js');
 
 exports.up = function(next) {
-	var createDepartments = "CREATE TABLE departments (id int NOT NULL AUTO_INCREMENT,\
-		name varchar(255) NOT NULL, head varchar(255) NOT NULL, email varchar(225) NOT NULL,\
-		created_at DATETIME, deleted_at DATETIME, modified_at DATETIME, PRIMARY KEY (id))";
+	var createEnquiry = "CREATE TABLE clients_enquiry (id int NOT NULL AUTO_INCREMENT, name varchar(255),\
+	 company varchar(255) NOT null, email varchar(255) NOT NULL, task varchar(255) ,mobile int NOT NULL,\
+     created_at DATETIME, deleted_at DATETIME,modified_at DATETIME, PRIMARY KEY(id))";
 	var connection;
 	db.getConnection().then(function(conn){
 		connection = conn;
-		return utils.runQuery(connection, createDepartments).then(function(results) {
-			console.log(createDepartments);
+		return utils.runQuery(connection, createEnquiry).then(function(results) {
+			console.log(createEnquiry);
 			console.log("SUCCESSFUL");
 			next();
 		}, function(err) {
@@ -23,7 +23,7 @@ exports.up = function(next) {
 };
 
 exports.down = function(next) {
-	var dropQuery = "DROP TABLE departments";
+	var dropQuery = "DROP TABLE clients_enquiry";
 	db.getConnection().then(function(connection){
 		connection.query(dropQuery, function(err, results){
 			if(err) {
@@ -36,3 +36,4 @@ exports.down = function(next) {
 		throw err;
 	});
 };
+

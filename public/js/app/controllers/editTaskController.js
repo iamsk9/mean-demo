@@ -86,9 +86,40 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 		.position("top right")
 		.hideDelay(5000));
 	});
+
 	$scope.querySearch = function(searchText) {
 		return CAService.searchClients(searchText);
 	}
+
+    $scope.getTaskDocs = function(item) {
+    	if(item) {
+    		var filteredWorks = $scope.task.works.filter(function(el) {
+	    		return (el.id == item.id);
+	    	});
+	    	if(filteredWorks.length == 0) {	
+	    		CAService.getTaskDocs(item.id).then(function(data) {
+	    			for(var i = 0;i < data.length; i++) {
+	    				var doc = {
+	    					id : data[i].doc_id,
+	    					label : data[i].label,
+	    					name : data[i].doc_name,
+	    					status : 0
+	    				};
+	    				$scope.docStatus[data[i].doc_id] = doc;
+	    				$scope.task.docs.push(doc);
+	    			}
+					$scope.reqDocs = $scope.reqDocs.concat(data);
+					$scope.selectAllDocs = false;
+				}, function(err) {
+					$mdToast.show($mdToast.simple()
+					.textContent("Unable to fetch Current Task Document Details")
+					.position("top right")
+					.hideDelay(5000));
+				});	
+	    	}
+    	}
+	}
+
 	$scope.branchChanged = function() {
 		var payload = {
 			branch_id : $scope.task.branch
