@@ -329,6 +329,17 @@ Caweb.factory('CAService', function(Restangular, $q){
 		calculateDiff : function(updated, original) {
 			var payload = {};
 			for(var key in updated) {
+	                if(updated[key] != original[key])
+				    {
+							payload[key] = updated[key]; 
+					}
+			}
+			return payload;
+		},
+
+        calculateDeptDiff : function(updated, original) {
+			var payload = {};
+			for(var key in updated) {
 				if(key == "name" || "email"){
 	                if(updated[key] != original[key])
 				    {
@@ -561,6 +572,19 @@ Caweb.factory('CAService', function(Restangular, $q){
 				getReqDocsDefer.reject(err);
 			});
 			return getReqDocsDefer.promise;
+		},
+        getTaskDocs : function(id) {
+			var getTaskDocsDefer = $q.defer();
+			Restangular.one('/task/' + id + '/taskDocs').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getTaskDocsDefer.resolve(data.data);
+				} else {
+					getTaskDocsDefer.reject(data);
+				}
+			}, function(err) {
+				getTaskDocsDefer.reject(err);
+			});
+			return getTaskDocsDefer.promise;
 		},
 		removeTask : function(id) {
 			var removeTaskDefer = $q.defer();

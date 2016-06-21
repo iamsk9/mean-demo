@@ -8,7 +8,6 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	var originalTask;
 	$scope.taskStatus = TaskStatus;
 	$scope.ClientDetails = {};
-	$scope.taskDocCount = [];
 	function updateTaskModel(task){
 		originalTask = angular.copy(task);
 		$scope.task = task;
@@ -87,10 +86,22 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 		.position("top right")
 		.hideDelay(5000));
 	});
+
 	$scope.querySearch = function(searchText) {
 		return CAService.searchClients(searchText);
 	}
-	
+
+    $scope.getTaskDocs = function(item) {
+		CAService.getTaskDocs(item.id).then(function(reqDocs) {
+			 $scope.reqDocs = reqDocs;
+		}, function(err) {
+			$mdToast.show($mdToast.simple()
+			.textContent("Unable to fetch Current Task Dpcument Details")
+			.position("top right")
+			.hideDelay(5000));
+		});
+	}
+
 	$scope.branchChanged = function() {
 		var payload = {
 			branch_id : $scope.task.branch

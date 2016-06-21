@@ -187,7 +187,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		} else if($scope.dialogType == 'Edit') {
 			var departmentAction = CAService.editUser;
 			var payload = {};
-			var updated_details = CAService.calculateDiff($scope.currentDepartment, original);
+			var updated_details = CAService.calculateDeptDiff($scope.currentDepartment, original);
 			payload.details = updated_details;
 			payload.added_tasks = $scope.newly_added_tasks;
     		payload.removed_tasks = $scope.removed_tasks;

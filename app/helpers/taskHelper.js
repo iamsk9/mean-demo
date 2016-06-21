@@ -382,7 +382,27 @@ var getReqDocs = function(id) {
 	});
 	return getReqDocsDefer.promise;
 }
+
 exports.getReqDocs = getReqDocs;
+
+var getTaskDocs = function(taskId) {
+	var getTaskDocsDefer = q.defer();
+	var getTaskDocsQuery = "SELECT md.name as doc_name, mtdm.custom_label as label, mt.task_name as work_name from master_documents md \
+	INNER JOIN master_task_document_mapping mtdm ON mtdm.req_doc_id = md.id \
+	INNER JOIN master_tasks mt ON mt.id = mtdm.task_id\
+	 where md.deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, getTaskDocsQuery, [taskId,taskId]);
+	}).then(function(results) {
+		console.log(results);
+		getTaskDocsDefer.resolve(results);
+	}).catch(function(err) {
+		getTaskDocsDefer.reject(err);
+	});
+	return getTaskDocsDefer.promise;
+}
+
+exports.getTaskDocs = getTaskDocs;
 
 exports.getMasterTasks = function() {
 	var getMasterTasksDefer = q.defer();

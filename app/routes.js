@@ -125,6 +125,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.get('/task/:taskId/reqDocs', TaskController.getReqDocs);
 
+	apiRoutes.get('/task/:Id/taskDocs', TaskController.getTaskDocs);
+
 	apiRoutes.patch('/taskStatus', TaskController.updateTaskStatus);
 
 	apiRoutes.delete('/task/:taskId', TaskController.removeTask);
