@@ -123,11 +123,12 @@ exports.updateTask = function(id, requestParams, user) {
 			}
 		}
 		function updateDocs() {
+			var docs = requestParams.docs.updated.concat(requestParams.docs.added);
 			var updateTaskStatus = "UPDATE task_document_status SET ? where task_id = ? and doc_id = ? and deleted_at is NULL";
 			var queryPromises = [];
 			console.log(requestParams.docs);
-			for(var i = 0; i < requestParams.docs.updated.length; i++) {
-				var updateTaskStatusParams = [{status : requestParams.docs.updated[i].status, modified_at : now}, id, requestParams.docs.updated[i].id];
+			for(var i = 0; i < docs.length; i++) {
+				var updateTaskStatusParams = [{status : docs[i].status, modified_at : now}, id, docs[i].id];
 				console.log(requestParams.docs.updated[i]);
 				queryPromises.push(utils.runQuery(connection, updateTaskStatus, updateTaskStatusParams, true));
 			}
@@ -235,7 +236,7 @@ exports.updateTask = function(id, requestParams, user) {
 			if(insertWorks) {
 				utils.runQuery(connection, insertWorks, [insertWorksParams], true).then(function() {
 					if(deleteWorks) {
-						utils.runQuery(connection, deleteWorks, [deleteWorksParams], true).then(continueUpdate);
+						utils.runQuery(connection, deleteWorks, deleteWorksParams, true).then(continueUpdate);
 					} else {
 						continueUpdate();
 					}
@@ -387,12 +388,12 @@ exports.getReqDocs = getReqDocs;
 
 var getTaskDocs = function(taskId) {
 	var getTaskDocsDefer = q.defer();
-	var getTaskDocsQuery = "SELECT md.name as doc_name, mtdm.id as doc_id, mtdm.custom_label as label, mt.task_name as work_name from master_documents md \
+	var getTaskDocsQuery = "SELECT md.name as doc_name, mtdm.id as doc_id, mtdm.custom_label as label, mt.id as work_id, mt.task_name as work_name from master_documents md \
 	INNER JOIN master_task_document_mapping mtdm ON mtdm.req_doc_id = md.id \
 	INNER JOIN master_tasks mt ON mt.id = mtdm.task_id\
-	 where md.deleted_at is NULL";
+	 where md.deleted_at is NULL and mt.deleted_at is NULL and mtdm.deleted_at is NULL and mt.id = ?";
 	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, getTaskDocsQuery, [taskId,taskId]);
+		return utils.runQuery(connection, getTaskDocsQuery, [taskId]);
 	}).then(function(results) {
 		console.log(results);
 		getTaskDocsDefer.resolve(results);

@@ -187,10 +187,10 @@
 						<div layout = "row" layout-align = "space-around" layout-wrap flex class = "margin_top_40">
 							<div layout = "column">
 								<p>Documents status</p>
-								<md-checkbox ng-change = "toggleAllDocumentsStatus()" ng-model = "selectAllDocs">Select All</md-checkbox>
+								<md-checkbox ng-show = "task.works.length > 0" ng-change = "toggleAllDocumentsStatus()" ng-model = "selectAllDocs">Select All</md-checkbox>
 							</div>
-							<p ng-show = "reqDocs.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
-							<div ng-show = "reqDocs.length > 0" style = "width:70%">
+							<p ng-show = "task.works.length == 0" style = "width : 70%"><strong>Add Works to the task to view the checklist</strong></p>
+							<div ng-show = "task.works.length > 0" style = "width:70%">
 								<div layout = "column" ng-repeat = "work in task.works">
 									<p class = "font_16">[[work.name]]</p>
 									<div ng-repeat = "doc in reqDocs">
