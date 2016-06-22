@@ -96,11 +96,11 @@
         <div class="row form-group">
           <div class="col-md-4">
             <center><h3>Enquiry Form</h3></center>
-            <input type="text" name="name" name="name" placeholder="Name" class="form-control"><br>
-            <input type="text" name="company" name="company" placeholder="Company" class="form-control"><br>
-            <input type="email" name="email" name="email" placeholder="Email" class="form-control"><br>
-            <input type="text" name="mobile" name="mobile" placeholder="Mobile No" class="form-control"><br>
-            <input type="text" name="name" name="name" placeholder="Subject" class="form-control"><br>
+            <input type="text" name="name" placeholder="Name" class="form-control"><br>
+            <input type="text" name="company" placeholder="Company" class="form-control"><br>
+            <input type="email" name="email" placeholder="Email" class="form-control"><br>
+            <input type="text" name="mobile" placeholder="Mobile No" class="form-control"><br>
+            <input type="text" name="subject" placeholder="Subject" class="form-control"><br>
             <textarea name="comment" id="comment" rows="5" class="form-control comment" placeholder="Comments"></textarea><br>
             <select name="tasks" style="width:100%;" data-placeholder="Select Some Tasks"> <!--  class="chzn-select" multiple="true" -->
               <option value="1">Registration of Proprietership Firm</option>
@@ -175,10 +175,26 @@
         </footer>
       </div>
       <script>
-          $(windows).load(function(){
-              $("#button").click(function(){
-                  alert('working');
-              });
+          $(window).load(function(){
+             $('#submit').click(function(){
+                var clientEnquiryDetails = {
+                  name : $('input[name="name"]').val(),
+                  company : $('input[name="company"]').val(),
+                  email : $('input[name="email"]').val(),
+                  mobile : $('input[name="mobile"]').val(),
+                  subject : $('input[name="subject"]').val(),
+                  comment : $('textarea[name="comment"]').val(),
+                  task : $('select[name="tasks"]').val()
+                }
+                $.ajax({
+                    url : "/api/clientform",
+                     type : "POST",
+                     data : JSON.stringify(clientEnquiryDetails),
+                     contentType : "application/json",
+                     
+                   
+                });
+            });
           });
       </script>
       <!--Script for the chosen option menu-->
