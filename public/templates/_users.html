@@ -26,10 +26,10 @@
 		                <td md-cell class = "font_16 center">
 
 		                   <div  ng-repeat= "eachDepaartment in DepartmentsList" ng-show = " user.department == eachDepaartment.id">
-		                    	[[eachDepaartment.name]] 
+		                    	[[eachDepaartment.name]]
 		                   </div>
-		                   
-		                </td> 
+
+		                </td>
 		                <td md-cell class = "font_14 center">[[user.user_role.toUpperCase()]]</td>
 		                <td md-cell class = "font_14 center"><p ng-show = 'user.is_verified'>Verified</p><p ng-show = '!user.is_verified'>Not Verified</p></td>
 		                <td md-cell class = "font_14 center">[[user.deleted_at?'Disabled':'Active']]</td>
@@ -62,43 +62,54 @@
 		    	<div layout = "column" layout-align = "center center">
 		            <md-input-container style = "width : 300px" class = "md-block">
 					  <label>User Name</label>
-					  <input type="text" required="" name = "name" ng-model = "theScope.currentUser.first_name">
+					  <input type="text" required="" name = "name" ng-model = "theScope.currentUser.first_name" ng-pattern = "/^[a-zA-Z ]+$/">
 					  <div ng-messages = "userForm.name.$error">
 					  	<div ng-message = "required">This is required</div>
+							<div ng-message = "pattern">Invalid User Name</div>
 					  </div>
 					</md-input-container>
 		            <md-input-container style = "width : 300px">
 					  <label>Email</label>
-					  <input type="email" required name = "email" ng-model = "theScope.currentUser.email">
+					  <input type="email" required name = "email" ng-model = "theScope.currentUser.email" ng-pattern = "/^[a-z0-9_.]+@[a-z]+.[a-z]+$/">
 					  <div ng-messages = "userForm.email.$error">
 					  	<div ng-message = "email">Please enter a valid email</div>
 					  	<div ng-message = "required">This is required</div>
+							<div ng-message = "pattern">Invalid Email Id</div>
 					  	<div ng-message = "userExists">User Exists. Email is already registered.</div>
 					  </div>
 					</md-input-container>
 					<md-input-container style = "width: 300px">
 				        <label>User Role</label>
-				        <md-select ng-model="theScope.currentUser.user_role">
+				        <md-select ng-model="theScope.currentUser.user_role" name = "userrole" required>
 							<md-option ng-repeat="role in ::theScope.userRoles" value="[[role]]">
 							[[role.toUpperCase()]]
 							</md-option>
 				        </md-select>
+								<div ng-messages="userForm.userrole.$error">
+          			<div ng-message="required">Required</div>
+        				</div>
 				    </md-input-container>
 				    <md-input-container style = "width: 300px">
 				       <label>Department</label>
-				       <md-select ng-model="theScope.currentUser.department">
+				       <md-select ng-model="theScope.currentUser.department" name = "department_name" required>
                           <md-option ng-repeat="dept in theScope.DepartmentsList" value="[[dept.id]]">
                              [[dept.name]]
                           </md-option>
 				       </md-select>
+							 <div ng-messages="userForm.department_name.$error">
+							 <div ng-message="required">Required</div>
+							 </div>
 				    </md-input-container>
 				    <md-input-container style = "width: 300px">
 				        <label>Branch</label>
-				        <md-select ng-model="theScope.currentUser.branch">
+				        <md-select ng-model="theScope.currentUser.branch" name = "department_name" required>
 							<md-option ng-repeat="(id,branch) in theScope.branches" value="[[id]]">
 							[[branch.name]]
 							</md-option>
 				        </md-select>
+								<div ng-messages="userForm.department_name.$error">
+ 							 <div ng-message="required">Required</div>
+ 							 </div>
 				    </md-input-container>
 					<div layout = "row" layout-align = "center center">
 						<md-button class = "md-primary" style = "font-size : 1.3em"

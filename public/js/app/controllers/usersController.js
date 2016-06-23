@@ -155,7 +155,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 
 	$scope.showRemoveUserDialog = function(index) {
@@ -179,7 +179,7 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 
 	$scope.openClient = function(client) {

@@ -30,7 +30,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 	getDepartments();
 	$scope.filterResults = function(query) {
 		if(query) {
-			var results = $scope.masterWorks.filter(createFilterFor(query));	
+			var results = $scope.masterWorks.filter(createFilterFor(query));
 		} else {
 			var results = $scope.masterWorks;
 		}
@@ -60,7 +60,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
           });
    }
 
-   function showTaskDialog(){       
+   function showTaskDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
 	    		$scope.theScope = theScope;
@@ -116,7 +116,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 	// 		selectedChip = selectedChip + "-" + chip;
 	// 	}
 	// }
- 
+
     $scope.tasksSelected = function(ob,taskId) {
     	            if($scope.dialogType == 'Edit')
     	            {
@@ -128,7 +128,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
     	            	$scope.newly_added_tasks.push({
     	            	id:taskId,
     	            	name:ob.name
-    	                });   
+    	                });
     	            }
     	            for(var i=0;i<$scope.task_works.length;i++)
     	            {
@@ -138,7 +138,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
     	            $scope.task_works.push({
     	            	id:taskId,
     	            	name:ob.name
-    	            });    	            
+    	            });
    }
 
 	$scope.getTasks = function(id){
@@ -157,7 +157,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
     	      $scope.removed_tasks.push({
     	            	id: id,
     	            	name: name
-    	            });	
+    	            });
      //$scope.task_works.splice(id,1);
     }
 
@@ -165,6 +165,7 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		if(!$scope.currentDepartment.name && !$scope.currentDepartment.email) {
 			return;
 		}
+		if($scope.task_works.length > 0)
 		if($scope.dialogType == 'Add') {
 			var payload = {
 				name : $scope.currentDepartment.name,
@@ -230,6 +231,6 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 });
