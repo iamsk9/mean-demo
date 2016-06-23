@@ -206,9 +206,9 @@ md-toast {
 .crumbs-container {
 	position: relative;
 	display: inline-block;
-	-webkit-transition: height 0.5s ease-out; 
-	-moz-transition: height 0.5s ease-out;  
-	-o-transition: height 0.5s ease-out; 
+	-webkit-transition: height 0.5s ease-out;
+	-moz-transition: height 0.5s ease-out;
+	-o-transition: height 0.5s ease-out;
 	transition: height 0.5s ease-out;
 }
 
@@ -261,7 +261,7 @@ md-toast {
 	color : #999;
 }
 
-#notificationContainer 
+#notificationContainer
 {
 background-color: #fff;
 border: 1px solid rgba(100, 100, 100, .4);
@@ -309,14 +309,14 @@ padding: 8px;
 font-size: 12px;
 border-top: 1px solid #dddddd;
 }
-#notification_count 
+#notification_count
 {
 padding: 0px 7px 0px 7px;
 background: #cc0000;
 color: #ffffff;
 font-weight: bold;
 border-radius: 9px;
--moz-border-radius: 9px; 
+-moz-border-radius: 9px;
 -webkit-border-radius: 9px;
 position: absolute;
 left: 40px;

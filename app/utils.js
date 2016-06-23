@@ -9,7 +9,7 @@ exports.runQuery = function(connection, query, params, notRelease) {
 	}
 	var temp = connection.query(query, params, function(err, results, fields){
 		if(!notRelease) {
-			connection.release();	
+			connection.release();
 		}
 		if(err) {
 			queryDefer.reject(err);
