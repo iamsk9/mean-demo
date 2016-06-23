@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>Contact Us|DM Rao & Co </title>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" charset="utf-8">
-    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
-    <link rel="stylesheet" href="css/master.css" media="screen" title="no title" charset="utf-8">
-    <link rel="stylesheet" href="css/chosen.css" media="screen" title="no title" charset="utf-8">
+    <script type="text/javascript" src="Enquiry_Form/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="Enquiry_Form/bootstrap/css/bootstrap.min.css" charset="utf-8">
+    <script type="text/javascript" src="Enquiry_Form/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="Enquiry_Form/js/chosen.jquery.min.js"></script>
+    <link rel="stylesheet" href="Enquiry_Form/css/master.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="Enquiry_Form/css/chosen.css" media="screen" title="no title" charset="utf-8">
   </head>
 
   <body data-spy="scroll">
@@ -23,13 +23,13 @@
 
         <div class="carousel-inner">
           <div class="item active">
-            <img src="images/inner-banner.jpg" alt="sk" class="img-responsive logo3"/>
+            <img src="Enquiry_Form/images/inner-banner.jpg" alt="sk" class="img-responsive logo3"/>
           </div>
           <div class="item">
-            <img src="images/inner-banner2.jpg" alt="sk" class="img-responsive logo3"/>
+            <img src="Enquiry_Form/images/inner-banner2.jpg" alt="sk" class="img-responsive logo3"/>
           </div>
           <div class="item">
-            <img src="images/inner-banner3.jpg" alt="sk" class="img-responsive logo3"/>
+            <img src="Enquiry_Form/images/inner-banner3.jpg" alt="sk" class="img-responsive logo3"/>
           </div>
         </div>
         <a href="#mycarousel" class="carousel-control left" data-slide="prev">
@@ -95,12 +95,13 @@
         <div class="container-fluid">
         <div class="row form-group">
           <div class="col-md-4">
+            <div id="clientStatus" style="text-align:center;font-size:20px;"></div>
             <center><h3>Enquiry Form</h3></center>
-            <input type="text" name="name" name="name" placeholder="Name" class="form-control"><br>
-            <input type="text" name="company" name="company" placeholder="Company" class="form-control"><br>
-            <input type="email" name="email" name="email" placeholder="Email" class="form-control"><br>
-            <input type="text" name="mobile" name="mobile" placeholder="Mobile No" class="form-control"><br>
-            <input type="text" name="name" name="name" placeholder="Subject" class="form-control"><br>
+            <input type="text" name="name" placeholder="Name" class="form-control"><br>
+            <input type="text" name="company" placeholder="Company" class="form-control"><br>
+            <input type="email" name="email" placeholder="Email" class="form-control"><br>
+            <input type="text" name="mobile" placeholder="Mobile No" class="form-control"><br>
+            <input type="text" name="subject" placeholder="Subject" class="form-control"><br>
             <textarea name="comment" id="comment" rows="5" class="form-control comment" placeholder="Comments"></textarea><br>
             <select name="tasks" style="width:100%;" data-placeholder="Select Some Tasks"> <!--  class="chzn-select" multiple="true" -->
               <option value="1">Registration of Proprietership Firm</option>
@@ -121,7 +122,7 @@
             <div class = "checkbox">
               <label><input type = "checkbox"> Send Me a Copy</label>
             </div><br><br>
-            <button type="button" class="btn btn-success">Submit</button><br>
+            <button id = "submit" type="button" class="btn btn-success">Submit</button><br>
             <hr width="1" size="500">
           </div>
           <!--office location on the page-->
@@ -174,7 +175,45 @@
           <p>&copy;2016. All Rights Reserved by DM Rao & Co.</p>
         </footer>
       </div>
-
+      <script>
+          $(window).load(function(){
+             $('#submit').click(function(){
+                var clientEnquiryDetails = {
+                  name : $('input[name="name"]').val(),
+                  company : $('input[name="company"]').val(),
+                  email : $('input[name="email"]').val(),
+                  mobile : $('input[name="mobile"]').val(),
+                  subject : $('input[name="subject"]').val(),
+                  comment : $('textarea[name="comment"]').val(),
+                  task : $('select[name="tasks"]').val()
+                }
+                $.ajax({
+                    url : "/api/clientform",
+                     type : "POST",
+                     dataType : "JSON",
+                     contentType : "application/JSON",
+                     data : JSON.stringify(clientEnquiryDetails),
+                     success : function(result){
+                       //alert("user registered successfully"+result.success);
+                        $('input[name="name"]').val("");
+                        $('input[name="company"]').val("");
+                        $('input[name="email"]').val("");
+                        $('input[name="mobile"]').val("");
+                        $('input[name="subject"]').val("");
+                        $('textarea[name="comment"]').val("");
+                        $('select[name="tasks"]').val("");
+                       $('#clientStatus').text("Registerd successfully");
+                     },
+                     error: function(){
+                      alert("error");
+                     }
+                });
+                  //empty fields after client register
+                 
+                
+            });
+          });
+      </script>
       <!--Script for the chosen option menu-->
       <script type="text/javascript">
         $(function() {
