@@ -1,5 +1,9 @@
 Caweb.factory('UserService', function(Restangular, $q){
 	var user = window.user;
+	var name = user.name;
+	var index_no = name.indexOf("null");
+	if(index_no > -1)
+	user.name = name.substr(0, index_no-1);
 	return {
 		getUserDetails : function() {
 			return user;

@@ -51,30 +51,33 @@
 		    	<div layout = "column" layout-align = "center center">
 		            <md-input-container style = "width : 300px" class = "md-block">
 					  <label>Name of the Branch</label>
-					  <input type="text" required="" name = "name" ng-model = "theScope.currentBranch.name">
+					  <input type="text" required="" name = "name" ng-model = "theScope.currentBranch.name" ng-pattern = "/^[a-zA-Z ]+$/">
 					  <div ng-messages = "branchForm.name.$error">
-					  	<div ng-message = "required">This is required</div>
+					  	<div ng-message = "required">Branch Name is required</div>
+							<div ng-message = "pattern">Invalid Branch Name</div>
 					  </div>
 					</md-input-container>
 					<md-input-container style = "width : 300px" class = "md-block">
 					  <label>Address of the Branch</label>
-					  <input type="text" required="" name = "name" ng-model = "theScope.currentBranch.address">
+					  <input type="text" required="" name = "address" ng-model = "theScope.currentBranch.address" required>
 					  <div ng-messages = "branchForm.address.$error">
-					  	<div ng-message = "required">This is required</div>
+					  	<div ng-message = "required">Address is required</div>
 					  </div>
 					</md-input-container>
 		            <md-input-container style = "width : 300px">
 					  <label>Office Landline</label>
-					  <input type="text" required name = "officeLandline" ng-model = "theScope.currentBranch.office_landline">
-					  <div ng-messages = "userBranch.officeLandline.$error">
-					  	<div ng-message = "required">This is required</div>
+					  <input type="text" required name = "officeLandline" ng-model = "theScope.currentBranch.office_landline" ng-pattern = "/^[0-9]{11}$/" required>
+					  <div ng-messages = "branchForm.officeLandline.$error">
+					  	<div ng-message = "required">Landline Number is required</div>
+							<div ng-message = "pattern">Invalid Landline Number</div>
 					  </div>
 					</md-input-container>
 					<md-input-container style = "width : 300px">
 					  <label>Mobile Number</label>
-					  <input type="text" required name = "mobileNumber" ng-model = "theScope.currentBranch.mobile_number">
-					  <div ng-messages = "userBranch.mobileNumber.$error">
-					  	<div ng-message = "required">This is required</div>
+					  <input type="text" required name = "mobileNumber" ng-model = "theScope.currentBranch.mobile_number" ng-pattern = "/^[0-9]{10}$/" required>
+					  <div ng-messages = "branchForm.mobileNumber.$error">
+					  	<div ng-message = "required">Mobile Number is required</div>
+							<div ng-message = "pattern">Invalid Mobile Number</div>
 					  </div>
 					</md-input-container>
 					<div layout = "row" layout-align = "center center">

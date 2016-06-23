@@ -24,7 +24,7 @@
 		            	<td md-cell class = "font_16 center font_bold" colspan = "6">There are no departments to show.</td>
 		            </tr>
                     <tr>
-		            
+
                     </tr>
 		        </tbody>
 		    </table>
@@ -50,13 +50,13 @@
 	            <md-list>
 				  <md-list-item class="md-2-line" ng-repeat="item in theScope.deptTasks">
 				    <div class="md-list-item-text">
-				            <p style="font-size:18px">[[item.name]]</p>				       
+				            <p style="font-size:18px">[[item.name]]</p>
 				    </div>
 				  </md-list-item>
 				</md-list>
 	       </div>
 	   </md-dialog-content>
-	 </md-dialog>  
+	 </md-dialog>
 </script>
 <script type = "text/ng-template" id = "department.tmpl.html">
 	<md-dialog aria-label="branch">
@@ -74,15 +74,16 @@
 		    	<div layout = "column" layout-align = "center center">
 		            <md-input-container style = "width : 300px" class = "md-block">
 					  <label>Name of the Department</label>
-					  <input type="text" required="" name = "departmentName" ng-model = "theScope.currentDepartment.name">
-					  <div ng-messages = "department.name.$error">
+					  <input type="text" required="" name = "departmentName" ng-model = "theScope.currentDepartment.name" ng-pattern = "/^[a-zA-Z ]+$/">
+					  <div ng-messages = "departmentForm.departmentName.$error">
 					  	<div ng-message = "required">This is required</div>
+							<div ng-message = "pattern">Invalid Department Name</div>
 					  </div>
 					</md-input-container>
                         <md-input-container  style = "width : 300px" class = "md-block">
 					         <label>task</label>
 					      <md-chips ng-model="theScope.task_works" md-autocomplete-snap
-				              md-require-match="true" md-on-remove="theScope.removeTask($chip.id,$chip.name)" style = "width : 70%">
+				              md-require-match="true" md-on-remove="theScope.removeTask($chip.id,$chip.name)" style = "width : 70%" name = "task">
 						        <md-autocomplete
 						           md-selected-item="selectedItems"
 						           md-search-text="searchText"
@@ -96,12 +97,15 @@
 								   </md-not-found>
 						        </md-autocomplete>
 						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
-						     </md-chips></md-input-container>  
+								</md-chips>
+								<span ng-show="theScope.task_works.length == 0" style="color : #6969D2;font-size : 12px;"> This field is required.</span>
+							 </md-input-container>
 					 <md-input-container style = "width : 300px">
-					  <label>mail id</label>
-					  <input type="text" required name = "email" ng-model = "theScope.currentDepartment.email">
-					  <div ng-messages = "department.email.$error">
+					  <label>Email id</label>
+					  <input type="text" required name = "email" ng-model = "theScope.currentDepartment.email" ng-pattern = "/^[a-z0-9_.]+@[a-z]+.[a-z]+$/">
+					  <div ng-messages = "departmentForm.email.$error">
 					  	<div ng-message = "required">This is required</div>
+							<div ng-message = "pattern">Invalid Email Id</div>
 					  </div>
 					</md-input-container>
 					<div layout = "row" layout-align = "center center">
