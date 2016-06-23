@@ -100,7 +100,7 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         		}]
         	}
         })
-                  .otherwise('/dashboard');
+        .otherwise('/dashboard');
 });
 
 Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
@@ -108,7 +108,11 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 	$rootScope.tabs = Tabs;
 	$rootScope.tabsMap = {};
 	$rootScope.viewTask = function(item) {
-		$location.path('/task/'+item.task_id);
+        if(!item.client_enquiry_id) {
+            $location.path('/task/'+item.task_id);   
+        } else {
+            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile});
+        }
 	}
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
@@ -205,6 +209,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
     });
     $rootScope.$on('$routeChangeSuccess', function() {
         $rootScope.showAppLoader = false;
+        $rootScope.notificationsOpen = false;
     });
 	$rootScope.switchTab = function(index) {
 		if($rootScope.user.role == "CLIENT") {

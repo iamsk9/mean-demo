@@ -97,10 +97,10 @@
           <div class="col-md-4">
             <div id="clientStatus" style="text-align:center;font-size:20px;"></div>
             <center><h3>Enquiry Form</h3></center>
-            <input type="text" name="name" placeholder="Name" class="form-control"><br>
-            <input type="text" name="company" placeholder="Company" class="form-control"><br>
-            <input type="email" name="email" placeholder="Email" class="form-control"><br>
-            <input type="text" name="mobile" placeholder="Mobile No" class="form-control"><br>
+            <input type="text" name="name" placeholder="Name" class="form-control" required><br>
+            <input type="text" name="company" placeholder="Company" class="form-control" required><br>
+            <input type="email" name="email" placeholder="Email" class="form-control" required><br>
+            <input type="text" name="mobile" placeholder="Mobile No" class="form-control" required><br>
             <input type="text" name="subject" placeholder="Subject" class="form-control"><br>
             <textarea name="comment" id="comment" rows="5" class="form-control comment" placeholder="Comments"></textarea><br>
             <select name="tasks" style="width:100%;" data-placeholder="Select Some Tasks"> <!--  class="chzn-select" multiple="true" -->
@@ -120,7 +120,7 @@
               <option value="14">VAT & CST Private Limited/Limited companies</option>
             </select><br>
             <div class = "checkbox">
-              <label><input type = "checkbox"> Send Me a Copy</label>
+              <label><input type = "checkbox" > Send Me a Copy</label>
             </div><br><br>
             <button id = "submit" type="button" class="btn btn-success">Submit</button><br>
             <hr width="1" size="500">
@@ -178,6 +178,15 @@
       <script>
           $(window).load(function(){
              $('#submit').click(function(){
+               var a=$('input[name="name"]').val();
+               var b=$('input[name="company"]').val();
+               var c=$('input[name="email"]').val();
+                 var d=$('input[name="mobile"]').val();
+                 if (a==null || a=="" || b==null || b=="" || c==null || c=="" || d==null || d=="")
+                {
+                   alert("Please Fill All Required Field");
+                   return false;
+               }
                 var clientEnquiryDetails = {
                   name : $('input[name="name"]').val(),
                   company : $('input[name="company"]').val(),
@@ -187,14 +196,19 @@
                   comment : $('textarea[name="comment"]').val(),
                   task : $('select[name="tasks"]').val()
                 }
-                $.ajax({
+                var res = $('input[type="checkbox"]:checked');
+                if(res.length > 0)
+                   clientEnquiryDetails.check = "yes";
+                else
+                   clientEnquiryDetails.check = "no";
+                 $.ajax({
                     url : "/api/clientform",
                      type : "POST",
                      dataType : "JSON",
                      contentType : "application/JSON",
                      data : JSON.stringify(clientEnquiryDetails),
                      success : function(result){
-                       //alert("user registered successfully"+result.success);
+                       // empty fields after client register
                         $('input[name="name"]').val("");
                         $('input[name="company"]').val("");
                         $('input[name="email"]').val("");
@@ -208,9 +222,9 @@
                       alert("error");
                      }
                 });
-                  //empty fields after client register
-                 
-                
+
+
+
             });
           });
       </script>
