@@ -1,5 +1,5 @@
 Caweb.controller('assignTaskController', function($scope, $rootScope, CAService, $mdToast, UserService, $timeout,$location,
-	$mdpDatePicker, $mdpTimePicker) {
+	$mdpDatePicker, $mdpTimePicker, $routeParams) {
 	if($rootScope.user.role == "CLIENT") {
 		$location.path('/documents/' + $rootScope.user.id);
 		return;
@@ -8,6 +8,11 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.reset = true;
 	$scope.task = {};
 	$scope.currentClient = {};
+	if($routeParams.client_name && $routeParams.mobile) {
+		$scope.otherClient = true;
+		$scope.task.clientName = $routeParams.client_name;
+		$scope.task.contactNumber = $routeParams.mobile;
+	}
 	$scope.assignTask = function() {
 		if(validateDetails()) {
 			$scope.assignTaskForm.$setPristine();
