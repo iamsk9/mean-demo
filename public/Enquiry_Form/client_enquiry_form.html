@@ -95,6 +95,7 @@
         <div class="container-fluid">
         <div class="row form-group">
           <div class="col-md-4">
+            <div id="clientStatus" style="text-align:center;font-size:20px;"></div>
             <center><h3>Enquiry Form</h3></center>
             <input type="text" name="name" placeholder="Name" class="form-control"><br>
             <input type="text" name="company" placeholder="Company" class="form-control"><br>
@@ -189,24 +190,26 @@
                 $.ajax({
                     url : "/api/clientform",
                      type : "POST",
+                     dataType : "JSON",
+                     contentType : "application/JSON",
                      data : JSON.stringify(clientEnquiryDetails),
-                     datatype : JSON,
-                     success : function(){
-                       alert("user registered successfully");
-                       //window.location.href('/clientform');
+                     success : function(result){
+                       //alert("user registered successfully"+result.success);
+                        $('input[name="name"]').val("");
+                        $('input[name="company"]').val("");
+                        $('input[name="email"]').val("");
+                        $('input[name="mobile"]').val("");
+                        $('input[name="subject"]').val("");
+                        $('textarea[name="comment"]').val("");
+                        $('select[name="tasks"]').val("");
+                       $('#clientStatus').text("Registerd successfully");
                      },
                      error: function(){
                       alert("error");
                      }
                 });
                   //empty fields after client register
-                  $('input[name="name"]').val("");
-                  $('input[name="company"]').val("");
-                  $('input[name="email"]').val("");
-                  $('input[name="mobile"]').val("");
-                  $('input[name="subject"]').val("");
-                  $('textarea[name="comment"]').val("");
-                  $('select[name="tasks"]').val("");
+                 
                 
             });
           });

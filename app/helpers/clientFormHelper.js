@@ -50,7 +50,7 @@ exports.addFormClient = function(request){
             request.comment, moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]);
       }).then(function() {
           sendEmail(request.task,request.name).then(function() {
-             // console.log("reolved");
+            //  console.log("reolved");
               addClientFormDefer.resolve();
          },function(){
           console.log("error in return function");
