@@ -6,17 +6,17 @@
 		    		<div layout = "column">
 			    		<h2 style = "text-align:center">Assign a New Task</h2>
 			    		<div layout = "row" layout-align = "space-around center" ng-hide="otherClient">
-			    			<p style = "margin-top : 0px">Select Client*</p>
+			    			<p style = "margin-top : 0px">Select Company*</p>
 				            <md-autocomplete
-				            	  md-floating-label="Select Client"
+				            	  md-floating-label="Select Company"
 						          md-search-text="searchText"
 						          md-selected-item="task.client"
 						          md-selected-item-change="selectedClientChanged(item)"
 						          md-items="item in querySearch(searchText)"
-						          md-item-text="item.name"
+						          md-item-text="item.company_name"
 						          md-min-length="0"
 						          placeholder="Select a client"
-						          md-menu-class="autocomplete-custom-template" style = "width : 70%" 
+						          md-menu-class="autocomplete-custom-template" style = "width : 70%"
 						          md-input-name="client"
 						          required>
 						        <md-item-template>
@@ -34,20 +34,20 @@
 						</div>
 						 <div layout = "row" layout-align = "space-around" ng-hide="otherClient">
 			    			<div layout="column" layout-align = "center center">
-			    				<p class = "label" style = "margin-top : 0px">Company Name</p>
-							    <p>[[currentClient.company_name]]</p>
+			    				<p class = "label" style = "margin-top : 0px;">Client Name</p>
+							    <p style = "background-color: grey ;color:white;">[[currentClient.name]]</p>
              				</div>
              				<div layout="column" layout-align = "center center">
 								<p class = "label" style = "margin-top : 0px">Contact Number</p>
-								<p>[[currentClient.phone_number]]</p>
+								<p style = "background-color: grey ;color:white;">[[currentClient.phone_number]]</p>
 							</div>
 							<div layout="column" layout-align = "center center">
 								<p class = "label" style = "margin-top : 0px">Email Id</p>
-								<p>[[currentClient.email]]</p>
+								<p style = "background-color: grey ;color:white;">[[currentClient.email]]</p>
 							</div>
 							<div layout="column" layout-align = "center center">
 								<p class = "label" style = "margin-top : 0px">Company Pan Number</p>
-								<p>[[currentClient.company_pan_number]]</p>
+								<p style = "background-color: grey ;color:white;">[[currentClient.company_pan_number]]</p>
 							</div>
 						</div>
                         <div layout = "row" layout-align = "space-around center" ng-show = "otherClient">
@@ -66,7 +66,7 @@
 							  </div>
 							</md-input-container>
 						</div>
-			    		
+
 						<div layout = "row" layout-align = "start center" class = "margin_left_20">
 					     	<md-switch class="md-primary" aria-label="Not a Registered Client" ng-model="otherClient" ng-change = "clientTypeChanged()">
 						    	Not a Registered Client
@@ -107,7 +107,7 @@
 							</md-input-container>
 						</div>
 						<div layout = "row" layout-align = "space-around center">
-							
+
 						</div>
 						<div layout = "row" ng-if = "reset" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Type Of Appointment</p>

@@ -1,6 +1,10 @@
 <md-content class="md-padding" flex>
 	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
 		<h2>Clients</h2>
+		<md-input-container class = "margin_right_20" style = "width : 250px" class = "md-block">
+			<label>Filter Results</label>
+			<input type="text" name = "searchQuery" ng-model = "searchQuery">
+		</md-input-container>
 		<div layout = "row" layout-align = "center center" ng-if = "enableSearchClient">
 			<md-input-container class = "margin_right_20" style = "width : 100px" class = "md-block">
 			  <label>Client Id</label>
@@ -46,7 +50,7 @@
 	            	<tr md-row ng-show = "!searched && !clientsLoading">
 	            		<td md-cell class = "font_16 center font_bold" colspan = "6">Search for Clients with the above available options</td>
 	            	</tr>
-		            <tr md-row ng-show = "searched && clients.length > 0" ng-repeat = "client in clients">
+		            <tr md-row ng-show = "searched && clients.length > 0" ng-repeat = "client in clients | filter:searchQuery">
 		                <td md-cell class = "font_16 center">#[[client.id]]</td>
 		                <td md-cell class = "font_16 center">[[client.company_name]]</td>
 		                <td md-cell class = "font_16 center">[[client.name]]</td>
