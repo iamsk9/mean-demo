@@ -19,7 +19,7 @@ exports.up = function(next) {
 };
 
 exports.down = function(next) {
-  var alterQuery = "ALTER TABLE notifications DROP COLUMN clent_enquiry_id, DROP FOREIGN KEY client_enquiry_id";
+  var alterQuery = "ALTER TABLE notifications DROP COLUMN client_enquiry_id, DROP FOREIGN KEY client_enquiry_id";
   db.getConnection().then(function(connection){
   connection.query(alterQuery, function(err, results){
     if(err) {
