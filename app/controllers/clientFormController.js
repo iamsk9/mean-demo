@@ -3,8 +3,8 @@ var template = require('swig');
 var ClientFormHelper=require('../helpers/clientFormHelper.js');
 
 exports.postClient = function(req,res){
- ClientFormHelper.addFormClient(req.body).then(function(result) {
-       // console.log("raja");
+ ClientFormHelper.addFormClient(req.body).then(function() {
+        //console.log("raja");
         //res.JSON({returnCode : "success", data : "user registered successfully", errorCode : null});
         var response = {
             status  : 200,
