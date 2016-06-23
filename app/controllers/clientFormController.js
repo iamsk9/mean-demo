@@ -4,13 +4,20 @@ var ClientFormHelper=require('../helpers/clientFormHelper.js');
 
 exports.postClient = function(req,res){
  ClientFormHelper.addFormClient(req.body).then(function(result) {
-        res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+       // console.log("raja");
+        //res.JSON({returnCode : "success", data : "user registered successfully", errorCode : null});
+        var response = {
+            status  : 200,
+            success : 'Updated Successfully'
+        }
+        res.type('json');
+        res.end(JSON.stringify(response));
     }, function(err) {
         console.log(err);
         if(err.errorCode) {
-            res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+            res.json({returnCode : "error", data : null, errorCode : err.errorCode});
         } else {
-            res.json({returnCode : "FAILURE", data : null, errorCode : 2016});
+            res.json({returnCode : "error", data : null, errorCode : 2016});
         }
     });
 }

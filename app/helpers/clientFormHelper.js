@@ -8,24 +8,37 @@ var utils = require('../utils');
 
 var emailer = require('../emailer');
 
-function sendEmail(id,task,name) {
+function sendEmail(task,name) {
+  var sendEmailDefer = q.defer();
+  var userQuery = "SELECT dept_id from departments_tasks where task_id = ? and deleted_at is NULL";
   var taskName = task;
   var clientName = name;
-     var mailQuery = "SELECT email FROM users where id = ? and deleted_at is Null";
+  db.getConnection().then(function(connection) {
+    return utils.runQuery(connection, userQuery,[task]);
+  }).then(function(results) {
+     var id = results[0].dept_id;
+     var mailQuery = "SELECT email FROM departments where id = ? and deleted_at is Null";
       db.getConnection().then(function(connection) {
         return utils.runQuery(connection, mailQuery,[id]);
       }).then(function(results) {
-
-		     if(results.length > 0) {
-  			    var queries = results[0];
-  			    emailer.send('public/templates/_taskEmail.html', {
-  				  task : task,
-            name : clientName
-  			     }, queries.email,"Task assigned for department");
-		     }
+        console.log("raj kumar");
+         if(results.length > 0) {
+           var queries = results[0];
+            emailer.send('public/templates/_taskEmail.html', {
+              task : task,
+              name : clientName
+             }, queries.email,"Task assigned for department");
+            //console.log("raj kumar");
+         }
+        sendEmailDefer.resolve();
+     }).catch(function(err) {
+       console.log(err);
+       sendEmailDefer.reject();
+     });
   }).catch(function(err) {
-		   console.log(err);
-	   });
+       console.log(err);
+  });
+ return sendEmailDefer.promise;
 }
 
 
