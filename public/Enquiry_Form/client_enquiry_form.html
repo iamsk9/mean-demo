@@ -190,10 +190,24 @@
                     url : "/api/clientform",
                      type : "POST",
                      data : JSON.stringify(clientEnquiryDetails),
-                     contentType : "application/json",
-                     
-                   
+                     datatype : JSON,
+                     success : function(){
+                       alert("user registered successfully");
+                       //window.location.href('/clientform');
+                     },
+                     error: function(){
+                      alert("error");
+                     }
                 });
+                  //empty fields after client register
+                  $('input[name="name"]').val("");
+                  $('input[name="company"]').val("");
+                  $('input[name="email"]').val("");
+                  $('input[name="mobile"]').val("");
+                  $('input[name="subject"]').val("");
+                  $('textarea[name="comment"]').val("");
+                  $('select[name="tasks"]').val("");
+                
             });
           });
       </script>
