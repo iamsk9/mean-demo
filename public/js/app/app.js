@@ -100,7 +100,7 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         		}]
         	}
         })
-        //.otherwise('/dashboard');
+        .otherwise('/dashboard');
 });
 
 Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
