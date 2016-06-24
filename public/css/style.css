@@ -269,21 +269,21 @@ border: 1px solid rgba(100, 100, 100, .4);
 overflow: visible;
 position: absolute;
 top: 58px;
-margin-left: -200px;
+margin-left: -400px;
 width: 400px;
 z-index: -1;
 }
 #notificationContainer:before {
 content: '';
 display: block;
-position: absolute;
+position: ;
 width: 0;
 height: 0;
 color: transparent;
 border: 10px solid black;
 border-color: transparent transparent white;
 margin-top: -20px;
-margin-left: 135px;
+margin-left: 335px;
 }
 #notificationTitle
 {
