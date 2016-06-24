@@ -1,13 +1,14 @@
 <md-content class="md-padding" flex>
 	<div layout = "column" layout-align = "center center">
-		<h2>Manage Departments</h2>
+		<md-tabs md-stretch-tabs md-dynamic-height>
+			<md-tab label = "Departments Management">
+				<md-content>
 		<md-table-container md-row-select style = "margin-bottom : 40px">
 	        <table md-table>
 	            <thead md-head >
 	                <tr md-row >
 	                    <th md-column class = "font_18 center" style = "width : 100px">Id</th>
 	                    <th md-column class = "font_18 center" style = "width : 200px">Name</th>
-	                    <th md-column class = "font_18 center" style = "width : 200px">Task</th>
 	                   	<th md-column class = "font_18 center" style = "width : 200px">Email</th>
 	                    <th md-column class = "font_18 center" style = "width : 100px">Action</th>
 	                </tr>
@@ -16,7 +17,6 @@
 		            <tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
 		                <td md-cell class = "font_16 center">#[[department.id]]</td>
 		                <td md-cell class = "font_16 center">[[department.name]]</td>
-		              	<td md-cell class = "font_16 center"><md-button ng-click="getTasks(department.id)">view tasks</md-button></td>
 		             	<td md-cell class = "font_16 center">[[department.email]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
 		            </tr>
@@ -28,12 +28,49 @@
                     </tr>
 		        </tbody>
 		    </table>
-		</md-table-container>
+				</md-table-container>
+				</md-content>
+				<md-button class="md-fab md-fab-bottom-right" aria-label="Add Branch" ng-click = "showAddDepartmentDialog()">
+					<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white;"></md-icon>
+				</md-button>
+				</md-tab>
+				<md-tab label = "Work Management">
+					<md-content>
+						<md-table-container md-row-select style = "margin-bottom : 40px">
+									<table md-table>
+											<thead md-head >
+													<tr md-row >
+															<th md-column class = "font_18 center" style = "width : 100px">Id</th>
+															<th md-column class = "font_18 center" style = "width : 200px">Name</th>
+															<th md-column class = "font_18 center" style = "width : 200px">Department</th>
+															<th md-column class = "font_18 center" style = "width : 200px">Tasks</th>
+															<th md-column class = "font_18 center" style = "width : 100px">Action</th>
+													</tr>
+											</thead>
+											<tbody md-body>
+												<tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
+														<td md-cell class = "font_16 center">#[[works.id]]</td>
+														<td md-cell class = "font_16 center">[[works.name]]</td>
+														<td md-cell class = "font_16 center">[[works.department]]</td>
+														<td md-cell class = "font_16 center"><md-button ng-click="getTasks(department.id)">view tasks</md-button></td>
+														<td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index)"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>
+												</tr>
+												<tr md-row ng-show = "works.length == 0">
+													<td md-cell class = "font_16 center font_bold" colspan = "6">There are no works to show.</td>
+												</tr>
+														<tr>
+														</tr>
+										</tbody>
+								</table>
+								</md-table-container>
+					</md-content>
+					<md-button class="md-fab md-fab-bottom-right" aria-label="Add Work" ng-click = "showAddWorkDialog()">
+						<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
+					</md-button>
+				</md-tab>
+		</md-tabs>
 	</div>
 </md-content>
-<md-button class="md-fab md-fab-bottom-right" aria-label="Add Branch" ng-click = "showAddDepartmentDialog()">
-	<md-icon md-font-icon="fa-plus" class = "fa fa-2x" style = "color : white"></md-icon>
-</md-button>
 <script type = "text/ng-template" id = "task.tmpl.html">
 	 <md-dialog>
 	   <md-toolbar>
@@ -116,5 +153,69 @@
 				</div>
 			</form>
 		</md-dialog-content>
-    </md-dialog>
+	</md-dialog>
+</script>
+
+<script type = "text/ng-template" id = "work.tmpl.html">
+	<md-dialog aria-label="branch">
+			<md-toolbar>
+		      <div class="md-toolbar-tools">
+		        <h2>[[::theScope.dialogType]] Department <span ng-if = "theScope.dialogType == 'Edit'">- [[theScope.currentDepartment.name]]</span></h2>
+		        <span flex></span>
+		        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+		          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+		        </md-button>
+		      </div>
+		    </md-toolbar>
+		    <md-dialog-content style="width:400px;max-height:810px;margin-top:20px">
+		        <form name = "workForm">
+		    	<div layout = "column" layout-align = "center center">
+		            <md-input-container style = "width : 300px" class = "md-block">
+					  <label>Name</label>
+					  <input type="text" required="" name = "workName" ng-model = "theScope.currentWork.name" ng-pattern = "/^[a-zA-Z ]+$/">
+					  <div ng-messages = "workForm.workName.$error">
+					  	<div ng-message = "required">This is required</div>
+							<div ng-message = "pattern">Invalid Name</div>
+					  </div>
+					</md-input-container>
+					<md-input-container style = "width: 300px">
+						 <label>Department</label>
+						 <md-select ng-model="theScope.currentWork.department" name = "department_name" required>
+												<md-option ng-repeat="dept in theScope.DepartmentsList" value="[[dept.id]]">
+													 [[dept.name]]
+												</md-option>
+						 </md-select>
+						 <div ng-messages="workForm.department_name.$error">
+						 <div ng-message="required">Required</div>
+						 </div>
+					</md-input-container>
+          <md-input-container  style = "width : 300px" class = "md-block">
+					       <label>task</label>
+					    <md-chips ng-model="theScope.task_works" md-autocomplete-snap
+				              md-require-match="true" md-on-remove="theScope.removeTask($chip.id,$chip.name)" style = "width : 70%" name = "task">
+						        <md-autocomplete
+						           md-selected-item="selectedItems"
+						           md-search-text="searchText"
+						           md-selected-item-change="theScope.tasksSelected(selectedItems,item.id)"
+						           md-items="item in theScope.filterResults(searchText)"
+						           md-min-length="0"
+						           placeholder="Search for a task" style = "width: 300px">
+						           <md-item-template>[[item.name]]</md-item-template>
+						           <md-not-found>
+				    				 No Works found.
+								   </md-not-found>
+						        </md-autocomplete>
+						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
+								</md-chips>
+								<span ng-show="theScope.task_works.length == 0" style="color : #6969D2;font-size : 12px;"> This field is required.</span>
+							</md-input-container>
+					<div layout = "row" layout-align = "center center">
+						<md-button class = "md-primary" style = "font-size : 1.3em"
+						ng-click = "theScope.workAction(theScope.dialogType)" ng-disabled = "theScope.workActionLoading">[[::theScope.dialogType]] Work</md-button>
+						<md-progress-circular md-mode="[[theScope.workActionLoading]]"></md-progress-circular>
+		            </div>
+				</div>
+			</form>
+		</md-dialog-content>
+	</md-dialog>
 </script>

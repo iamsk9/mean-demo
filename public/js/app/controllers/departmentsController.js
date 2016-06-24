@@ -60,6 +60,24 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
           });
    }
 
+	 function showWorkDialog(){
+ 		$mdDialog.show({
+ 	    	controller : function($scope, theScope) {
+ 	    		$scope.theScope = theScope
+ 	    		$scope.$watch('workForm', function() {
+ 	    			$scope.theScope.workForm = $scope.workForm;
+ 	    		}, true);
+ 	    	},
+ 			templateUrl : 'work.tmpl.html',
+ 			parent : angular.element(document.body),
+ 			clickOutsideToClose:true,
+ 			locals : {
+ 				theScope : $scope
+ 			}
+ 	 	}).then(function(){
+           });
+    }
+
    function showTaskDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
@@ -86,6 +104,13 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		$scope.task_works = [];
 		$scope.currentDepartment = [];
 		showDialog();
+	}
+
+	$scope.showAddWorkDialog = function() {
+		$scope.dialogType = 'Add';
+		$scope.task_works = [];
+		$scope.currentWork = [];
+		showWorkDialog();
 	}
 
 	var original;
@@ -165,7 +190,6 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		if(!$scope.currentDepartment.name && !$scope.currentDepartment.email) {
 			return;
 		}
-		if($scope.task_works.length > 0)
 		if($scope.dialogType == 'Add') {
 			var payload = {
 				name : $scope.currentDepartment.name,
@@ -203,6 +227,54 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 				}, function(err) {
 					$mdToast.show($mdToast.simple()
 					.textContent("Unable to update the department.")
+					.position("top right")
+					.hideDelay(5000));
+				});
+			}
+		}
+	}
+	$scope.workAction = function() {
+		if(!$scope.currentWork.name) {
+			return;
+		}
+		if($scope.task_works.length > 0)
+		if($scope.dialogType == 'Add') {
+			var payload = {
+							name : $scope.currentWork.name,
+	            department : $scope.currentWork.department,
+	            task :  $scope.task_works
+			};
+			CAService.createWork(payload).then(function(){
+				$mdToast.show($mdToast.simple()
+				.textContent("Work has been Successfully added.")
+				.position("top right")
+				.hideDelay(5000));
+				getDepartments();
+				$scope.closeDialog();
+			}, function(err) {
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to add work`.")
+				.position("top right")
+				.hideDelay(5000));
+			});
+		} else if($scope.dialogType == 'Edit') {
+			var departmentAction = CAService.editUser;
+			var payload = {};
+			var updated_details = CAService.calculateDeptDiff($scope.currentWork, original);
+			payload.details = updated_details;
+			payload.added_tasks = $scope.newly_added_tasks;
+    		payload.removed_tasks = $scope.removed_tasks;
+			if(!angular.equals(payload,{})) {
+				CAService.updateWork($scope.currentWork.id, payload).then(function(){
+					$mdToast.show($mdToast.simple()
+					.textContent("Successfully updated")
+					.position("top right")
+					.hideDelay(5000));
+					$scope.closeDialog();
+                    getWorks();
+				}, function(err) {
+					$mdToast.show($mdToast.simple()
+					.textContent("Unable to update the work.")
 					.position("top right")
 					.hideDelay(5000));
 				});
