@@ -2,7 +2,7 @@
 var db = require('../db');
 //okk
 exports.up = function(next) {
-    var alterQuery = "ALTER TABLE clients_enquiry MODIFY mobile bigint(11)";
+    var alterQuery = "ALTER TABLE clients_enquiry MODIFY mobile bigint";
     db.getConnection().then(function(connection){
       connection.query(alterQuery, function(err, results){
         if(err) {
