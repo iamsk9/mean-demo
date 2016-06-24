@@ -1,32 +1,34 @@
 <md-content class="md-padding" flex>
-	<form name = "reportsForm">
 	<div ng-app= " app" layout = "column" layout-align = "center center" class = "md-whiteframe-z2">
 		<h2>Reports</h2>
 		<div layout = "column" layout-align = "center center">
 		</div>
+		<form name = "reportForm">
 		<div layout="column" layout-align="center">
 		<div layout = "row" layout-align = "space-around center">
 			<p style = "margin-top : 0px">Select Branch</p>
-						<md-input-container style = "width : 70%">
-				<md-select name = "branch" ng-model="task.branch"  ng-change="branchChanged()" required>
-					<md-option ng-repeat="branch in branches" value="[[branch.id]]">
+
+
+		<md-input-container style = "width : 70%">
+		<md-select name = "branch" ng-model="task.branch"  ng-change="branchChanged()" required>
+			<md-option ng-repeat="branch in branches" ng-value="branch">
 					[[branch.name]]
-					</md-option>
-				</md-select>
-				<div ng-messages = "reportsForm.employee.$error">
-				<div ng-message = "required">This is required</div>
-					</div>
-			</md-input-container>
+			</md-option>
+		</md-select>
+		<div ng-messages = "assignTaskForm.employee.$error">
+		<div ng-message = "required">This is required</div>
+		</div>
+		</md-input-container>
 		</div>
 		<div layout = "row" layout-align = "space-around center">
 			<p style = "margin-top : 0px">Select Employee</p>
 			<md-input-container style = "width : 70%">
-				<md-select name = "employee" ng-model="task.assignee" required>
+				<md-select name = "employee" ng-model="task.assignee" required >
 					<md-option ng-repeat="emp in employees" >
 					[[emp.first_name]]
 					</md-option>
 				</md-select>
-				<div ng-messages = "reportsForm.employee.$error">
+				<div ng-messages = "assignTaskForm.employee.$error">
 						<div ng-message = "required">This is required</div>
 					</div>
 			</md-input-container>
@@ -44,7 +46,7 @@
 					<md-option value="waiting_for_approval"> Waiting for approval</md-option>
 					<md-option value="completed"> Completed</md-option>
 				</md-select>
-				<div ng-messages = "reportsForm.employee.$error">
+				<div ng-messages = "reportForm.taskstatus.$error.required">
 						<div ng-message = "required">This is required</div>
 					</div>
 
@@ -91,7 +93,7 @@
 						</thead>
 						<tbody md-body>
 							<tr>
-									<td md-cell class = "font_16 center">[[task.branch]]</td>
+									<td md-cell class = "font_16 center"><p>[[task.branch.name]]</p></td>
 									<td md-cell class = "font_16 center">[[task.assignee]]</td>
 									<td md-cell class = "font_16 center">[[task.assigne]]</td>
 									<td md-cell class = "font_16 center">[[task.dateOfStart]]</td>
@@ -99,7 +101,6 @@
 							</tr>
 					</tbody>
 			</table>
-
+</form>
 	</md-table-container>
-	</form>
 </div>
