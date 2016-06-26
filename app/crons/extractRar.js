@@ -10,9 +10,30 @@ var DocsHelper = require('../helpers/docsHelper');
 
 var q = require('q');
 
+var fs = require('fs');
+
 var blobService = azureStorage.createBlobService(config.storage.storageAccount, config.storage.storageAccessKey);
 
 var jobs = kue.createQueue();
+
+var deleteFolderRecursive = function(path) {
+  if( fs.existsSync(path) ) {
+    fs.readdirSync(path).forEach(function(file,index){
+      var curPath = path + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
+
+function removeFolderFromUploads(data) {
+	fs.unlinkSync('uploads/' + data.file.filename);
+	deleteFolderRecursive('uploads/' + data.file.originalname.substr(0, data.file.originalname.length - 4));
+}
 
 function getPath(filePath) {
 	var path = "";
@@ -184,6 +205,7 @@ jobs.process('extractRar', function(job, done) {
 			}
 			promise.then(function() {
 				done();
+				removeFolderFromUploads(job.data);
 				console.log("------------------------------------------------------------------");
 				console.log("Job Completed Successfully.");
 			}, function(err) {
@@ -192,6 +214,7 @@ jobs.process('extractRar', function(job, done) {
 				console.log("------------------------------------------------------------------");
 				console.log("Job Completed but some files have not been uploaded");
 				done();
+				removeFolderFromUploads(job.data);
 			});
 		}
 	});
