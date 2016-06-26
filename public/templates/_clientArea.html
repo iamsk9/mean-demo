@@ -50,6 +50,9 @@
 					<span flex></span>
 					<md-button class = "md-primary" ng-if = "clientSelected" ng-show = "!isClient" ng-click = "showFolderDialog()" style = "height:10%"><md-icon md-font-icon="fa-plus" class = "fa inline-icon"></md-icon> Create Folder</md-button>
 				</div>
+				<div layout = "column" ng-if = "clientSelected && clientDetails.num_of_zip_jobs > 0">
+						<md-subheader class="md-primary">There are Zip Extraction Jobs in progress.</md-subheader>
+					</div>
 				<div layout = "row" layout-align = "space-between" ng-show = "clientSelected" layout-wrap>
 					<div layout = "column" ng-show = "docs.length == 0">
 						<p>There are no documents uploaded yet.</p>

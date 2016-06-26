@@ -279,6 +279,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 		if($scope.currentPath.value) {
 			data.parent = $scope.currentPath.value;
 		}
+		var fileType = $scope.images.type;
 		Upload.upload({
 			url : '/api/upload',
 			headers : {
@@ -289,15 +290,19 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 			console.log(response);
 			$scope.fileUploading = false;
 			if(response.data.returnCode == "SUCCESS") {
-				CAService.addDocument($scope.clientDetails.id, response.data.data);
-				$scope.docs.push(response.data.data);
 				$mdToast.show($mdToast.simple()
-				.textContent("Image uploaded Successfully")
+				.textContent("Document uploaded Successfully")
 				.position("top right")
 				.hideDelay(5000));
+				if(fileType == 'application/zip') {
+					$scope.clientDetails.num_of_zip_jobs = $scope.clientDetails.num_of_zip_jobs + 1;
+					return
+				}
+				CAService.addDocument($scope.clientDetails.id, response.data.data);
+				$scope.docs.push(response.data.data);
 			} else {
 				$mdToast.show($mdToast.simple()
-				.textContent("Error in uploading image")
+				.textContent("Error in uploading document.")
 				.position("top right")
 				.hideDelay(5000));
 			}

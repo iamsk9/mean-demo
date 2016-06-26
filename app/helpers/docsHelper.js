@@ -20,11 +20,13 @@ const fs = require('fs');
 
 function uploadToAzureStorage(request) {
 	var azureUploadDefer = q.defer();
+	console.log("Uploading");
 	blobService.createBlockBlobFromLocalFile(config.storage.containerName, request.file.filename, request.file.path, function(error, result, response) {
 		if(error) {
 			azureUploadDefer.reject(error);
 			return;
 		}
+		console.log("upload successful");
 		azureUploadDefer.resolve(config.storage.domainName +
 			config.storage.containerName + '/' + result);
 	});
@@ -41,13 +43,30 @@ exports.saveDoc = function(request) {
 			user_id : request.user.id,
 			parent : request.body.parent
 		}).save();
-		job.on('complete', function(data) {
-			console.log("The file " + request.file.originalname + " has been extracted and files have been uploaded to azure.");
-			saveDocDefer.resolve();
-		});
-		job.on('failed', function() {
-			console.log("The file " + request.file.originalname + " extraction job failed.");
-			saveDocDefer.reject();
+		var zipExtractionIncQuery = "UPDATE clients SET num_of_zip_jobs = num_of_zip_jobs + 1 where id = ?";
+		var zipExtractionDecQuery = "UPDATE clients SET num_of_zip_jobs = num_of_zip_jobs - 1 where id = ?";
+		db.getConnection().then(function(connection) {
+			utils.runQuery(connection, zipExtractionIncQuery, [request.body.client_id], true).then(function(results) {
+				job.on('complete', function(data) {
+					utils.runQuery(connection, zipExtractionDecQuery, [request.body.client_id]).then(function(results) {
+						console.log("Decremented the Number of Zip Jobs in Progress");
+						console.log("The file " + request.file.originalname + " has been extracted and files have been uploaded to azure.");
+					}, function(err) {
+						console.log("Error in Descrementing the Number of Zip Jobs in progress");
+						console.log(err);
+						console.log("The file " + request.file.originalname + " has been extracted and files have been uploaded to azure.");
+					});
+				});
+				job.on('failed', function() {
+					console.log("The file " + request.file.originalname + " extraction job failed.");
+				});
+				saveDocDefer.resolve();
+			}, function(err) {
+				console.log("Error in updating the number of jobs in progress");
+				saveDocDefer.reject(err);
+			});
+		}, function(err) {
+			saveDocDefer.reject(err);
 		});
 		return saveDocDefer.promise;
 	} else {
@@ -82,6 +101,8 @@ exports.saveDoc = function(request) {
 			}, function() {
 				saveDocDefer.reject();
 			})
+		}, function(err) {
+			saveDocDefer.reject(err);
 		});
 	}
 	return saveDocDefer.promise;
@@ -362,4 +383,28 @@ exports.createDirectory = function(user, params) {
 		createDirectoryDefer.reject(err);
 	});
 	return createDirectoryDefer.promise;
+}
+
+exports.getDoc = function(params) {
+	var getDocDefer = q.defer();
+	var key, obj;
+	if(Object.keys(params).length == 0) {
+		getDocDefer.resolve();
+	} else {
+		db.getConnection().then(function(connection) {
+			var queryParams = [];
+			for(key in params) {
+				obj = {};
+				obj[key] = params[key];
+				queryParams.push(obj);
+			}
+			var getDocQuery = "SELECT * from docs where ?";
+			return utils.runQuery(connection, getDocQuery, queryParams);
+		}).then(function(results) {
+			getDocDefer.resolve(results);
+		}).catch(function(err) {
+			getDocDefer.reject(err);
+		});
+	}
+	return getDocDefer.promise;
 }
