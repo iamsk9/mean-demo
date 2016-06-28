@@ -50,6 +50,9 @@
 					<span flex></span>
 					<md-button class = "md-primary" ng-if = "clientSelected" ng-show = "!isClient" ng-click = "showFolderDialog()" style = "height:10%"><md-icon md-font-icon="fa-plus" class = "fa inline-icon"></md-icon> Create Folder</md-button>
 				</div>
+				<div layout = "column" ng-if = "clientSelected && clientDetails.num_of_zip_jobs > 0">
+						<md-subheader class="md-primary">There are Zip Extraction Jobs in progress.</md-subheader>
+					</div>
 				<div layout = "row" layout-align = "space-between" ng-show = "clientSelected" layout-wrap>
 					<div layout = "column" ng-show = "docs.length == 0">
 						<p>There are no documents uploaded yet.</p>
@@ -76,7 +79,7 @@
 							</md-card-actions>
 						</md-card>
 					</div>
-					<div ngf-select="" ngf-drop="" ng-model="images" ng-model-options="modelOptionsObj" ngf-multiple="multiple" ngf-drag-over-class="dragOverClassObj" ngf-validate="validate" ngf-duration="durationFn($file, $duration)" class="drop-box" ngf-drop-available="dropAvailable" ngf-accept = "'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" ng-show = "!isClient">
+					<div ngf-select="" ngf-drop="" ng-model="images" ng-model-options="modelOptionsObj" ngf-multiple="multiple" ngf-drag-over-class="dragOverClassObj" ngf-validate="validate" ngf-duration="durationFn($file, $duration)" class="drop-box" ngf-drop-available="dropAvailable" ngf-accept = "'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rar,.zip'" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.rar,.zip" ngf-pattern="'image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.zip,.rar'" ng-show = "!isClient">
 						<span ng-hide = "fileUploading"> Select File <span ng-show="dropAvailable" class=""> or Drop File</span> </span>
 						<md-progress-circular md-mode="[[fileUploading]]" style = "margin-left:auto;margin-right:auto" md-diameter = "60"></md-progress-circular>
 
