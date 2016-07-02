@@ -55,7 +55,7 @@ Caweb.controller('reportsController', function($scope,$rootScope, CAService, $md
 
 	$scope.branchChanged = function() {
 		var payload = {
-			branch_id : $scope.task.branch
+			branch_id : $scope.task.branch.id
 		};
 		UserService.getUsers(payload).then(function(data) {
 			delete $scope.task.assignee;
