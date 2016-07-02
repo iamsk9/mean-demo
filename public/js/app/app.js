@@ -9,7 +9,7 @@ Caweb.constant('Tabs', [
 	'Documents',
 	'Manage Users',
 	'Branches',
-    'Department Management',
+    'Master Management',
 	'Assign Task',
 	'Tasks',
 	'Reports'
@@ -109,7 +109,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 	$rootScope.tabsMap = {};
 	$rootScope.viewTask = function(item) {
         if(!item.client_enquiry_id) {
-            $location.path('/task/'+item.task_id);   
+            $location.path('/task/'+item.task_id);
         } else {
             $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id});
         }
@@ -228,7 +228,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 				break;
 			case $rootScope.tabsMap['Branches'] : $location.path('/branches');
 				break;
-			case $rootScope.tabsMap['Department Management'] : $location.path('/departments');
+			case $rootScope.tabsMap['Master Management'] : $location.path('/departments');
                 break;
             case $rootScope.tabsMap['Assign Task'] : $location.path('/assigntask');
 				break;

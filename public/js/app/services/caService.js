@@ -203,6 +203,20 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return departmentsDefer.promise;
 		},
 
+        getWorks: function() {
+			var departmentsDefer = $q.defer();
+			Restangular.one('/works').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					departmentsDefer.resolve(data.data);
+				} else {
+					departmentsDefer.reject();
+				}
+			}, function(err){
+				departmentsDefer.reject(err);
+			});
+			return departmentsDefer.promise;
+		},
+
         createDepartment : function(payload) {
 			var createDepartmentDefer = $q.defer();
 			Restangular.one('/departments').post('', payload).then(function(data) {
@@ -217,9 +231,24 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return createDepartmentDefer.promise;
 		},    
 
-        removeDepartment : function(id) {
+		createWork : function(payload) {
+			var createWorkDefer = $q.defer();
+			Restangular.one('/departmentWorks').post('', payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					createWorkDefer.resolve(data.data);
+				} else {
+					createWorkDefer.reject(data);
+				}
+			}, function(err) {
+				createWorkDefer.reject(err);
+			});
+			return createWorkDefer.promise;
+		},    
+
+        removeDepartment : function(id, removeWorks) {
 			var removeDepartmentDefer = $q.defer();
-			Restangular.one('/departments/' + id).remove().then(function(data) {
+
+			Restangular.one('/departments/' + id + '/' + removeWorks).remove().then(function(data) {
 				if(data.returnCode == "SUCCESS") {
 					removeDepartmentDefer.resolve(data.data);
 				} else {
@@ -241,6 +270,20 @@ Caweb.factory('CAService', function(Restangular, $q){
 				updateDepartmentDefer.reject(err);
 			})
 			return updateDepartmentDefer.promise;
+		},
+        
+        updateWorks : function(id, payload) {
+			var updateWorksDefer = $q.defer();
+			Restangular.one('/departmentWorks/' + id).patch(payload).then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					updateWorksDefer.resolve(data);
+				} else {
+					updateWorksDefer.reject(data);
+				}
+			}, function(err) {
+				updateWorksDefer.reject(err);
+			})
+			return updateWorksDefer.promise;
 		},
 
 		removeDocument : function(clientId, index) {
@@ -333,19 +376,6 @@ Caweb.factory('CAService', function(Restangular, $q){
 				    {
 							payload[key] = updated[key]; 
 					}
-			}
-			return payload;
-		},
-
-        calculateDeptDiff : function(updated, original) {
-			var payload = {};
-			for(var key in updated) {
-				if(key == "name" || "email"){
-	                if(updated[key] != original[key])
-				    {
-							payload[key] = updated[key]; 
-					}
-			    }
 			}
 			return payload;
 		},

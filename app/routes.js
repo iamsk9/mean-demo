@@ -99,7 +99,13 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/branch/:branchId/enable', BranchesController.enableBranch);
 
+	apiRoutes.get('/works', DepartmentsController.getWorks);
+
 	apiRoutes.post('/departments', DepartmentsController.createDepartment);
+
+	apiRoutes.post('/departmentWorks', DepartmentsController.addDepartmentWorks);
+
+    apiRoutes.patch('/departmentWorks/:id', DepartmentsController.updateDepartmentWorks);
 
     apiRoutes.get('/departments', DepartmentsController.getDepartments);
 
@@ -107,7 +113,7 @@ module.exports = function(app, apiRoutes, blobService) {
 
     apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);
 
-    apiRoutes.delete('/departments/:departmentId', DepartmentsController.removeDepartment);
+    apiRoutes.delete('/departments/:departmentId/:removeWorksOnly', DepartmentsController.removeDepartment);
 
 	apiRoutes.post('/task', TaskController.assignTask);
 
