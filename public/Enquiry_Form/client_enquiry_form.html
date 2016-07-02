@@ -9,6 +9,21 @@
     <script type="text/javascript" src="Enquiry_Form/js/chosen.jquery.min.js"></script>
     <link rel="stylesheet" href="Enquiry_Form/css/master.css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="Enquiry_Form/css/chosen.css" media="screen" title="no title" charset="utf-8">
+    <style type="text/css">
+     .spinner {
+        position: fixed;
+        top: 50%;
+        left: 21%;
+        margin-left: -50px; /* half width of the spinner gif */
+        margin-top: -50px; /* half height of the spinner gif */
+        text-align:center;
+        z-index:1234;
+        overflow: auto;
+        width: 100px; /* width of the spinner gif */
+        height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+
+    }
+    </style>
   </head>
 
   <body data-spy="scroll">
@@ -95,12 +110,21 @@
         <div class="container-fluid">
         <div class="row form-group">
           <div class="col-md-4">
+            <div id="spinner" class="spinner" style="display:none;">
+                <img id="img-spinner" src="Enquiry_Form/images/ajax-loader.gif" alt="Loading"/>
+            </div>
             <div id="clientStatus" style="text-align:center;font-size:20px;"></div>
             <center><h3>Enquiry Form</h3></center>
-            <input type="text" name="name" placeholder="Name" class="form-control" required><br>
-            <input type="text" name="company" placeholder="Company" class="form-control" required><br>
-            <input type="email" name="email" placeholder="Email" class="form-control" required><br>
-            <input type="text" name="mobile" placeholder="Mobile No" class="form-control" required><br>
+            <input type="text" name="name" placeholder="Name" class="form-control" required>
+            <div id="ReqMessagen"  style="display:none;color:red;margin-left:5px;">This is a required field</div><br>
+            <input type="text" name="company" placeholder="Company" class="form-control" required>
+            <div id="ReqMessagec"  style="display:none;color:red;margin-left:5px;">This is a required field</div><br>
+            <input type="email" name="email" placeholder="Email" class="form-control" required>
+            <div id="emailErrMessage"  style="display:none;color:red;margin-left:5px;">enter valid email</div>
+            <div id="ReqMessageEmail"  style="display:none;color:red;margin-left:5px;">This is a required field</div><br>
+            <input type="text" name="mobile" placeholder="Mobile No" class="form-control" required>
+            <div id="mobileErrMessage"  style="display:none;color:red;margin-left:5px;">enter valid mobile number</div>
+            <div id="ReqMessageMobile"  style="display:none;color:red;margin-left:5px;">This is a required field</div><br>
             <input type="text" name="subject" placeholder="Subject" class="form-control"><br>
             <textarea name="comment" id="comment" rows="5" class="form-control comment" placeholder="Comments"></textarea><br>
             <select name="tasks" style="width:100%;" data-placeholder="Select Some Tasks"> <!--  class="chzn-select" multiple="true" -->
@@ -175,16 +199,82 @@
           <p>&copy;2016. All Rights Reserved by DM Rao & Co.</p>
         </footer>
       </div>
+      <script type="text/javascript">
+        // $(document).ready(function(){
+        //     $("#spinner").bind("ajaxSend", function() {
+        //         $(this).show();
+        //     }).bind("ajaxStop", function() {
+        //         $(this).hide();
+        //     }).bind("ajaxError", function() {
+        //         $(this).hide();
+        //     });
+         
+        // });
+</script>
       <script>
           $(window).load(function(){
+            var email;
+            var mobile;
+            $('input[name="email"]').focus(function(){
+              $('#emailErrMessage').hide();
+              $('#ReqMessageEmail').hide();
+            });
+            $('input[name="mobile"]').focus(function(){
+              $('#mobileErrMessage').hide();
+              $('#ReqMessageMobile').hide();
+            });
+            $('input[name="name"]').focus(function(){
+              $('#ReqMessagen').hide();
+            });
+            $('input[name="company"]').focus(function(){
+              $('#ReqMessagec').hide();
+            });
+            
+            $('input[name="email"]').blur(function(){
+                email = $('input[name="email"]').val();
+                var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+               
+                if(!emailReg.test( email ) && email != ""){
+                     $('#emailErrMessage').show();
+                     email = "invalid";
+                }
+
+            });
+            $('input[name="mobile"]').blur(function(){
+                mobile = $('input[name="mobile"]').val();
+                pattern = /^[7-9][0-9]{9}$/;
+                 if (!pattern.test(mobile) && mobile != "") {
+                    $('#mobileErrMessage').show();
+                     mobile = "invalid";
+                 }
+            });
              $('#submit').click(function(){
+               $('#spinner').show();
                var a=$('input[name="name"]').val();
                var b=$('input[name="company"]').val();
                var c=$('input[name="email"]').val();
                  var d=$('input[name="mobile"]').val();
-                 if (a==null || a=="" || b==null || b=="" || c==null || c=="" || d==null || d=="")
+                 if(a == null || a == ""){
+                   $('#ReqMessagen').show();
+                }
+                if(b == null || b == ""){
+                   $('#ReqMessagec').show();
+                }
+                if(c == null || c == ""){
+                   $('#ReqMessageEmail').show();
+                }
+                if(d == null || d == ""){
+                   $('#ReqMessageMobile').show();
+                }
+                if( mobile=="invalid" || email=="invalid")
                 {
-                   alert("Please Fill All Required Field");
+                 alert("Enter valid details");
+                   return false; 
+                }
+
+                 if (a==null || a=="" || b==null || b=="" || c=="" ||  d=="")
+                {
+                  alert("Please Fill All Required Field");
                    return false;
                }
                 var clientEnquiryDetails = {
@@ -208,7 +298,18 @@
                      contentType : "application/JSON",
                      data : JSON.stringify(clientEnquiryDetails),
                      success : function(result){
-                       // empty fields after client register
+                       emptyFields();
+                       $('#clientStatus').text("Your Form has been submitted successfully");
+                       $('#spinner').hide();
+                     },
+                     error: function(){
+                      alert("Unexpected error, Please try again");
+                      $('#spinner').hide();
+                     }
+                });
+               function emptyFields(){
+                // empty fields after client register
+                        //$('#emailErrMessage').hide();
                         $('input[name="name"]').val("");
                         $('input[name="company"]').val("");
                         $('input[name="email"]').val("");
@@ -216,15 +317,7 @@
                         $('input[name="subject"]').val("");
                         $('textarea[name="comment"]').val("");
                         $('select[name="tasks"]').val("");
-                       $('#clientStatus').text("Registerd successfully");
-                     },
-                     error: function(){
-                      alert("error");
-                     }
-                });
-
-
-
+               }
             });
           });
       </script>
