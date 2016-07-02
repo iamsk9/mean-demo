@@ -249,7 +249,6 @@
                  }
             });
              $('#submit').click(function(){
-               $('#spinner').show();
                var a=$('input[name="name"]').val();
                var b=$('input[name="company"]').val();
                var c=$('input[name="email"]').val();
@@ -277,6 +276,7 @@
                   alert("Please Fill All Required Field");
                    return false;
                }
+               $('#spinner').show();
                 var clientEnquiryDetails = {
                   name : $('input[name="name"]').val(),
                   company : $('input[name="company"]').val(),

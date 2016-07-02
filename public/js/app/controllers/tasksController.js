@@ -26,7 +26,7 @@ Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdT
 			.textContent("Unable to fetch Tasks")
 			.position("top right")
 			.hideDelay(5000));
-		});
+		 });
 	}
 	getTasks();
 	function showDialog(){

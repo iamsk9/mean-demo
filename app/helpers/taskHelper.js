@@ -11,7 +11,7 @@ var utils = require('../utils');
 var emailer = require('../emailer');
 
 function sendEmail(user_id, details) {
-	var userQuery = "SELECT * from users where user_id = ?";
+	var userQuery = "SELECT * from users where id = ?";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, userQuery, [user_id]);
 	}).then(function(results) {
@@ -65,6 +65,8 @@ exports.assignTask = function(request, user) {
 	}).then(function(result) {
 		notification.task_id = result.insertId;
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
+		if(request.client_enquiry_id)
+			notification.client_enquiry_id = request.client_enquiry_id;
 		sendEmail(notification.user_id, notification);
 		return utils.runQuery(connection, newNotification, notification);
 	}).then(function(results) {
