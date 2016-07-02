@@ -11,7 +11,7 @@ var utils = require('../utils');
 var emailer = require('../emailer');
 
 function sendEmail(user_id, details) {
-	var userQuery = "SELECT * from users where user_id = ?";
+	var userQuery = "SELECT * from users where id = ?";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, userQuery, [user_id]);
 	}).then(function(results) {

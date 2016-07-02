@@ -14,10 +14,24 @@ function sendEmail(id,name,email,company,task,mobile) {
  var sendEmailDefer = q.defer();
  var userQuery = "SELECT dept_id from departments_tasks where task_id = ? and deleted_at is NULL";
 
-    var mailQuery = "SELECT email FROM users where id = ? and deleted_at is Null";
+    var mailToAdmin = "SELECT email FROM users where id = ? and deleted_at is Null";
+    var mailToDeptHead = "SELECT email FROM departments where id = ? and deleted_at is Null";
      db.getConnection().then(function(connection) {
-       return utils.runQuery(connection, mailQuery,[id]);
-     }).then(function(results) {
+       utils.runQuery(connection, mailToAdmin,[id]).then(function(results) {
+             if(results.length > 0) {
+                 var queries = results[0];
+                 emailer.send('public/templates/_taskEmail.html', {
+                   name : name,
+                   company : company,
+                   email : email,
+                   task : task,
+                   mobile : mobile
+                  }, queries.email,"Task assigned for department");
+             }
+      });
+  }).then(function(){
+       db.getConnection().then(function(connection) {
+         utils.runQuery(connection, mailToDeptHead,[id]).then(function(results) {
              if(results.length > 0) {
                  var queries = results[0];
                  emailer.send('public/templates/_taskEmail.html', {
@@ -29,7 +43,9 @@ function sendEmail(id,name,email,company,task,mobile) {
                   }, queries.email,"Task assigned for department");
              }
          sendEmailDefer.resolve();
- }).catch(function(err) {
+      });
+    });
+  }).catch(function(err) {
       console.log(err);
       sendEmailDefer.reject();
  });

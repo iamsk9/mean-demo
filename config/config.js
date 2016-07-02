@@ -4,7 +4,7 @@ module.exports = {
 		hostName : 'localhost',
 		user : 'root',
 		password : '',
-		dbName : 'caweb'
+		dbName : 'caweb_latest'
 	},
 	storage : {
 		storageAccessKey : 'PNumsIXFfFSed5bpakbBsrqPi0PH6iREW+AoS+434JFTd9MP+wHvNbgbqYtODlddul5xC+GbfYVfD5aeM757gw==',
