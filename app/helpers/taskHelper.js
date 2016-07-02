@@ -65,6 +65,8 @@ exports.assignTask = function(request, user) {
 	}).then(function(result) {
 		notification.task_id = result.insertId;
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
+		if(request.client_enquiry_id)
+			notification.client_enquiry_id = request.client_enquiry_id;
 		sendEmail(notification.user_id, notification);
 		return utils.runQuery(connection, newNotification, notification);
 	}).then(function(results) {

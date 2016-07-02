@@ -20,17 +20,13 @@ Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdT
 			});
 			$scope.assignedTasks = tasks.filter(function(task) {
 				return task.assigned_by == userId;
-			// });
-			// $mdToast.show($mdToast.simple()
-			// .textContent($scope.myTasks.user_id)
-			// .position("top right")
-			// .hideDelay(5000));
+			});
 		}, function(err) {
 			$mdToast.show($mdToast.simple()
 			.textContent("Unable to fetch Tasks")
 			.position("top right")
 			.hideDelay(5000));
-		});
+		 });
 	}
 	getTasks();
 	function showDialog(){

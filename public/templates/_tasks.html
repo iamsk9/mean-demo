@@ -27,7 +27,7 @@
 				                </tr>
 				            </thead>
 				            <tbody md-body>
-					            <tr md-row ng-show = "Tasks.length > 0" ng-repeat = "task in myTasks | filter:searchQuery">
+					            <tr md-row ng-show = "myTasks.length > 0" ng-repeat = "task in myTasks | filter:searchQuery">
 					                <td md-cell class = "font_14 center">#[[task.id]]</td>
 					                <td md-cell class = "font_14 center">[[task.client_name]]</td>
 					                <td md-cell class = "font_14 center">[[task.contact_number]]</td>

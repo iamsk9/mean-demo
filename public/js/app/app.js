@@ -111,7 +111,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         if(!item.client_enquiry_id) {
             $location.path('/task/'+item.task_id);   
         } else {
-            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile});
+            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id});
         }
 	}
 	for(i in $rootScope.tabs) {

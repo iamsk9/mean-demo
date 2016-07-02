@@ -12,6 +12,7 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		$scope.otherClient = true;
 		$scope.task.clientName = $routeParams.client_name;
 		$scope.task.contactNumber = $routeParams.mobile;
+		$scope.task.client_enquiry_id = $routeParams.client_enquiry_id;
 	}
 	$scope.assignTask = function() {
 		if(validateDetails()) {
