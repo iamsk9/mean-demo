@@ -127,7 +127,10 @@ exports.getDepartments = function() {
 
 exports.getWorks = function() {
 	var getWorksDefer = q.defer();
-	var query = "SELECT DISTINCT dept_id from departments_tasks where deleted_at is NULL";
+	var query = "SELECT mt.id as work_id, mt.task_name as work_name, d.id as dept_id, d.name as dept_name from master_tasks mt \
+	LEFT JOIN departments_tasks dt on dt.task_id = mt.id \
+	LEFT JOIN departments d on dt.dept_id = d.id \
+	where mt.deleted_at is NULL and dt.deleted_at is NULL and d.deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, query);
 	}).then(function(results) {
