@@ -30,14 +30,6 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 			.hideDelay(5000));
 		});
 	}
-	CAService.getMasterWorks().then(function(masterWorks) {
-		$scope.masterWorks = masterWorks;
-	}, function(err) {
-		$mdToast.show($mdToast.simple()
-		.textContent("Unable to fetch master works")
-		.position("top right")
-		.hideDelay(5000));
-	});
 	getDepartments();
 	getWorks();
 	$scope.filterResults = function(query) {
@@ -131,33 +123,13 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		$scope.dialogType = 'Edit';
 		$scope.newly_added_tasks = [];
 	    $scope.removed_tasks = [];
-		CAService.getTaskList(id).then(function(result){
-       	    $scope.task_works = result;
-        },function(err){
-        	$mdToast.show($mdToast.simple()
-       	              .textContent("not working")
-       	              .position("top right")
-       	              .hideDelay(5000));
-        });
 		original = $scope.departments[index];
 		$scope.currentDepartment = angular.copy($scope.departments[index]);
 		showDialog();
 	}
 
     $scope.showUpdateWorksDialog = function(index) {
-		var id = $scope.departments[index].id;
 		$scope.dialogType = 'Edit';
-		//$scope.currentWork.departmentID = $scope.works[index].dept_id;
-		$scope.newly_added_tasks = [];
-	    $scope.removed_tasks = [];
-		CAService.getTaskList(id).then(function(result){
-       	    $scope.task_works = result;
-        },function(err){
-        	$mdToast.show($mdToast.simple()
-       	              .textContent("not working")
-       	              .position("top right")
-       	              .hideDelay(5000));
-        });
 		original = $scope.works[index];
 		$scope.currentWork = angular.copy($scope.works[index]);
 		showWorkDialog();
@@ -264,13 +236,13 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		}
 	}
 	$scope.workAction = function() {
-     if(!$scope.currentWork.dept_id || $scope.task_works.length == 0) {
+     if(!$scope.currentWork.work_name || $scope.currentWork.dept_id == 0) {
 			return;
 		}
 		if($scope.dialogType == 'Add') {
 			var payload = {
-	            departmentId : $scope.currentWork.dept_id,
-	            task :  $scope.task_works
+	            dept_id : $scope.currentWork.dept_id,
+	            work_name :  $scope.currentWork.work_name
 			};
 			CAService.createWork(payload).then(function(){
 				$mdToast.show($mdToast.simple()
@@ -288,14 +260,20 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		} else if($scope.dialogType == 'Edit') {
 			var departmentAction = CAService.editUser;
 			var payload = {};
-			payload.added_tasks = $scope.newly_added_tasks;
-    		payload.removed_tasks = $scope.removed_tasks;
+			if($scope.currentWork.dept_id != original.dept_id) {
+				payload.dept_id = $scope.currentWork.dept_id;
+			}
+			if($scope.currentWork.work_name != original.work_name) {
+				payload.work_name = $scope.currentWork.work_name;
+			}
 			if(!angular.equals(payload,{})) {
-				CAService.updateWorks($scope.currentWork.dept_id, payload).then(function(){
+				payload.work_id = $scope.currentWork.work_id;
+				CAService.updateWorks($scope.currentWork.work_id, payload).then(function() {
 					$mdToast.show($mdToast.simple()
 					.textContent("Successfully updated")
 					.position("top right")
 					.hideDelay(5000));
+					getWorks();
 					$scope.closeDialog();
 				}, function(err) {
 					$mdToast.show($mdToast.simple()
@@ -326,6 +304,31 @@ Caweb.controller('departmentsController', function($scope, $rootScope, CAService
 		 	}, function(err) {
 	    		$mdToast.show($mdToast.simple()
 				.textContent("Error in removing Department.")
+				.position("top right")
+				.hideDelay(5000));
+	    	});
+	    }, function() {
+	    });
+	}
+
+	$scope.showRemoveWorkDialog = function(index) {
+		var confirm = $mdDialog.confirm()
+	          .title('Remove Work - ' + $scope.works[index].work_name)
+	          .textContent('Are You sure you want to remove the Department?')
+	          .ariaLabel('Remove Work')
+	          .ok('Remove')
+	          .cancel('Cancel');
+	    $mdDialog.show(confirm).then(function() {
+	    	CAService.removeWork($scope.works[index].work_id).then(function() {
+	    		$scope.works.splice(index,1);
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Removed the Work Successfully.")
+				.position("top right")
+				.hideDelay(5000));
+				getWorks();
+		 	}, function(err) {
+	    		$mdToast.show($mdToast.simple()
+				.textContent("Error in removing work.")
 				.position("top right")
 				.hideDelay(5000));
 	    	});

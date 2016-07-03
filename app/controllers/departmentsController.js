@@ -104,6 +104,7 @@ exports.updateDepartmentWorks = function(req, res) {
 	DepartmentsHelper.updateDepartmentWorks(req.params.id, req.body).then(function(data){
 		res.json({returnCode: "SUCCESS", data: data, errorCode : null});
 	}, function(err) {
+		console.log(err);
 		if(err.errorCode) {
 			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
 		} else {
@@ -116,6 +117,19 @@ exports.updateDepartment = function(req, res) {
 	DepartmentsHelper.updateDepartment(req.params.departmentId, req.body).then(function(data){
 		res.json({returnCode: "SUCCESS", data: data, errorCode : null});
 	}, function(err) {
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
+		} else {
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014});
+		}
+	});
+}
+
+exports.removeWork = function(req, res) {
+	DepartmentsHelper.removeWork(req.params.workId).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+	}, function(err) {
+		console.log(err);
 		if(err.errorCode) {
 			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode});
 		} else {

@@ -20,22 +20,29 @@ var utils = require('../utils');
 // 	});
 // 	return createDepartmentDefer.promise;
 // }
-function insertTask(id,taskId,created_at,modified_at){
-	var insertDeptTasks = "INSERT INTO departments_tasks (dept_id,task_id, created_at, modified_at) VALUES(?,?,?,?)";
-	db.getConnection().then(function(connection) {
-       return utils.runQuery(connection, insertDeptTasks, [id,taskId,created_at, modified_at]);
-	});
+
+function insertIntoDepartmentTasks(connection, work_id, dept_id) {
+	var deptQuery = "INSERT INTO departments_tasks (task_id, dept_id, created_at, modified_at) VALUES (?,?,?,?)";
+	return utils.runQuery(connection, deptQuery, [work_id, dept_id, 
+	moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')]);
 }
+
 exports.addDepartmentWorks = function(request){
 	var addDepartmentWorksDefer = q.defer();
-	var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-    var modified_at = moment().format('YYYY-MM-DD HH:mm:ss');
-	var tasks = request.task;
-	db.getConnection().then(function(connection) {
-			  for( id in tasks )   
-			     insertTask(request.departmentId,tasks[id].id,created_at,modified_at);
+	var insertQuery = "INSERT INTO master_tasks (task_name, created_at, modified_at) VALUES (?,?,?)";
+	var connetion;
+	db.getConnection().then(function(conn) {
+		connection = conn;
+		return utils.runQuery(connection, insertQuery, [request.work_name, 
+			moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss')], true);
 	}).then(function(results) {	
-		addDepartmentWorksDefer.resolve(results);
+		if(request.dept_id) {
+			return insertIntoDepartmentTasks(connection, results.insertId, request.dept_id)
+		} else {
+			addDepartmentWorksDefer.resolve();
+		}
+	}).then(function() {
+		addDepartmentWorksDefer.resolve();
 	}).catch(function(err) {
 		addDepartmentWorksDefer.reject(err);
 	});
@@ -66,28 +73,35 @@ exports.createDepartment = function(request) {
 
 exports.updateDepartmentWorks = function(id, requestParams) {
 	var updateDepartmentWorksDefer = q.defer();
-	var modified_at = moment().format('YYYY-MM-DD HH:mm:ss');
-	var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-    var deleted_at = moment().format('YYYY-MM-DD HH:mm:ss');
-	db.getConnection().then(function(connection) {
-		 for( index in requestParams.removed_tasks )
-		 	  updateTask(requestParams.removed_tasks[index].id, deleted_at, id)
-         for( index in requestParams.added_tasks )
-		 	  insertTask(id, requestParams.added_tasks[index].id, created_at,  modified_at)		
+	var updateWorkQuery = "UPDATE master_tasks SET task_name = ? where id = ?";;
+	var updateDepartmentQuery = "UPDATE departments_tasks set dept_id = ? where task_id = ?";
+	var getDepartmentQuery = "SELECT count(*) as count from departments_tasks where task_id = ?";
+	var connection;
+	db.getConnection().then(function(conn) {
+		connection = conn;
+		if(requestParams.work_name) {
+			return utils.runQuery(connection, updateWorkQuery, [requestParams.work_name, id], true);
+		}
 	}).then(function(results) {
-		updateDepartmentWorksDefer.resolve(results);
+		if(requestParams.dept_id) {
+			return utils.runQuery(connection, getDepartmentQuery, [id], true);
+		}
+	}).then(function(results) {
+		console.log(results);
+		if(results) {
+			if(results[0].count >= 1) {
+				return utils.runQuery(connection, updateDepartmentQuery, [requestParams.dept_id, id], true);	
+			} else {
+				return insertIntoDepartmentTasks(connection, id, requestParams.dept_id);
+			}
+		}
+	}).then(function() {
+		updateDepartmentWorksDefer.resolve();
 	}).catch(function(err) {
 		updateDepartmentWorksDefer.reject(err);
 	});
 	return updateDepartmentWorksDefer.promise;
 }
-
-function updateTask(taskId, deleted_at, id){
- 	var updateTask = "UPDATE departments_tasks SET deleted_at = ? where task_id = ? and dept_id = ?";
-    db.getConnection().then(function(connection) {
-			   return utils.runQuery(connection, updateTask, [deleted_at, taskId, id]);
-    });	
- }
 
 exports.updateDepartment = function(id, requestParams) {
 	var updateDepartmentDefer = q.defer();
@@ -165,7 +179,7 @@ exports.getDepartmentTasks = function(id) {
 	var getDepartmentTasksDefer = q.defer();
 	var getDepartmentTasks = "SELECT master_tasks.id, master_tasks.task_name as name FROM master_tasks LEFT JOIN\
 	 departments_tasks ON master_tasks.id = departments_tasks.task_id where departments_tasks.dept_id = ?\
-	  and departments_tasks.deleted_at is NULL";
+	  and departments_tasks.deleted_at is NULL and master_tasks.deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, getDepartmentTasks,[id]);
 	}).then(function(results) {
@@ -191,5 +205,19 @@ exports.removeDepartment = function(id, remove) {
 		removeDepartmentDefer.reject(err);
 	});
 	return removeDepartmentDefer.promise;
+}
+
+exports.removeWork = function(id) {
+	var removeWorkDefer = q.defer();
+	var removeWork = "UPDATE master_tasks SET deleted_at = ? where id = ? and deleted_at is NULL";
+	deleted_at = moment().format('YYYY-MM-DD HH:mm:ss');
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, removeWork, [deleted_at, id]);
+	}).then(function(results) {
+		removeWorkDefer.resolve(results);
+	}).catch(function(err) {
+		removeWorkDefer.reject(err);
+	});
+	return removeWorkDefer.promise;
 }
 

@@ -143,4 +143,6 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.patch('/client/:clientId/status', ClientController.updateClientStatus);
 
+	apiRoutes.delete('/works/:workId', DepartmentsController.removeWork);
+
 }

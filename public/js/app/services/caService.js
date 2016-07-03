@@ -258,6 +258,19 @@ Caweb.factory('CAService', function(Restangular, $q){
 			return removeDepartmentDefer.promise;
 		},
 
+		removeWork : function(id) {
+			var removeDepartmentDefer = $q.defer();
+
+			Restangular.one('/works/' + id).remove().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					removeDepartmentDefer.resolve(data.data);
+				} else {
+					removeDepartmentDefer.reject(data);
+				}
+			});
+			return removeDepartmentDefer.promise;
+		},
+
         updateDepartment : function(id, payload) {
 			var updateDepartmentDefer = $q.defer();
 			Restangular.one('/departments/' + id).patch(payload).then(function(data) {
