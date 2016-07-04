@@ -231,108 +231,108 @@ exports.deleteDocument = function(id) {
 	return deleteDefer.promise;
 }
 
-exports.getTotalDownloads = function(obj) {
-	var documentDownloadsDefer = q.defer();
-	var totalDownloads = "SELECT count(*) as downloadsCount from tasks";
+exports.getTotalTasks = function(obj) {
+	var getTotalTask = q.defer();
+	var getTotalTasks = "SELECT count(*) as getTotalTasks from tasks";
 	db.getConnection().then(function(connection) {
-		connection.query(totalDownloads, function(err, results){
+		connection.query(getTotalTasks, function(err, results){
 			if(err) {
 				connection.release();
-				documentDownloadsDefer.reject(err);
+				getTotalTask.reject(err);
 				return;
 			}
 			if(results.length > 0) {
-				obj.totalMetrics.downloadsCount = results[0].downloadsCount;
+				obj.totalMetrics.getTotalTasks = results[0].getTotalTasks;
 			} else {
-				obj.totalMetrics.downloadsCount = 0;
+				obj.totalMetrics.getTotalTasks = 0;
 			}
 			connection.release();
-			documentDownloadsDefer.resolve();
+			getTotalTask.resolve();
 		});
 	}, function(err) {
-		documentDownloadsDefer.reject(err);
+		getTotalTask.reject(err);
 	});
-	return documentDownloadsDefer.promise;
+	return getTotalTask.promise;
 }
 
-exports.getTodaysDownloads = function(obj) {
-	var documentDownloadsDefer = q.defer();
-	var todaysDownloads = "SELECT count(*) as downloadsCount from tasks where DATE(created_at) = DATE(NOW())";
+exports.getTodaysTasks = function(obj) {
+	var getTodaysTask = q.defer();
+	var todaystasks = "SELECT count(*) as todaystasks from tasks where DATE(created_at) = DATE(NOW())";
 	db.getConnection().then(function(connection) {
-		connection.query(todaysDownloads, function(err, results){
+		connection.query(todaystasks, function(err, results){
 			if(err) {
 				connection.release();
-				documentDownloadsDefer.reject(err);
+				getTodaysTask.reject(err);
 				return;
 			}
 			if(results.length > 0) {
-				obj.todaysMetrics.downloadsCount = results[0].downloadsCount;
+				obj.todaysMetrics.todaystasks = results[0].todaystasks;
 			} else {
-				obj.todaysMetrics.downloadsCount = 0;
+				obj.todaysMetrics.todaystasks = 0;
 			}
 			connection.release();
 			console.log(results);
-			documentDownloadsDefer.resolve();
+			getTodaysTask.resolve();
 		});
 	}, function(err) {
-		documentDownloadsDefer.reject(err);
+		getTodaysTask.reject(err);
 	});
-	return documentDownloadsDefer.promise;
+	return getTodaysTask.promise;
 }
 
-exports.getTotalDocs = function(obj) {
-	var docsDefer = q.defer();
-	var totalDocsCount = "SELECT count(*) as docsCount from tasks where task_status <> 'Completed' and deleted_at is NULL";
+exports.getTotalPendingTasks = function(obj) {
+	var getTotalPendingTask = q.defer();
+	var totalpendingtasks = "SELECT count(*) as totalpendingtasks from tasks where task_status <> 'Completed' and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
-		connection.query(totalDocsCount, function(err, results){
+		connection.query(totalpendingtasks, function(err, results){
 			if(err) {
 				connection.release();
-				docsDefer.reject(err);
+				getTotalPendingTask.reject(err);
 				return;
 			}
 			if(results.length > 0) {
-				obj.totalMetrics.docsCount = results[0].docsCount;
+				obj.totalMetrics.totalpendingtasks = results[0].totalpendingtasks;
 			} else {
-				obj.totalMetrics.docsCount = 0;
+				obj.totalMetrics.totalpendingtasks = 0;
 			}
 			connection.release();
 			console.log(results);
 
-			docsDefer.resolve();
+			getTotalPendingTask.resolve();
 		});
 	}, function(err) {
-		docsDefer.reject(err);
+		getTotalPendingTask.reject(err);
 	});
-	return docsDefer.promise;
+	return getTotalPendingTask.promise;
 }
 
-exports.getTodaysDocs = function(obj) {
-	var docsDefer = q.defer();
-	var todaysDocsCount = "SELECT count(*) as docsCount from tasks where task_status <> 'Completed' and DATE(created_at) = DATE(NOW())";
+exports.getTodaysPendingTasks = function(obj) {
+	var getTodaysPendingTask = q.defer();
+	var todaypendingtasks = "SELECT count(*) as todaypendingtasks from tasks where task_status <> 'Completed' and DATE(created_at) = DATE(NOW())";
 	db.getConnection().then(function(connection) {
-		connection.query(todaysDocsCount, function(err, results){
+		connection.query(todaypendingtasks, function(err, results){
 			if(err) {
 				connection.release();
-				docsDefer.reject(err);
+				getTodaysPendingTask.reject(err);
 				return;
 			}
 			if(results.length > 0) {
-				obj.todaysMetrics.docsCount = results[0].docsCount;
+				obj.todaysMetrics.todaypendingtasks = results[0].todaypendingtasks;
 			} else {
-				obj.todaysMetrics.docsCount = 0;
+				obj.todaysMetrics.todaypendingtasks = 0;
 			}
 			connection.release();
 
-			docsDefer.resolve();
+			getTodaysPendingTask.resolve();
 		});
 	}, function(err) {
-		docsDefer.reject(err);
+		getTodaysPendingTask.reject(err);
 	});
-	return docsDefer.promise;
+	return getTodaysPendingTask.promise;
 }
 
 exports.getDocDownloads = function(id) {
-	var docDownloadsDefer = q.defer();
+	var getDocDownloads = q.defer();
 	var query = 'SELECT b.id, max(a.downloaded_at) as latestDownloadedTime, b.client_id, b.description, b.url, count(downloaded_at) as downloadCount\
 	from docs b LEFT OUTER JOIN client_downloads a on a.doc_id = b.id where b.client_id = ? and b.deleted_at is NULL and b.is_directory = ? group by b.id'
 	db.getConnection().then(function(connection) {
