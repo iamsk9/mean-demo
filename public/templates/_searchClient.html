@@ -132,9 +132,10 @@
 					</md-input-container>
 					<md-input-container style = "width : 300px">
 					  <label>Pan Card</label>
-					  <input type="text" required="" name = "panCard" ng-model = "theScope.client.panCardNumber" ng-pattern = "/^[A-Za-z]{5}\d{4}[A-Za-z]{1}$/">
+					  <input type="text" required="" name = "panCard" ng-model = "theScope.client.panCardNumber"  ng-minlength="10" ng-pattern = "/^[A-Za-z]{5}\d{4}[A-Za-z]{1}$/">
 					  <div ng-messages = "addClientForm.panCard.$error">
 					  	<div ng-message = "required">This is required</div>
+							<div ng-message= "minlength">PAN CARD number should be atleast 10 characters</div>
 							<div ng-message = "pattern">Invalid Pan Card Number</div>
 					  	<div ng-message = "panCardExists">This Pan Card already exists</div>
 					  </div>
