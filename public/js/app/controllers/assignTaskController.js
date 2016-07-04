@@ -13,6 +13,14 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		$scope.task.clientName = $routeParams.client_name;
 		$scope.task.contactNumber = $routeParams.mobile;
 		$scope.task.client_enquiry_id = $routeParams.client_enquiry_id;
+		CAService.getClientEnquiryDetails($routeParams.client_enquiry_id).then(function(result){
+            $scope.task.clientEmail = result.email;
+            $scope.task.clientTask = result.task_name;        
+		},function(){   
+            $mdToast.show($mdToast.simple()
+					.textContent("Error in getting client details")
+					.position("top right")
+					.hideDelay(5000)); });
 	}
 	$scope.assignTask = function() {
 		if(validateDetails()) {
@@ -56,10 +64,10 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 
 	$scope.clientTypeChanged = function() {
 		if($scope.otherClient) {
-			delete $scope.task['client']
+			delete $scope.task['client'];
 		  } else {
 		  	$scope.currentClient.name = item.name;
-		  	$scope.otherClient="otherClient";
+		  	$scope.otherClient = true;
 		  }
 	}
 

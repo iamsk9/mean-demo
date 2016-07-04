@@ -305,6 +305,32 @@ exports.getTodaysClientsCount = function (obj) {
 	return clientCountDefer.promise;
 }
 
+exports.getClientEnquiryDetails = function(id) {
+	 var getClientEnquiryDetailsDefer = q.defer();
+	var clientDetails = "SELECT * from clients_enquiry where id = ? and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(clientDetails, [id], function(err, results) {
+			if(err) {
+				getClientEnquiryDetailsDefer.reject(err);
+				connection.release();
+				return;
+			}
+			if(results.length > 0) {
+				connection.query("SELECT task_name from master_tasks where id = ?", [results[0].task], function(err, result) {
+                   results[0].task_name = result[0].task_name;
+	 			getClientEnquiryDetailsDefer.resolve(results[0]);
+	 		 	});
+			} else {
+				getClientEnquiryDetailsDefer.reject({errorCode : 1019});
+			}
+			connection.release();
+		});
+	}, function(err){
+		getClientEnquiryDetailsDefer.reject(err);
+	});
+	return getClientEnquiryDetailsDefer.promise;
+}
+
 exports.getLatestClient = function (obj) {
 	var latestClientDefer = q.defer();
 	var latestClient = "SELECT * from clients order by created_at DESC LIMIT 1";

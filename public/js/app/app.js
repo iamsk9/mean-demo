@@ -177,6 +177,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
     	});
     }
 	$rootScope.openUserMenu = function($mdOpenMenu, ev) {
+        $rootScope.notificationsOpen = false;
 		$mdOpenMenu(ev);
 	}
 	$rootScope.toggleNotifications = function(event) {
@@ -186,6 +187,10 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 			$rootScope.notificationsOpen = true;
 		}
 	}
+    $rootScope.closeOpenedNotification = function(){
+        if($rootScope.notificationsOpen) 
+            $rootScope.notificationsOpen = false;
+    }
 	$rootScope.logout = function(){
 		UserService.logout().then(function(){
 			window.location.replace('/');
