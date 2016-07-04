@@ -63,6 +63,8 @@ module.exports = function(app, apiRoutes, blobService) {
 
 	apiRoutes.get('/client/:id', ClientController.getClientDetails);
 
+	apiRoutes.get('/clientEnquiry/:id', ClientController.getClientEnquiryDetails);
+
 	apiRoutes.patch('/client/:id', ClientController.updateClient);
 
 	apiRoutes.post('/upload', DocsController.uploadDoc);

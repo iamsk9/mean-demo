@@ -29,6 +29,21 @@ Caweb.factory('CAService', function(Restangular, $q){
 		getClientsService : function(payload) {
 			return Restangular.one('/clients').get(payload);
 		},
+
+		getClientEnquiryDetails : function(id){
+			var getClientDetailsDefer = $q.defer();
+			Restangular.one('/clientEnquiry/' + id).get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getClientDetailsDefer.resolve(data.data);
+				} else {
+					getClientDetailsDefer.reject();
+				}
+			}, function(err){
+				getClientDetailsDefer.reject(err);
+			});
+			return getClientDetailsDefer.promise;
+		},
+
         getTaskList : function(id){
         	var getTaskListDefer = $q.defer();
         	Restangular.one('/departments/' + id).get().then(function(data) {

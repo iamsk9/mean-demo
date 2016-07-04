@@ -30,6 +30,15 @@ exports.getClientDetails = function(req, res) {
 	}, handleError.bind(this))
 }
 
+exports.getClientEnquiryDetails = function(req, res) {
+	this.res = res;
+	this.req = req;
+
+	ClientHelper.getClientEnquiryDetails(req.params.id).then(function(data) {
+		res.json({returnCode : "SUCCESS", data : data, errorCode : null});
+	}, handleError.bind(this))
+}
+
 exports.getClients = function(req, res) {
 	this.res = res;
 	this.req = req;

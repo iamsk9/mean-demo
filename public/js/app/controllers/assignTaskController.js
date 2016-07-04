@@ -8,11 +8,22 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.reset = true;
 	$scope.task = {};
 	$scope.currentClient = {};
+	$scope.task.works = [];
 	if($routeParams.client_name && $routeParams.mobile) {
 		$scope.otherClient = true;
 		$scope.task.clientName = $routeParams.client_name;
 		$scope.task.contactNumber = $routeParams.mobile;
 		$scope.task.client_enquiry_id = $routeParams.client_enquiry_id;
+		$scope.task.comment = $routeParams.comments;
+		CAService.getClientEnquiryDetails($routeParams.client_enquiry_id).then(function(result){
+            $scope.task.clientEmail = result.email;
+            $scope.task.works = [{ id : result.task, name : result.task_name }]; 
+		},function(){   
+            $mdToast.show($mdToast.simple()
+					.textContent("Error in getting client details")
+					.position("top right")
+					.hideDelay(5000)); 
+        });
 	}
 	$scope.assignTask = function() {
 		if(validateDetails()) {
@@ -30,6 +41,7 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 				$timeout(function(){
 					$scope.reset = true;
 				}, 0);
+				$scope.otherClient = false;
 				$scope.assignTaskForm.$setPristine(true);
 				$scope.assignTaskForm.$setDirty(false);
 				$scope.assignTaskForm.$setUntouched(true);
@@ -50,16 +62,39 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		.position("top right")
 		.hideDelay(5000));
 	});
+	CAService.getMasterWorks().then(function(masterWorks) {
+		$scope.masterWorks = masterWorks;
+	}, function(err) {
+		$mdToast.show($mdToast.simple()
+		.textContent("Unable to fetch master works")
+		.position("top right")
+		.hideDelay(5000));
+	});
 	$scope.querySearch = function(searchText) {
 		   return CAService.searchClients(searchText);
 	}
+     
+    $scope.filterResults = function(query) {
+		if(query) {
+			var results = $scope.masterWorks.filter(createFilterFor(query));	
+		} else {
+			var results = $scope.masterWorks;
+		}
+      return results;
+	}
+	function createFilterFor(query) {
+      	var lowercaseQuery = angular.lowercase(query);
+		return function filterFn(work) {
+			return (work.name.toLowerCase().indexOf(lowercaseQuery) > 0);
+		};
+    }
 
 	$scope.clientTypeChanged = function() {
 		if($scope.otherClient) {
-			delete $scope.task['client']
+			delete $scope.task['client'];
 		  } else {
 		  	$scope.currentClient.name = item.name;
-		  	$scope.otherClient="otherClient";
+		  	$scope.otherClient = true;
 		  }
 	}
 

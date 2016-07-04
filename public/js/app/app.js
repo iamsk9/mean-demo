@@ -107,16 +107,28 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 	$rootScope.user = UserService.getUserDetails();
 	$rootScope.tabs = Tabs;
 	$rootScope.tabsMap = {};
+    var allTasks;
 	$rootScope.viewTask = function(item) {
-        if(!item.client_enquiry_id) {
+        if(item.task_id){
+            var taskAssignedToEmployee = allTasks.filter(function(result){
+                  return (result.id == item.task_id);
+            });  
+        }     
+        if(taskAssignedToEmployee && item.task_id)
+            $location.path('/task/'+item.task_id+'/edit');
+        else if(!item.client_enquiry_id) {
             $location.path('/task/'+item.task_id);
         } else {
-            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id});
+            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id,comments : item.comment});
         }
 	}
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
 	}
+
+    CAService.getTasks().then(function(results){
+       allTasks = results;
+    });
     var Notifications = function() {
         this.loadedPages = {};
         /** @type {number} Total number of items. *
@@ -177,6 +189,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
     	});
     }
 	$rootScope.openUserMenu = function($mdOpenMenu, ev) {
+        $rootScope.notificationsOpen = false;
 		$mdOpenMenu(ev);
 	}
 	$rootScope.toggleNotifications = function(event) {
@@ -186,6 +199,10 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 			$rootScope.notificationsOpen = true;
 		}
 	}
+    $rootScope.closeOpenedNotification = function(){
+        if($rootScope.notificationsOpen) 
+            $rootScope.notificationsOpen = false;
+    }
 	$rootScope.logout = function(){
 		UserService.logout().then(function(){
 			window.location.replace('/');
