@@ -233,7 +233,7 @@ exports.deleteDocument = function(id) {
 
 exports.getTotalDownloads = function(obj) {
 	var documentDownloadsDefer = q.defer();
-	var totalDownloads = "SELECT count(*) as downloadsCount from client_downloads";
+	var totalDownloads = "SELECT count(*) as downloadsCount from tasks";
 	db.getConnection().then(function(connection) {
 		connection.query(totalDownloads, function(err, results){
 			if(err) {
@@ -257,7 +257,7 @@ exports.getTotalDownloads = function(obj) {
 
 exports.getTodaysDownloads = function(obj) {
 	var documentDownloadsDefer = q.defer();
-	var todaysDownloads = "SELECT count(*) as downloadsCount from client_downloads where DATE(downloaded_at) = DATE(NOW())";
+	var todaysDownloads = "SELECT count(*) as downloadsCount from tasks where DATE(created_at) = DATE(NOW())";
 	db.getConnection().then(function(connection) {
 		connection.query(todaysDownloads, function(err, results){
 			if(err) {
@@ -282,7 +282,7 @@ exports.getTodaysDownloads = function(obj) {
 
 exports.getTotalDocs = function(obj) {
 	var docsDefer = q.defer();
-	var totalDocsCount = "SELECT count(*) as docsCount from docs where deleted_at is NULL";
+	var totalDocsCount = "SELECT count(*) as docsCount from tasks where task_status <> 'Completed' and deleted_at is NULL";
 	db.getConnection().then(function(connection) {
 		connection.query(totalDocsCount, function(err, results){
 			if(err) {
@@ -308,7 +308,7 @@ exports.getTotalDocs = function(obj) {
 
 exports.getTodaysDocs = function(obj) {
 	var docsDefer = q.defer();
-	var todaysDocsCount = "SELECT count(*) as docsCount from docs where DATE(created_at) = DATE(now()) and deleted_at is NULL";
+	var todaysDocsCount = "SELECT count(*) as docsCount from tasks where task_status <> 'Completed' and DATE(created_at) = DATE(NOW())";
 	db.getConnection().then(function(connection) {
 		connection.query(todaysDocsCount, function(err, results){
 			if(err) {

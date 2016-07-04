@@ -5,56 +5,44 @@
 	<div layout = "row" layout-align = "space-between center" layout-wrap>
 		<md-card class = "card md-card-hover bgm-cyan" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Clients Added - </h3>
+				<h4>Number of New Client :</h4><pre>         </pre><br />
 				<h1>[[dashboardDetails.todaysMetrics.clientCount]]</h1>
 			</md-card-content>
 		</md-card>
 		<md-card class = "card md-card-hover bgm-lightgreen" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Client Downloads - </h3>
+				<h4>Today's Tasks:</h4><pre>         </pre><br />
 				<h1>[[dashboardDetails.todaysMetrics.downloadsCount]]</h1>
 			</md-card-content>
 		</md-card>
 		<md-card class = "card md-card-hover bgm-orange" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Document Uploads - </h3>
+				<h4>Pending Tasks:</h4><pre>         </pre><br />
 				<h1>[[dashboardDetails.todaysMetrics.docsCount]]</h1>
 			</md-card-content>
 		</md-card>
-		<md-card class = "card md-card-hover bgm-bluegray" style = "width : 250px">
-			<md-card-content layout = "row" layout-align = "center center" layout-wrap>
-				<h3>Latest Client Added</h3>
-				<h1>[[dashboardDetails.latestClient.name]]</h1>
-			</md-card-content>
-		</md-card>
-	</div>
+			</div>
 	<div layout = "column" style = "margin-top : 70px">
 		<h2>Total Metrics</h2>
 	</div>
 	<div layout = "row" layout-align = "space-between center" layout-wrap>
 		<md-card class = "card md-card-hover bgm-cyan" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Total Clients - </h3>
-				<h1>[[dashboardDetails.totalMetrics.clientCount]]</h1>
+				<h4>Client Count:</h4><pre>         </pre><br />
+				<tr><h1>[[dashboardDetails.totalMetrics.clientCount]]</h1>
 			</md-card-content>
 		</md-card>
 		<md-card class = "card md-card-hover bgm-lightgreen" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Total Downloads - </h3>
+				<h4>Total Tasks:</h4><pre>         </pre><br />
 				<h1>[[dashboardDetails.totalMetrics.downloadsCount]]</h1>
 			</md-card-content>
 		</md-card>
 		<md-card class = "card md-card-hover bgm-orange" style = "width : 250px">
 			<md-card-content layout = "row" layout-align = "center center">
-				<h3>Total Documents - </h3>
+				<h4>Total Pending Tasks:</h4><pre>         </pre><br />
 				<h1>[[dashboardDetails.totalMetrics.docsCount]]</h1>
 			</md-card-content>
 		</md-card>
-		<md-card class = "card md-card-hover bgm-bluegray" style = "width : 250px">
-			<md-card-content layout = "row" layout-align = "center center" layout-wrap>
-				<h3>Latest Client Added</h3>
-				<h1>[[dashboardDetails.latestClient.name]]</h1>
-			</md-card-content>
-		</md-card>
-	</div>
+			</div>
 </md-content>
