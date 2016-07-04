@@ -8,9 +8,9 @@ var emailer = require('../emailer');
 
 var q = require('q');
 
-var selectedTask;
+var taskName;
 
-function sendEmail(id,name,email,company,task,mobile,check) {
+function sendEmail(id,name,email,company,mobile,check) {
  var sendEmailDefer = q.defer();
  var userQuery = "SELECT dept_id from departments_tasks where task_id = ? and deleted_at is NULL";
  var connect;
@@ -26,7 +26,7 @@ function sendEmail(id,name,email,company,task,mobile,check) {
                    name : name,
                    company : company,
                    email : email,
-                   task : task,
+                   task : taskName,
                    mobile : mobile
                   }, queries.email,"Task assigned for department");
              }
@@ -37,7 +37,7 @@ function sendEmail(id,name,email,company,task,mobile,check) {
                    name : name,
                    company : company,
                    email : email,
-                   task : task,
+                   task : taskName,
                    mobile : mobile
                   }, queries.email,"Task assigned for department");
              }
@@ -46,7 +46,7 @@ function sendEmail(id,name,email,company,task,mobile,check) {
                       name : name,
                       company : company,
                       email : email,
-                      task : task,
+                      task : taskName,
                       mobile : mobile
                     }, email,"registration details");
                 } 
@@ -64,7 +64,6 @@ exports.addFormClient = function(request){
  var addClientFormDefer = q.defer();
  var conn;
  var taskName;
- var selectedTask;
  var insertClient = "INSERT INTO clients_enquiry (name, company, email, task, mobile, subject, comment, created_at, modified_at ) VALUES (?,?,?,?,?,?,?,?,?)";
  var taskQuery = "SELECT task_name from master_tasks where id = ? and deleted_at is NULL";
       db.getConnection().then(function(connection) {
@@ -83,7 +82,7 @@ exports.addFormClient = function(request){
               var notificationsQuery = "INSERT into notifications (user_id, description, is_read, created_at,client_enquiry_id) VALUES (?,?,?,?,?)";
               utils.runQuery(conn,notificationsQuery ,[u_id,"New Client "+request.name+" Requested for task "+taskName,0,moment().format('YYYY-MM-DD HH:mm:ss'),
                 clientEnquiry.insertId],true).then(function() {
-                sendEmail(u_id,request.name,request.email,request.company,taskName,request.mobile,request.check);
+                sendEmail(u_id,request.name,request.email,request.company,request.mobile,request.check);
                 addClientFormDefer.resolve();
               }).catch(function(err) {
                 addClientFormDefer.reject(err);
