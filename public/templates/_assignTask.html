@@ -54,35 +54,25 @@
 			    			<div layout = "row" layout-align = "space-around center">
 				    			<p style = "margin-top : 0px">Client Name</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <input type="text" required="" name = "clientName" ng-model = "task.clientName" >
-								  <div ng-messages = "assignTaskForm.clientName.$error">
-								  	<div ng-message = "required">This is required</div>
-								  </div>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px">[[task.clientName]]</p>
 								</md-input-container>
 								<p style = "margin-top : 0px">Contact Number</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <input type="text" required="" name = "contactNumber" ng-model = "task.contactNumber">
-								  <div ng-messages = "assignTaskForm.contactNumber.$error">
-								  	<div ng-message = "required">This is required</div>
-								  </div>
-								</md-input-container>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px">[[task.contactNumber]]</p>
+								 </md-input-container>
 						    </div>
 						    <div layout = "row" layout-align = "space-around center">
 				    			<p style = "margin-top : 0px">Email</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <input type="text" required="" name = "clientName" ng-model = "task.clientEmail" >
-								  <div ng-messages = "assignTaskForm.clientName.$error">
-								  	<div ng-message = "required">This is required</div>
-								  </div>
-								</md-input-container>
-								<p style = "margin-top : 0px">Task</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px">[[task.clientEmail]]</p>
+								 </md-input-container>
+								<p style = "margin-top : 0px">Comment</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <input type="text" required="" name = "contactNumber" ng-model = "task.clientTask">
-								  <div ng-messages = "assignTaskForm.contactNumber.$error">
-								  	<div ng-message = "required">This is required</div>
-								  </div>
+					              <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;font-weight:bold;height:25px" ng-if="task.comment == 'urgent'">[[task.comment]]</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px" ng-if="task.comment != 'urgent'">[[task.comment]]</p>
 								</md-input-container>
 						    </div>
+								  
 						</div>
 
 						<div layout = "row" layout-align = "start center" class = "margin_left_20">
@@ -146,6 +136,24 @@
 							  	<div ng-message = "required">This is required</div>
 							  </div>
 							</md-input-container>
+						</div>
+						<div layout = "row" layout-align = "space-around center">
+							<p>Works Involved</p>
+							<md-chips ng-model="task.works" md-autocomplete-snap
+				              md-require-match="true" style = "width : 70%">
+						      <md-autocomplete
+						          md-selected-item="selectedItem" 
+						          md-search-text="searchText"
+						          md-items="item in filterResults(searchText)"
+						          md-min-length="0"
+						          placeholder="Search for a task" style = "width: 300px">
+						          <md-item-template>[[item.name]]</md-item-template>
+						          <md-not-found>
+				    				No Works found.
+								</md-not-found>
+						      </md-autocomplete>
+						      <md-chip-template><span>[[$chip.name]]</span></md-chip-template>
+						    </md-chips>
 						</div>
 						<div layout = "row" layout-align = "space-around center">
 							<p style = "margin-top : 0px">Remarks</p>
