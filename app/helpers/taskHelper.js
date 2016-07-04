@@ -10,11 +10,10 @@ var utils = require('../utils');
 
 var emailer = require('../emailer');
 
-function sendEmail(user_id, details) {
+function sendEmail(user_id, details, connection) {
 	var userQuery = "SELECT * from users where id = ?";
-	db.getConnection().then(function(connection) {
-		return utils.runQuery(connection, userQuery, [user_id]);
-	}).then(function(results) {
+
+		 utils.runQuery(connection, userQuery, [user_id], true).then(function(results) {
 		if(results.length > 0) {
 			var user = results[0];
 			emailer.send('public/templates/_notificationTemplate.html', {
@@ -26,6 +25,24 @@ function sendEmail(user_id, details) {
 		console.log(err);
 	});
 }
+
+function sendEmailDept(dept_id, details) {
+	var query = "SELECT * from departments where id = ?";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, query, [dept_id]);
+	}).then(function(results) {
+		if(results.length > 0) {
+			var dept = results[0];
+			emailer.send('public/templates/_notificationTemplate.html', {
+				name : dept.first_name,
+				url : config.domain + '/#/task/' + details.task_id
+			}, dept.email, details.description);
+		}
+	}).catch(function(err) {
+		console.log(err);
+	});
+}
+
 
 exports.assignTask = function(request, user) {
 	var assignTaskDefer = q.defer();
@@ -67,8 +84,14 @@ exports.assignTask = function(request, user) {
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
 		if(request.client_enquiry_id)
 			notification.client_enquiry_id = request.client_enquiry_id;
-		sendEmail(notification.user_id, notification);
+		sendEmail(notification.user_id, notification, connection);
 		return utils.runQuery(connection, newNotification, notification);
+
+		var deptQuery = "SELECT dept_id from departments_tasks WHERE task_id = ?";
+		var connection;
+		db.getConnection().then(function(conn){
+			return utils.runQuery(conn,[request.task_id])
+		}).then(sendEmailDept(res, notifications));
 	}).then(function(results) {
 		assignTaskDefer.resolve();
 	}).catch(function(err) {
@@ -81,7 +104,7 @@ exports.updateTask = function(id, requestParams, user) {
 	var updateTaskDefer = q.defer();
 	var now = moment().format('YYYY-MM-DD HH:mm:ss');
 	var taskParams = {};
-	var taskParamsList = ['client_id', 'client_name', 'contact_number', 'pan_card', 
+	var taskParamsList = ['client_id', 'client_name', 'contact_number', 'pan_card',
 	'type_of_appointment', 'task_description', 'remarks'];
 	var getTaskQuery = "SELECT * from tasks where id = ?";
 	var connection;
