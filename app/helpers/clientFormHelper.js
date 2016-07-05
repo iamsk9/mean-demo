@@ -80,7 +80,7 @@ exports.addFormClient = function(request){
           utils.runQuery(conn, qu,["admin"],true).then(function(results){
               u_id=results[0].id;
               var notificationsQuery = "INSERT into notifications (user_id, description, is_read, created_at,client_enquiry_id) VALUES (?,?,?,?,?)";
-              utils.runQuery(conn,notificationsQuery ,[u_id,"New Client"+" : "+request.name+"\n"+" Requested for task "+taskName,0,moment().format('YYYY-MM-DD HH:mm:ss'),
+              utils.runQuery(conn,notificationsQuery ,[u_id,"New Client"+" : "+request.name+" Requested for\n\nTask : "+taskName,0,moment().format('YYYY-MM-DD HH:mm:ss'),
                 clientEnquiry.insertId],true).then(function() {
                 sendEmail(u_id,request.name,request.email,request.company,request.mobile,request.check);
                 addClientFormDefer.resolve();
