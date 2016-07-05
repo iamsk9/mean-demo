@@ -8,7 +8,7 @@ var emailer = require('../emailer');
 
 var q = require('q');
 
-var selectedTask;
+var taskName;
 
 function sendEmail(id, name, email, company, task, mobile, check) {
     var sendEmailDefer = q.defer();
@@ -17,7 +17,6 @@ function sendEmail(id, name, email, company, task, mobile, check) {
     var connect;
     var taskName;
     var mailToAdmin = "SELECT email FROM users where id = ? and deleted_at is Null";
-
     db.getConnection().then(function(connection) {
         connect = connection;
         return utils.runQuery(connect, taskQuery, [task], true);
@@ -25,19 +24,7 @@ function sendEmail(id, name, email, company, task, mobile, check) {
         taskName = results[0].task_name;
         return utils.runQuery(connect, mailToAdmin, [id], true);
     }).then(function(results) {
-            if (results.length > 0) {
-                var queries = results[0];
-                emailer.send('public/templates/_taskEmail.html', {
-                    name: name,
-                    company: company,
-                    email: email,
-                    task: taskName,
-                    mobile: mobile
-                }, queries.email, "Task assigned for department");
-            }
-            utils.runQuery(connect, deptQuery, temp.id).then(function(res) {
-                here ? ? i m stuck now..till query i could write it...now stuck
-            })
+        if (results.length > 0) {
             var queries = results[0];
             emailer.send('public/templates/_taskEmail.html', {
                 name: name,
@@ -46,24 +33,24 @@ function sendEmail(id, name, email, company, task, mobile, check) {
                 task: taskName,
                 mobile: mobile
             }, queries.email, "Task assigned for department");
-        }
-        if (check == "yes") {
-            emailer.send('public/templates/_clientRegistrationDetailsEmail.html', {
-                name: name,
-                company: company,
-                email: email,
-                task: taskName,
-                mobile: mobile
-            }, email, "registration details");
+            var queries = results[0];
+            if (check == "yes") {
+                emailer.send('public/templates/_clientRegistrationDetailsEmail.html', {
+                    name: name,
+                    company: company,
+                    email: email,
+                    task: taskName,
+                    mobile: mobile
+                }, email, "registration details");
+            }
         }
     }).then(function() {
-sendEmailDefer.resolve();
-});
-}).catch(function(err) {
-    console.log(err);
-    sendEmailDefer.reject();
-});
-return sendEmailDefer.promise;
+      sendEmailDefer.resolve();
+    }).catch(function(err) {
+        console.log(err);
+        sendEmailDefer.reject();
+    });
+    return sendEmailDefer.promise;
 }
 
 exports.addFormClient = function(request) {

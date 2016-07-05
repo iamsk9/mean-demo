@@ -10,8 +10,8 @@ var ClientHelper = require('../helpers/clientHelper');
 exports.getDashboardData = function(req,res){
 	var dashboardDetails = {todaysMetrics : {}, totalMetrics : {}};
 	var promisesArray = [ClientHelper.getTodaysClientsCount(dashboardDetails), ClientHelper.getTotalClientsCount(dashboardDetails),
-	DocsHelper.getTodaysDocs(dashboardDetails), DocsHelper.getTotalDocs(dashboardDetails),
-	DocsHelper.getTodaysDownloads(dashboardDetails), DocsHelper.getTotalDownloads(dashboardDetails),
+	DocsHelper.getTodaysPendingTasks(dashboardDetails), DocsHelper.getTotalPendingTasks(dashboardDetails),
+	DocsHelper.getTodaysTasks(dashboardDetails), DocsHelper.getTotalTasks(dashboardDetails),
 	ClientHelper.getLatestClient(dashboardDetails)];
 	q.all(promisesArray).then(function() {
 		console.log(dashboardDetails);

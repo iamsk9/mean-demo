@@ -95,15 +95,22 @@
                         <md-list style = "padding: 0px">
                             <md-list-item md-virtual-repeat = "item in notifications" md-on-demand class="repeated-item" ng-class = "{'notification-read' : item.is_read}">
                                 <div class="md-list-item-text" ng-click="viewTask(item)" layout="column" style = "width: 100%">
-                                <div layout = "row" layout-align = "space-between center">
-                                  <p class = "notification-text" ng-show = "item.task_id">Task #[[item.task_id]]</p>
-                                  <p class = "notification-text" ng-show = "item.client_enquiry_id">Enquiry #[[item.id]]</p>
-                                  <a href = "javascript:void(0)" class = "read-link" ng-if = "item.is_read == 0" ng-click = "markNotificationAsRead(item)">Mark as read</a>
+                                    <div layout = "row" layout-align = "space-between center">
+                                          <p class = "notification-text" ng-show = "item.task_id">Task #[[item.task_id]]</p>
+                                          <p class = "notification-text" ng-show = "item.client_enquiry_id">Enquiry #[[item.id]]</p>
+                                          <a href = "javascript:void(0)" class = "read-link" ng-if = "item.is_read == 0" ng-click = "markNotificationAsRead(item)">Mark as read</a>
+                                    </div>
+                                    <div ng-click = "markNotificationAsRead(item)">
+                                        <p class = "notification-description">[[item.description]]</p>
+                                        
+                                            <div layout = "row" layout-align = "space-between center">
+                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id">[[item.subject]]</p>
+                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment != 'urgent'">[[item.comment]]</p>
+                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment == 'urgent'" style="background-color:red;color:white;">[[item.comment]]</p>
+                                            </div>
+                                    </div>
+                                    
                                 </div>
-                                <p class = "notification-description">[[item.description]]</p>
-                                <p class = "notification-description" ng-show = "item.client_enquiry_id">[[item.subject]]</p>
-
-                                  </div>
                             </md-list-item>
                         </md-list>
                         <p  style = "padding : 10px" ng-if = "notifications.numItems == 0">There are no notifications to show.</p>
@@ -133,11 +140,11 @@
 	  		</md-menu>
 	    </md-toolbar>
     </header>
-    <main class = "md-padding" layout = "column" flex>
+    <main class = "md-padding" layout = "column" flex   ng-click="closeOpenedNotification()">
     	<md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
-			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Client Area')"></md-tab>
+			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Documents')"></md-tab>
 		</md-tabs>
-    	<div ng-view flex></div>
+    	<div ng-view flex   ng-click="closeOpenedNotification()"></div>
     </main>
   </div>
   </body>

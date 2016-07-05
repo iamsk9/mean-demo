@@ -51,7 +51,7 @@ exports.assignTask = function(request, user) {
 		user_id : parseInt(request.assignee, 10),
 		date_of_appointment : moment(request.dateOfAppointment, 'DD-MM-YYYY').format('YYYY-MM-DD'),
 		time_of_appointment : moment(request.timeOfAppointment, 'hh:mm A').format('HH:mm'),
-		type_of_appointment : request.type_of_appointment,
+		type_of_appointment : request.typeOfAppointment,
 		task_status : "Visit Pending",
 		assigned_by : user.id,
 		remarks : request.remarks,
@@ -63,6 +63,7 @@ exports.assignTask = function(request, user) {
 		created_at : moment().format('YYYY-MM-DD HH:mm:ss'),
 		is_read : 0
 	};
+	var taskWorks = [];     
 	if(request.client) {
 		console.log(request.client);
 		payload.client_id = request.client.id;
@@ -75,12 +76,26 @@ exports.assignTask = function(request, user) {
 	}
 	var assignTask = "INSERT INTO tasks SET ?";
 	var newNotification = "INSERT INTO notifications SET ?";
+	var taskWorksQuery = "INSERT INTO task_works SET ?";
 	var connection;
+	var Tid;
 	db.getConnection().then(function(conn) {
 		connection = conn;
 		return utils.runQuery(connection, assignTask, payload, true);
 	}).then(function(result) {
-		notification.task_id = result.insertId;
+		Tid = result.insertId;
+        for( task in request.works){
+			taskWorks = {
+				task_id : result.insertId,
+				work_id : request.works[task].id,
+				created_at : moment().format('YYYY-MM-DD HH:mm:ss'),
+				modified_at : moment().format('YYYY-MM-DD HH:mm:ss')
+			}
+			utils.runQuery(connection, taskWorksQuery, taskWorks, true);
+			taskWorks = [];
+	    }
+	}).then(function() {	
+		notification.task_id = Tid;
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
 		if(request.client_enquiry_id)
 			notification.client_enquiry_id = request.client_enquiry_id;

@@ -65,7 +65,7 @@ var checkUserExists = function(connection, email) {
 exports.checkUserExists = checkUserExists;
 
 exports.addUser = function(request) {
-	var addUserDefer = q.defer();	
+	var addUserDefer = q.defer();
 	var insertUser = "INSERT INTO users (first_name, last_name, email, user_role, is_verified, created_at, modified_at, \
 		reset_password_hash, request_password_hash_active, branch,department) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	db.getConnection().then(function(connection) {
@@ -91,7 +91,7 @@ exports.addUser = function(request) {
 					connection.release();
 					console.log("User successfully inserted");
 				});
-				
+
 			}, function(err) {
 				connection.release();
 				addUserDefer.reject(err);
@@ -217,7 +217,7 @@ exports.authenticateUser = function(req) {
 							email : user.email
 						};
 						console.log("kajsfk");
-						var token = jwt.sign(userToToken, app.get('secret'))
+						var token = jwt.sign(userToToken, app.get('secret'), {expiresIn: 21600 });
 						var insertToken = "INSERT into user_tokens (user_id, session_token, created_at, deleted_at) VALUES (?,?,?,?)";
 						connection.query(insertToken, [user.id, token, moment().format('YYYY-MM-DD HH:mm:ss'), null], function(err, result) {
 							if(err) {

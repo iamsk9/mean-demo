@@ -46,7 +46,7 @@ function checkPancardExists(connection, panCard) {
 			}
 			if(results.length > 0) {
 				connection.release();
-				pancardExistsDefer.reject({pancardExists: true})	
+				pancardExistsDefer.reject({pancardExists: true})
 			} else {
 				pancardExistsDefer.resolve();
 			}
@@ -75,7 +75,7 @@ exports.addClient = function(req) {
 						role : 'Client'
 					}, req.email, "Team Consultancy - Set Password for the Account");
 					console.log("here");
-					connection.query(insertUser, [req.client_name, req.email, "CLIENT", 
+					connection.query(insertUser, [req.client_name, req.email, "CLIENT",
 					moment().format('YYYY-MM-DD HH:mm:ss'), moment().format('YYYY-MM-DD HH:mm:ss'), 0, hash, 1], function(err, result) {
 						if(err) {
 							addClientDeferred.reject(err);
@@ -84,8 +84,8 @@ exports.addClient = function(req) {
 						}
 						console.log(result);
 						connection.query(insertClient, [result.insertId, req.client_name, req.company_name,
-							req.email, req.phone_number, req.alt_phone_number?req.alt_phone_number:null, 
-							req.company_pan_number, moment().format('YYYY-MM-DD HH:mm:ss'), 
+							req.email, req.phone_number, req.alt_phone_number?req.alt_phone_number:null,
+							req.company_pan_number, moment().format('YYYY-MM-DD HH:mm:ss'),
 							moment().format('YYYY-MM-DD HH:mm:ss'), 'ACTIVE'], function(err, results) {
 							if(err) {
 								addClientDeferred.reject(err);
@@ -132,7 +132,7 @@ exports.getClients = function(request) {
 		}
 		if(request.company_pan_number) {
 			clientsQuery = clientsQuery + (clientsQuery.indexOf('where') == -1?" where":" and ");
-			clientsQuery = clientsQuery + (" company_pan_number like '%" + request.company_pan_number + "%' ");	
+			clientsQuery = clientsQuery + (" company_pan_number like '%" + request.company_pan_number + "%' ");
 		}
 		if(request.client_name) {
 			clientsQuery = clientsQuery + (clientsQuery.indexOf('where') == -1?" where":" and ");
@@ -196,7 +196,7 @@ exports.updateClient = function(id, details) {
 	var updateClientDefer = q.defer();
 	var updateQuery = "UPDATE clients ";
 	if(details.company_pan_number) {
-		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set company_pan_number = "' + details.company_pan_number + '"': 
+		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set company_pan_number = "' + details.company_pan_number + '"':
 		',company_pan_number = "' + details.company_pan_number + '"');
 	}
 	if(details.name) {
@@ -208,19 +208,19 @@ exports.updateClient = function(id, details) {
 			', company_name = "' + details.company_name + '"');
 	}
 	if(details.email) {
-		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set email = "' + details.email + '"': 
+		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set email = "' + details.email + '"':
 			', email = "' + details.email + '"');
 	}
 	if(details.phone_number) {
-		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set phone_number = "' + details.phone_number + '"': 
+		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set phone_number = "' + details.phone_number + '"':
 			', phone_number = "' + details.phone_number + '"');
 	}
 	if(details.alt_phone_number) {
-		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set alt_phone_number = "' + details.alt_phone_number + '"': 
+		updateQuery = updateQuery + (updateQuery.indexOf('set') == -1?'set alt_phone_number = "' + details.alt_phone_number + '"':
 			', alt_phone_number = "' + details.alt_phone_number + '"');
 	}
 	if(updateQuery.indexOf('set') > -1){
-		updateQuery = updateQuery + ', modified_at = "' + moment().format('YYYY-MM-DD HH:mm:ss') + 
+		updateQuery = updateQuery + ', modified_at = "' + moment().format('YYYY-MM-DD HH:mm:ss') +
 			'" where id = ' + id;
 	} else {
 		updateClientDefer.reject({errorCode : 1020});
@@ -268,7 +268,7 @@ exports.getTotalClientsCount = function (obj) {
 				clientCountDefer.reject(err);
 			}
 			if(results.length > 0) {
-				obj.totalMetrics.clientCount = results[0].clientCount;	
+				obj.totalMetrics.clientCount = results[0].clientCount;
 			} else {
 				obj.totalMetrics.clientCount = 0;
 			}
@@ -305,6 +305,32 @@ exports.getTodaysClientsCount = function (obj) {
 	return clientCountDefer.promise;
 }
 
+exports.getClientEnquiryDetails = function(id) {
+	 var getClientEnquiryDetailsDefer = q.defer();
+	var clientDetails = "SELECT * from clients_enquiry where id = ? and deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		connection.query(clientDetails, [id], function(err, results) {
+			if(err) {
+				getClientEnquiryDetailsDefer.reject(err);
+				connection.release();
+				return;
+			}
+			if(results.length > 0) {
+				connection.query("SELECT task_name from master_tasks where id = ?", [results[0].task], function(err, result) {
+                   results[0].task_name = result[0].task_name;
+	 			getClientEnquiryDetailsDefer.resolve(results[0]);
+	 		 	});
+			} else {
+				getClientEnquiryDetailsDefer.reject({errorCode : 1019});
+			}
+			connection.release();
+		});
+	}, function(err){
+		getClientEnquiryDetailsDefer.reject(err);
+	});
+	return getClientEnquiryDetailsDefer.promise;
+}
+
 exports.getLatestClient = function (obj) {
 	var latestClientDefer = q.defer();
 	var latestClient = "SELECT * from clients order by created_at DESC LIMIT 1";
@@ -315,7 +341,7 @@ exports.getLatestClient = function (obj) {
 				latestClientDefer.reject(err);
 			}
 			if(results.length > 0) {
-				obj['latestClient'] = results[0];	
+				obj['latestClient'] = results[0];
 			} else {
 				obj['latestClient'] = {};
 			}
@@ -365,4 +391,3 @@ exports.updateClientStatus = function(clientId, status) {
 	});
 	return updateClientStatusDefer.promise;
 }
-
