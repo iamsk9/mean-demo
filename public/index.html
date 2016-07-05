@@ -121,17 +121,17 @@
 			<md-menu>
 				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
 				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
-
-			</md-button>
+					[[user.name]]
+				</md-button>
 				<md-menu-content width="4">
 					<md-menu-item>
-						<md-button ng-click="redirect()">
+						<md-button ng-click="showUserProfile($event)">
 							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
-							User Profile
+						 User Profile
 						</md-button>
-            name :[[user.name]]<br>
-            role :[[user.role]]
-            email:[[user.email]]
+            name: [[user.name]]<br>
+            role: [[user.role]]
+            email: [[user.email]]
 					</md-menu-item>
 					<md-menu-divider></md-menu-divider>
 					<md-menu-item>
