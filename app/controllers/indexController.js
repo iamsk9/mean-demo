@@ -9,10 +9,10 @@ exports.handle = function(req,res){
 	console.log(req.cookies['x-ca-api-token']);
 	if(req.cookies['x-ca-api-token'])
 	{
-		jwt.verify(req.cookies['x-ca-api-token'], app.get('secret'), function(err, decoded) {   
+		jwt.verify(req.cookies['x-ca-api-token'], app.get('secret'), function(err, decoded) {
 		  if (err) {
 		  	console.log(err);
-			res.sendfile('public/pages/examples/login.html');
+			res.sendfile('public/login.html');
 		  } else {
 		    // if everything is good, save to request for use in other routes
 		    console.log(decoded.group);
@@ -37,7 +37,7 @@ exports.handle = function(req,res){
 		    		}
 		    	});
 		    });
-			
+
 		  }
 		});
 	} else {
