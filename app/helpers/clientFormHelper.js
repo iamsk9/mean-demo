@@ -10,7 +10,7 @@ var q = require('q');
 
 var taskName;
 
-function sendEmail(id, name, email, company, task, mobile, check) {
+function sendEmail(id, name, email, company, task, mobile, subject, comment) {
     var sendEmailDefer = q.defer();
     var userQuery = "SELECT dept_id from departments_tasks where task_id = ? and deleted_at is NULL";
     var taskQuery = "SELECT task_name from master_tasks where id = ? and deleted_at is NULL";
@@ -31,18 +31,10 @@ function sendEmail(id, name, email, company, task, mobile, check) {
                 company: company,
                 email: email,
                 task: taskName,
+                subject: subject,
+                comment: comment,
                 mobile: mobile
             }, queries.email, "Task assigned for department");
-            var queries = results[0];
-            if (check == "yes") {
-                emailer.send('public/templates/_clientRegistrationDetailsEmail.html', {
-                    name: name,
-                    company: company,
-                    email: email,
-                    task: taskName,
-                    mobile: mobile
-                }, email, "registration details");
-            }
         }
     }).then(function() {
       sendEmailDefer.resolve();
@@ -53,11 +45,17 @@ function sendEmail(id, name, email, company, task, mobile, check) {
     return sendEmailDefer.promise;
 }
 
+function sendNotification(connection, params, release) {
+    var notificationsQuery = "INSERT into notifications (user_id, description, is_read, created_at,client_enquiry_id) VALUES (?,?,?,?,?)";
+    return utils.runQuery(connection, notificationsQuery, [params.user_id, params.description, params.is_read, moment().format('YYYY-MM-DD HH:mm:ss'), params.client_enquiry_id], !release);
+}
+
 exports.addFormClient = function(request) {
     var addClientFormDefer = q.defer();
     var conn;
     var selectedTask;
     var insertClient = "INSERT INTO clients_enquiry (name, company, email, task, mobile, subject, comment, created_at, modified_at ) VALUES (?,?,?,?,?,?,?,?,?)";
+    var clientEnquiryId;
     db.getConnection().then(function(connection) {
         conn = connection;
         return utils.runQuery(conn, insertClient, [request.name, request.company, request.email, request.task, request.mobile, request.subject,
@@ -67,19 +65,30 @@ exports.addFormClient = function(request) {
         var u_id;
         var qu = "select id from users WHERE user_role=?";
         console.log(clientEnquiry.insertId);
+        clientEnquiryId = clientEnquiry.insertId;
         return utils.runQuery(conn, qu, ["admin"], true)
     }).then(function(results) {
         u_id = results[0].id;
-        var notificationsQuery = "INSERT into notifications (user_id, description, is_read, created_at,client_enquiry_id) VALUES (?,?,?,?,?)";
-
-        return utils.runQuery(conn, notificationsQuery, [u_id, "A New Client Enquiry Form Has Been Submitted.", 0, moment().format('YYYY-MM-DD HH:mm:ss'),
-            clientEnquiry.insertId
-        ], true)
+        return sendNotification(conn, {
+            user_id: u_id,
+            description: "New Client"+" : "+request.name+" - " + " Requested for a task.",
+            is_read : 0,
+            client_enquiry_id : clientEnquiryId
+        });
     }).then(function() {
-        sendEmail(u_id, request.name, request.email, request.company, request.task, request.mobile, request.check);
+        sendEmail(u_id, request.name, request.email, request.company, request.task, request.mobile, request.subject, request.comment);
         var deptQuery = "SELECT d.email from departments_tasks dt Inner join departments d on dt.dept_id = d.id where dt.task_id = ? and dt.deleted_at = NULL and d.deleted_at = NULL";
-        return utils.runQuery(conn, deptQuery, [request.task]);
+        return utils.runQuery(conn, deptQuery, [request.task], true);
     }).then(function(results) {
+        emailer.send('public/templates/_taskEmail.html', {
+            name: request.name,
+            company: request.company,
+            email: request.email,
+            task: request.task,
+            mobile: request.mobile,
+            subject : request.subject,
+            comment : request.comment
+        }, results[0].email, "Task assigned for department");
         addClientFormDefer.resolve();
     }).catch(function(err) {
         addClientFormDefer.reject(err);
