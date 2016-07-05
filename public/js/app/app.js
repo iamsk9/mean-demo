@@ -48,6 +48,13 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
     RestangularProvider.setDefaultHeaders({
     	'x-ca-api-token' : apiKey
     });
+    RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+        if(response.status == 403) {
+            window.location.reload();
+            return;
+        }
+        return data;
+    });
     $routeProvider
         .when("/dashboard", {
             templateUrl : basepath + "/_dashboard.html",

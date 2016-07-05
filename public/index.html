@@ -140,11 +140,11 @@
             </md-menu>
         </md-toolbar>
     </header>
-    <main class = "md-padding" layout = "column" flex   ng-click="closeOpenedNotification()">
+    <main class = "md-padding main" layout = "column" flex   ng-click="closeOpenedNotification()">
         <md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
             <md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index,tab)"></md-tab>
         </md-tabs>
-        <div ng-view flex ng-click="closeOpenedNotification()"></div>
+        <div ng-view flex ng-click="closeOpenedNotification()" class = "main"></div>
     </main>
   </div>
   </body>
