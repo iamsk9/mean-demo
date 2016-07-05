@@ -1,3 +1,4 @@
+
 <md-content class="md-padding" flex>
 	<div layout = "column">
 		<div layout = "row">
@@ -50,8 +51,9 @@
 					</md-table-container>
 				</md-content>
 			</md-tab>
-			<md-tab label = "Tasks Assigned">
-				<md-content>
+
+			<md-tab label = "Task Assigned" ng-if="user.role=='admin'">
+				<md-content ng-if="user.role=='admin'">
 					<md-table-container md-row-select style = "margin-bottom : 40px">
 				        <table md-table>
 				            <thead md-head >
