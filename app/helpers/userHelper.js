@@ -346,11 +346,11 @@ exports.removeUser = function(id) {
 
 exports.resetPassword = function(req) {
 	var resetPasswordDefer = q.defer();
-	var query = "UPDATE users set password = ?, request_password_hash_active = ? where id = ?";
+	var query = "UPDATE users set password = ?,is_verified=?,request_password_hash_active = ? where id = ?";
 	generateHash(req.body.password).then(function(password){
 		db.getConnection().then(function(connection) {
 			console.log("in connection");
-			connection.query(query, [password, 0, req.params.userId], function(err, results) {
+			connection.query(query, [password,1, 0, req.params.userId], function(err, results) {
 				console.log("inside reset Password");
 				console.log(results);
 				if(err) {
