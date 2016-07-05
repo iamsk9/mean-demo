@@ -102,14 +102,14 @@
                                     </div>
                                     <div ng-click = "markNotificationAsRead(item)">
                                         <p class = "notification-description">[[item.description]]</p>
-                                        
+
                                             <div layout = "row" layout-align = "space-between center">
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id">[[item.subject]]</p>
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment != 'urgent'">[[item.comment]]</p>
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment == 'urgent'" style="background-color:red;color:white;">[[item.comment]]</p>
                                             </div>
                                     </div>
-                                    
+
                                 </div>
                             </md-list-item>
                         </md-list>
@@ -121,14 +121,17 @@
 			<md-menu>
 				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
 				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
-					[[user.name]]
-				</md-button>
+
+			</md-button>
 				<md-menu-content width="4">
 					<md-menu-item>
-						<md-button ng-click="showUserProfile($event)">
+						<md-button ng-click="redirect()">
 							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
-							Show User Profile
+							User Profile
 						</md-button>
+            name :[[user.name]]<br>
+            role :[[user.role]]
+            email:[[user.email]]
 					</md-menu-item>
 					<md-menu-divider></md-menu-divider>
 					<md-menu-item>
