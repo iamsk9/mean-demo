@@ -50,6 +50,8 @@ Caweb.controller('searchClientController', function($scope, $rootScope, CAServic
 					.textContent("Client is successfully Added")
 					.position("top right")
 					.hideDelay(5000));
+				getClients();
+				$scope.closeDialog();
 				$scope.client = {};
 				$scope.addClientForm.$setPristine(true);
 				$scope.addClientForm.$setDirty(false);

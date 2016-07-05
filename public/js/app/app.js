@@ -3,17 +3,31 @@ var basepath = "/templates";
 var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ngMessages',
 	'md.data.table', 'ngFileUpload', 'mdPickers']);
 
-Caweb.constant('Tabs', [
-	'Dashboard',
-	'Clients',
-	'Documents',
-	'Manage Users',
-	'Branches',
-    'Master Management',
-	'Assign Task',
-	'Tasks',
-	'Reports'
-])
+Caweb.constant('Tabs', {
+    'admin' : [
+    	'Dashboard',
+    	'Clients',
+    	'Documents',
+    	'Manage Users',
+    	'Branches',
+        'Master Management',
+    	'Assign Task',
+    	'Tasks',
+    	'Reports'
+    ],
+    'employee' : [
+        'Clients',
+        'Documents',
+        'Tasks'
+    ],
+    'CLIENT' : [
+        'Documents'
+    ],
+    'clerk' : [
+        'Clients',
+        'Documents'
+    ]
+})
 .constant('TaskStatus', [
 	'Visit Pending',
     'Visit Done',
@@ -105,10 +119,14 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
 
 Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
 	$rootScope.user = UserService.getUserDetails();
-	$rootScope.tabs = Tabs;
+     $rootScope.tabs = Tabs[$rootScope.user.role];
 	$rootScope.tabsMap = {};
     var allTasks;
-	$rootScope.viewTask = function(item) {
+	 if($rootScope.user.role == 'clerk' || $rootScope.user.role == 'employee'){
+         $location.path('/clients');
+    }
+    $rootScope.viewTask = function(item) {
+      if(user.role == 'admin' || user.role == 'employee'){
         if(item.task_id){
             var taskAssignedToEmployee = allTasks.filter(function(result){
                   return (result.id == item.task_id);
@@ -119,9 +137,11 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         else if(!item.client_enquiry_id) {
             $location.path('/task/'+item.task_id);
         } else {
-            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id,comments : item.comment});
+            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id,comments : item.comment});            
         }
-	}
+       }
+    }
+
 	for(i in $rootScope.tabs) {
 		$rootScope.tabsMap[$rootScope.tabs[i]] = parseInt(i);
 	}
@@ -223,15 +243,21 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 
     $rootScope.$on('$routeChangeStart', function() {
         $rootScope.showAppLoader = true;
-    });
+     });
     $rootScope.$on('$routeChangeSuccess', function() {
         $rootScope.showAppLoader = false;
         $rootScope.notificationsOpen = false;
     });
-	$rootScope.switchTab = function(index) {
+	$rootScope.switchTab = function(index,tab) {
 		if($rootScope.user.role == "CLIENT") {
-			index = $rootScope.tabsMap['Client Area'];
+			index = $rootScope.tabsMap[tab];
 		}
+        else if($rootScope.user.role == "clerk" && (tab == "Documents" || tab == "Clients")) {
+            index = $rootScope.tabsMap[tab];
+        }
+        else if($rootScope.user.role == "employee" && (tab == "Documents" || tab == "Tasks" || tab == "Clients")) {
+            index = $rootScope.tabsMap[tab];
+        }
 		switch(index) {
 			case $rootScope.tabsMap['Dashboard'] : $location.path('/dashboard');
 				break;

@@ -53,6 +53,7 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 				.hideDelay(5000));
 			});
 		}
+		$location.path('/assigntask');
 	}
 	CAService.getBranches().then(function(data) {
 		$scope.branches = data;

@@ -58,13 +58,13 @@
         }
     </style>
     <script>
-    	var apiKey = '{{apiKey}}';
-    	var user = {
-    		id : {{id}},
-    		role : "{{role}}",
-    		name : "{{name}}",
-    		email : "{{email}}"
-    	};
+        var apiKey = '{{apiKey}}';
+        var user = {
+            id : {{id}},
+            role : "{{role}}",
+            name : "{{name}}",
+            email : "{{email}}"
+        };
     </script>
   </head>
 
@@ -76,10 +76,10 @@
         <div class = "overlay"></div>
     </div>
   <div layout = "column" flex>
-  	<header>
-	    <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px;background-color:#2B65EC">
-			<h2 style = "margin-left : 1em;font-family : Baskerville Old Face;font-size:2em">Team Consultancy</h2>
-			<span flex></span>
+    <header>
+        <md-toolbar layout="row" layout-align = "start center" class="md-whiteframe-z2" style = "height : 50px;background-color:#2B65EC">
+            <h2 style = "margin-left : 1em;font-family : Baskerville Old Face;font-size:2em">Team Consultancy</h2>
+            <span flex></span>
             <md-button class="md-primary" ng-click = "toggleNotifications($event)">
                 <md-icon md-menu-origin md-font-icon="fa-bell-o" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
                 <span id="notification_count" ng-if = "unreadNotificationsCount > 0" ng-class = "{fade : startFade}"><p style = "height: 10px;margin-top:-5px">[[unreadNotificationsCount]]</p></span>
@@ -118,33 +118,33 @@
                 </div>
                 <div id="notificationFooter"><a href="#/tasks">See All</a></div>
             </div>
-			<md-menu>
-				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
-				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
-					[[user.name]]
-				</md-button>
-				<md-menu-content width="4">
-					<md-menu-item>
-						<md-button ng-click="showUserProfile($event)">
-							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
-							Show User Profile
-						</md-button>
-					</md-menu-item>
-					<md-menu-divider></md-menu-divider>
-					<md-menu-item>
-						<md-button ng-click="logout()">
-							Log out
-						</md-button>
-					</md-menu-item>
-				</md-menu-content>
-	  		</md-menu>
-	    </md-toolbar>
+            <md-menu>
+                <md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
+                <md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
+                    [[user.name]]
+                </md-button>
+                <md-menu-content width="4">
+                    <md-menu-item>
+                        <md-button ng-click="showUserProfile($event)">
+                            <md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
+                            Show User Profile
+                        </md-button>
+                    </md-menu-item>
+                    <md-menu-divider></md-menu-divider>
+                    <md-menu-item>
+                        <md-button ng-click="logout()">
+                            Log out
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </md-toolbar>
     </header>
     <main class = "md-padding" layout = "column" flex   ng-click="closeOpenedNotification()">
-    	<md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
-			<md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index)" ng-if = "(user.role != 'CLIENT') || (user.role == 'CLIENT' && tab == 'Documents')"></md-tab>
-		</md-tabs>
-    	<div ng-view flex   ng-click="closeOpenedNotification()"></div>
+        <md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
+            <md-tab ng-repeat = "tab in tabs" label="[[tab]]" ng-click = "switchTab($index,tab)"></md-tab>
+        </md-tabs>
+        <div ng-view flex ng-click="closeOpenedNotification()"></div>
     </main>
   </div>
   </body>
