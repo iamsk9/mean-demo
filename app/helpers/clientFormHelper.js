@@ -80,15 +80,20 @@ exports.addFormClient = function(request) {
         var deptQuery = "SELECT d.email from departments_tasks dt Inner join departments d on dt.dept_id = d.id where dt.task_id = ? and dt.deleted_at = NULL and d.deleted_at = NULL";
         return utils.runQuery(conn, deptQuery, [request.task], true);
     }).then(function(results) {
-        emailer.send('public/templates/_taskEmail.html', {
-            name: request.name,
-            company: request.company,
-            email: request.email,
-            task: request.task,
-            mobile: request.mobile,
-            subject : request.subject,
-            comment : request.comment
-        }, results[0].email, "Task assigned for department");
+        if(results.length > 0) {
+            emailer.send('public/templates/_taskEmail.html', {
+                name: request.name,
+                company: request.company,
+                email: request.email,
+                task: request.task,
+                mobile: request.mobile,
+                subject : request.subject,
+                comment : request.comment
+            }, results[0].email, "Task assigned for department");   
+        }
+        emailer.send('public/templates/_thanks.html', {
+            name : request.name
+        }, request.email, "Thank You");
         addClientFormDefer.resolve();
     }).catch(function(err) {
         addClientFormDefer.reject(err);
