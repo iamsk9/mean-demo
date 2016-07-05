@@ -3,17 +3,31 @@ var basepath = "/templates";
 var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ngMessages',
 	'md.data.table', 'ngFileUpload', 'mdPickers']);
 
-Caweb.constant('Tabs', [
-	'Dashboard',
-	'Clients',
-	'Documents',
-	'Manage Users',
-	'Branches',
-    'Master Management',
-	'Assign Task',
-	'Tasks',
-	'Reports'
-])
+Caweb.constant('Tabs', {
+    'admin' : [
+    	'Dashboard',
+    	'Clients',
+    	'Documents',
+    	'Manage Users',
+    	'Branches',
+        'Master Management',
+    	'Assign Task',
+    	'Tasks',
+    	'Reports'
+    ],
+    'employee' : [
+        'Clients',
+        'Documents',
+        'Tasks'
+    ],
+    'CLIENT' : [
+        'Documents'
+    ],
+    'clerk' : [
+        'Clients',
+        'Documents'
+    ]
+})
 .constant('TaskStatus', [
 	'Visit Pending',
     'Visit Done',
@@ -105,7 +119,7 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
 
 Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
 	$rootScope.user = UserService.getUserDetails();
-     $rootScope.tabs = Tabs;
+     $rootScope.tabs = Tabs[$rootScope.user.role];
 	$rootScope.tabsMap = {};
     var allTasks;
 	 if($rootScope.user.role == 'clerk' || $rootScope.user.role == 'employee'){

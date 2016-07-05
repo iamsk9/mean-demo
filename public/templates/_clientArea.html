@@ -44,6 +44,7 @@
 						<md-button ng-if = "clientDetails.status == 'BLOCKED'" class = "md-raised md-primary" flex = "30" ng-click = "unblockClient()">Unblock</md-button>
 					 </div>
 					</div>
+				</div>
 
 			</div>
 			<div layout = "column" class = "margin_left_20" flex = "70">
@@ -66,7 +67,8 @@
 					</div>
 					<div layout = "column" ng-repeat = "doc in docs">
 						<md-card class = "card md-card-hover doc-card" ng-class = "{active : doc.selected}">
-							<span class = "doc-remove" ng-click = "removeDoc($index)" ng-show = "!isClient && user.role == 'admin'"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
+							<span class = "doc-remove" ng-click = "removeDoc($index)" 
+							ng-show = "!isClient && user.role == 'admin'"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
 							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-dblclick = "openDoc(doc)" ng-click = "selectDoc(doc)">
 								<img ng-src = "[[getViewImage(doc)]]"></img>
 							</md-card-content>
