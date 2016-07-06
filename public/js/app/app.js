@@ -4,29 +4,10 @@ var Caweb = angular.module('Caweb', ['ngMaterial', 'ngRoute', 'restangular', 'ng
 	'md.data.table', 'ngFileUpload', 'mdPickers']);
 
 Caweb.constant('Tabs', {
-    'admin' : [
-    	'Dashboard',
-    	'Clients',
-    	'Documents',
-    	'Manage Users',
-    	'Branches',
-        'Master Management',
-    	'Assign Task',
-    	'Tasks',
-    	'Reports'
-    ],
-    'employee' : [
-        'Clients',
-        'Documents',
-        'Tasks'
-    ],
-    'CLIENT' : [
-        'Documents'
-    ],
-    'clerk' : [
-        'Clients',
-        'Documents'
-    ]
+    'admin' : [	'Dashboard','Clients','Documents','Manage Users','Branches','Master Management','Assign Task','Tasks','Reports'],
+    'employee' : ['Clients','Documents','Tasks'],
+    'CLIENT' : ['Documents'],
+    'clerk' : ['Clients','Documents']
 })
 .constant('TaskStatus', [
 	'Visit Pending',
@@ -137,14 +118,14 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         if(item.task_id){
             var taskAssignedToEmployee = allTasks.filter(function(result){
                   return (result.id == item.task_id);
-            });  
-        }     
+            });
+        }
         if(taskAssignedToEmployee && item.task_id)
             $location.path('/task/'+item.task_id+'/edit');
         else if(!item.client_enquiry_id) {
             $location.path('/task/'+item.task_id);
         } else {
-            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id,comments : item.comment});            
+            $location.path('/assigntask').search({client_name : item.name, mobile : item.mobile, client_enquiry_id : item.client_enquiry_id,comments : item.comment});
         }
        }
     }
@@ -227,7 +208,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 		}
 	}
     $rootScope.closeOpenedNotification = function(){
-        if($rootScope.notificationsOpen) 
+        if($rootScope.notificationsOpen)
             $rootScope.notificationsOpen = false;
     }
 	$rootScope.logout = function(){

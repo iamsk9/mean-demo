@@ -1,7 +1,7 @@
 <md-content class="md-padding" flex>
 	<div layout = "column" layout-align = "center center">
 		<md-tabs md-stretch-tabs md-dynamic-height style = "width: 100%">
-			
+
 				<md-tab label = "Work Management">
 				  <div layout="column" style="position:relative;">
 					<md-content>
@@ -18,7 +18,7 @@
 											<tbody md-body>
 												<tr md-row ng-show = "works.length > 0" ng-repeat = "work in works | orderBy : 'work_id'">
 													    <td md-cell class = "font_16 center">
-                                                           #[[work.work_id]]
+                                                           TASK-[[work.work_id]]
                                                         </td>
                                                         <td md-cell class = "font_16 center">
                                                         	[[work.work_name]]
@@ -58,7 +58,7 @@
 	            </thead>
 	            <tbody md-body>
 		            <tr md-row ng-show = "departments.length > 0" ng-repeat = "department in departments">
-		                <td md-cell class = "font_16 center">#[[department.id]]</td>
+		                <td md-cell class = "font_16 center">DEPT[[department.id]]</td>
 		                <td md-cell class = "font_16 center">[[department.name]]</td>
 		             	<td md-cell class = "font_16 center">[[department.email]]</td>
 		                <td md-cell class = "font_16 center"><div layout = "row" layout-align = "space-around center"><md-button ng-click = "showUpdateDepartmentDialog($index)"><md-icon md-font-icon="fa-pencil" class = "fa" ></md-icon></md-button><md-button ng-click = "showRemoveDepartmentDialog($index, 'no')"><md-icon md-font-icon="fa-remove" class = "fa" style = "color : red"></md-icon></md-button></div></td>

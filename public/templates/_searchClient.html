@@ -51,7 +51,7 @@
 	            		<td md-cell class = "font_16 center font_bold" colspan = "6">Search for Clients with the above available options</td>
 	            	</tr>
 		            <tr md-row ng-show = "searched && clients.length > 0" ng-repeat = "client in clients | filter:searchQuery">
-		                <td md-cell class = "font_16 center">#[[client.id]]</td>
+		                <td md-cell class = "font_16 center">TICSCL[[client.id]]</td>
 		                <td md-cell class = "font_16 center">[[client.company_name]]</td>
 		                <td md-cell class = "font_16 center">[[client.name]]</td>
 		                <td md-cell class = "font_16 center">[[client.email]]</td>
