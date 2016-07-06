@@ -100,14 +100,11 @@
                                           <p class = "notification-text" ng-show = "item.client_enquiry_id">Enquiry #[[item.id]]</p>
                                           <a href = "javascript:void(0)" class = "read-link" ng-if = "item.is_read == 0" ng-click = "markNotificationAsRead(item)">Mark as read</a>
                                     </div>
-                                    <div ng-click = "markNotificationAsRead(item)">
+                                    <div ng-click = "markNotificationAsRead(item)" layout="column" layout-align=" stretch">
                                         <p class = "notification-description">[[item.description]]</p>
-
-                                            <div layout = "row" layout-align = "space-between center">
-                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id">[[item.subject]]</p>
-                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment != 'urgent'">[[item.comment]]</p>
-                                                 <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment == 'urgent'" style="background-color:red;color:white;">[[item.comment]]</p>
-                                            </div>
+                                        <p class = "notification-description" ng-show = "item.client_enquiry_id">Subject : [[item.subject]]</p>
+                                        <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment != 'urgent'">Comment : [[item.comment]]</p>
+                                        <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment == 'urgent'" >Comment : <text style="background-color:red;color:white;">[[item.comment]]</text></p>
                                     </div>
 
                                 </div>
