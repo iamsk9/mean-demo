@@ -226,8 +226,9 @@ exports.updateClient = function(id, details) {
 		updateClientDefer.reject({errorCode : 1020});
 		return updateClientDefer.promise;
 	}
+	console.log(updateQuery);
 	db.getConnection().then(function(connection){
-		checkUserExists(connection, details.email).then(function() {
+		UserHelper.checkUserExists(connection, details.email).then(function() {
 			checkPancardExists(connection, details.company_pan_number).then(function() {
 				var query = connection.query(updateQuery, function(err, results) {
 					connection.release();

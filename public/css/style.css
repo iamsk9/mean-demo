@@ -384,3 +384,7 @@ opacity : 1;
 	text-decoration: underline;
 	color : #3F3FFD;
 }
+
+.main:focus {
+	outline: 0;
+}

@@ -36,8 +36,16 @@
 					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Phone Number </p> <p flex = "70">- [[clientDetails.phone_number]]</p></div>
 					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Alt Phone Number </p> <p flex = "70"> - [[clientDetails.alt_phone_number]]</p></div>
 					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Pan Card </p> <p flex = "70"> - [[clientDetails.company_pan_number]]</p></div>
-					<div layout = "row" flex class = "margin_left_20"><p flex = "30">Status </p> <p flex = "30"> - [[clientDetails.status]]</p><md-button    ng-if = "!isClient && clientDetails.status == 'ACTIVE'" class = "md-raised md-warn" flex = "30" ng-click = "blockClient()">Block</md-button><md-button ng-if = "!isClient && clientDetails.status == 'BLOCKED'" class = "md-raised md-primary" flex = "30" ng-click = "unblockClient()">Unblock</md-button></div>
+
+					<div layout = "row" flex class = "margin_left_20">
+					  <p flex = "30">Status </p> <p flex = "30"> - [[clientDetails.status]]</p>
+					  <div ng-if="user.role == 'admin'">
+						<md-button ng-if = "clientDetails.status == 'ACTIVE'" class = "md-raised md-warn" flex = "30" ng-click = "blockClient()">Block</md-button>
+						<md-button ng-if = "clientDetails.status == 'BLOCKED'" class = "md-raised md-primary" flex = "30" ng-click = "unblockClient()">Unblock</md-button>
+					 </div>
+					</div>
 				</div>
+
 			</div>
 			<div layout = "column" class = "margin_left_20" flex = "70">
 				<div layout = "row">
@@ -59,7 +67,8 @@
 					</div>
 					<div layout = "column" ng-repeat = "doc in docs">
 						<md-card class = "card md-card-hover doc-card" ng-class = "{active : doc.selected}">
-							<span class = "doc-remove" ng-click = "removeDoc($index)" ng-show = "!isClient"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
+							<span class = "doc-remove" ng-click = "removeDoc($index)" 
+							ng-show = "!isClient && user.role == 'admin'"><md-icon md-font-icon="fa-times-circle" class = "fa fa-2x" style = "color : #000"></md-icon></span>
 							<md-card-content layout="column" layout-align="space-between" class = "doc-card-content" ng-dblclick = "openDoc(doc)" ng-click = "selectDoc(doc)">
 								<img ng-src = "[[getViewImage(doc)]]"></img>
 							</md-card-content>
