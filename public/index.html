@@ -127,11 +127,8 @@
 					<md-menu-item>
 						<md-button ng-click="showUserProfile($event)">
 							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
-						 User Profile
+						 Show User Profile
 						</md-button>
-            name: [[user.name]]<br>
-            role: [[user.role]]
-            email: [[user.email]]
 					</md-menu-item>
 					<md-menu-divider></md-menu-divider>
 					<md-menu-item>
@@ -149,6 +146,29 @@
 		</md-tabs>
     	<div ng-view flex   ng-click="closeOpenedNotification()"></div>
     </main>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">User Profile</h1>
+        </md-toolbar>
+        <md-content layout-padding layout = "column">
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Id</div>
+                <div style = "width: 100px">[[user.id]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Name</div>
+                <div style = "width:100px">[[user.name]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Role</div>
+                <div style = "width:100px">[[user.role]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">Email</div>
+                <div style = "width:100px">[[user.email]]</div>
+            </div>
+        </md-content>
+    </md-sidenav>
   </div>
   </body>
 </html>
