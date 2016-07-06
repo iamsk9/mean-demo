@@ -102,14 +102,14 @@
                                     </div>
                                     <div ng-click = "markNotificationAsRead(item)">
                                         <p class = "notification-description">[[item.description]]</p>
-                                        
+
                                             <div layout = "row" layout-align = "space-between center">
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id">[[item.subject]]</p>
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment != 'urgent'">[[item.comment]]</p>
                                                  <p class = "notification-description" ng-show = "item.client_enquiry_id" ng-if="item.comment == 'urgent'" style="background-color:red;color:white;">[[item.comment]]</p>
                                             </div>
                                     </div>
-                                    
+
                                 </div>
                             </md-list-item>
                         </md-list>
@@ -118,27 +118,27 @@
                 </div>
                 <div id="notificationFooter"><a href="#/tasks">See All</a></div>
             </div>
-            <md-menu>
-                <md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
-                <md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
-                    [[user.name]]
-                </md-button>
-                <md-menu-content width="4">
-                    <md-menu-item>
-                        <md-button ng-click="showUserProfile($event)">
-                            <md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
-                            Show User Profile
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-divider></md-menu-divider>
-                    <md-menu-item>
-                        <md-button ng-click="logout()">
-                            Log out
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
-        </md-toolbar>
+			<md-menu>
+				<md-button class="md-primary" ng-click = "openUserMenu($mdOpenMenu, $event)">
+				<md-icon md-menu-origin md-font-icon="fa-user" class = "fa fa-2x" style = "color : white;margin-right : 5px;margin-bottom:5px"></md-icon>
+					[[user.name]]
+				</md-button>
+				<md-menu-content width="4">
+					<md-menu-item>
+						<md-button ng-click="showUserProfile($event)">
+							<md-icon md-font-icon="fa-user" class = "fa" md-menu-align-target></md-icon>
+						 Show User Profile
+						</md-button>
+					</md-menu-item>
+					<md-menu-divider></md-menu-divider>
+					<md-menu-item>
+						<md-button ng-click="logout()">
+							Log out
+						</md-button>
+					</md-menu-item>
+				</md-menu-content>
+	  		</md-menu>
+	    </md-toolbar>
     </header>
     <main class = "md-padding main" layout = "column" flex   ng-click="closeOpenedNotification()">
         <md-tabs md-stretch-tabs md-selected="selectedTab" md-border-bottom>
@@ -146,6 +146,29 @@
         </md-tabs>
         <div ng-view flex ng-click="closeOpenedNotification()" class = "main"></div>
     </main>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">User Profile</h1>
+        </md-toolbar>
+        <md-content layout-padding layout = "column">
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Id</div>
+                <div style = "width: 100px">[[user.id]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Name</div>
+                <div style = "width:100px">[[user.name]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">User Role</div>
+                <div style = "width:100px">[[user.role]]</div>
+            </div>
+            <div layout = "row" layout-align = "space-around">
+                <div style = "width:40px">Email</div>
+                <div style = "width:100px">[[user.email]]</div>
+            </div>
+        </md-content>
+    </md-sidenav>
   </div>
   </body>
 </html>

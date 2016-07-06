@@ -124,7 +124,7 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         .otherwise('/dashboard');
 });
 
-Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService){
+Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService, $mdSidenav){
 	$rootScope.user = UserService.getUserDetails();
      $rootScope.tabs = Tabs[$rootScope.user.role];
 	$rootScope.tabsMap = {};
@@ -245,7 +245,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 		$mdOpenMenu(ev);
 	}
 	$rootScope.showUserProfile = function(ev) {
-
+        $mdSidenav('right').toggle();
 	}
 
     $rootScope.$on('$routeChangeStart', function() {
