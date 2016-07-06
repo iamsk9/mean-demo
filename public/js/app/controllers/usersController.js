@@ -6,7 +6,9 @@ Caweb.controller('usersController', function($scope, $rootScope, CAService, $mdT
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Manage Users'];
 	$scope.userRoles = [
-		"admin"
+		"admin",
+		"employee",
+		"clerk"
 	];
 	function getUsers() {
 		var payload = {
