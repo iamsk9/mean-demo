@@ -53,7 +53,7 @@ function sendNotification(connection, params, release) {
 exports.addFormClient = function(request) {
     var addClientFormDefer = q.defer();
     var conn;
-    var selectedTask;
+    var selectedTask, taskName;
     var insertClient = "INSERT INTO clients_enquiry (name, company, email, task, mobile, subject, comment, created_at, modified_at ) VALUES (?,?,?,?,?,?,?,?,?)";
     var clientEnquiryId;
     db.getConnection().then(function(connection) {
@@ -67,19 +67,24 @@ exports.addFormClient = function(request) {
         console.log(clientEnquiry.insertId);
         clientEnquiryId = clientEnquiry.insertId;
         return utils.runQuery(conn, qu, ["admin"], true)
-    }).then(function(results) {
+    }).then(function(results) {        
         u_id = results[0].id;
+        var taskQuery = "SELECT task_name from master_tasks where id = ? and deleted_at is NULL";
+        utils.runQuery(conn,taskQuery,[request.task]).then(function(result){
+           taskName = result[0].task_name; 
         return sendNotification(conn, {
             user_id: u_id,
-            description: "New Client"+" : "+request.name+" - " + " Requested for a task.",
+            description: "New Client"+" : "+request.name+" - " + " Requested for a task"+" : "+taskName,
             is_read : 0,
             client_enquiry_id : clientEnquiryId
         });
+      });
     }).then(function() {
         sendEmail(u_id, request.name, request.email, request.company, request.task, request.mobile, request.subject, request.comment);
         var deptQuery = "SELECT d.email from departments_tasks dt Inner join departments d on dt.dept_id = d.id where dt.task_id = ? and dt.deleted_at = NULL and d.deleted_at = NULL";
         return utils.runQuery(conn, deptQuery, [request.task], true);
     }).then(function(results) {
+        console.log(results[0].email+"");
         if(results.length > 0) {
             emailer.send('public/templates/_taskEmail.html', {
                 name: request.name,
