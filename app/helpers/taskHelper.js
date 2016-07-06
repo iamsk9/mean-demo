@@ -100,13 +100,10 @@ exports.assignTask = function(request, user) {
 		if(request.client_enquiry_id)
 			notification.client_enquiry_id = request.client_enquiry_id;
 		sendEmail(notification.user_id, notification, connection);
-		return utils.runQuery(connection, newNotification, notification);
-
-		var deptQuery = "SELECT dept_id from departments_tasks WHERE task_id = ?";
-		var connection;
-		db.getConnection().then(function(conn){
-			return utils.runQuery(conn,[request.task_id])
-		}).then(sendEmailDept(res, notifications));
+		utils.runQuery(connection, newNotification, notification).then(function(){
+			var deptQuery = "SELECT dept_id from departments_tasks WHERE task_id = ?";
+			return utils.runQuery(conn,deptQuery,[request.task_id]).then(sendEmailDept(res, notifications));
+		});
 	}).then(function(results) {
 		assignTaskDefer.resolve();
 	}).catch(function(err) {
