@@ -29,7 +29,7 @@
 				            </thead>
 				            <tbody md-body>
 					            <tr md-row ng-show = "myTasks.length > 0" ng-repeat = "task in myTasks | filter:searchQuery">
-					                <td md-cell class = "font_14 center">#[[task.id]]</td>
+					                <td md-cell class = "font_14 center">ASGT[[task.id]]</td>
 					                <td md-cell class = "font_14 center">[[task.client_name]]</td>
 					                <td md-cell class = "font_14 center">[[task.contact_number]]</td>
 					                <td md-cell class = "font_14 center" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></td>
@@ -68,7 +68,7 @@
 				            </thead>
 				            <tbody md-body>
 					            <tr md-row ng-show = "assignedTasks.length > 0" ng-repeat = "task in assignedTasks | filter:searchQuery">
-					                <td md-cell class = "font_14 center">#[[task.id]]</td>
+					                <td md-cell class = "font_14 center">ASGT[[task.id]]</td>
 					                <td md-cell class = "font_14 center">[[task.client_name]]</td>
 					                <td md-cell class = "font_14 center">[[task.contact_number]]</td>
 					                <td md-cell class = "font_14 center" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></td>
