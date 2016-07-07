@@ -9,7 +9,9 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.task = {};
 	$scope.currentClient = {};
 	$scope.task.works = [];
+	$scope.addClientThroughAdminNotification = $routeParams.client_enquiry_id;
 	if($routeParams.client_name && $routeParams.mobile) {
+		$rootScope.TaskAssignedThroughNotification = "notAssigned";
 		$scope.otherClient = true;
 		$scope.task.clientName = $routeParams.client_name;
 		$scope.task.contactNumber = $routeParams.mobile;
@@ -41,6 +43,8 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 				$timeout(function(){
 					$scope.reset = true;
 				}, 0);
+				$location.search({client_name: null, mobile : null, client_enquiry_id : null, comments : null});
+				$rootScope.TaskAssignedThroughNotification = "Assigned";
 				$scope.otherClient = false;
 				$scope.assignTaskForm.$setPristine(true);
 				$scope.assignTaskForm.$setDirty(false);
@@ -53,7 +57,6 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 				.hideDelay(5000));
 			});
 		}
-		$location.path('/assigntask');
 	}
 	CAService.getBranches().then(function(data) {
 		$scope.branches = data;
