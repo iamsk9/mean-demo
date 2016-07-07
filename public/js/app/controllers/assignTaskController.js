@@ -11,7 +11,7 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.currentClient = {};
 	$scope.task.works = [];
 	$scope.addClientThroughAdminNotification = $routeParams.client_enquiry_id;
-	if($routeParams.client_name && $routeParams.mobile) {
+	if($routeParams.client_enquiry_id) {
 		$rootScope.taskAssignedThroughNotification=1;
 		$scope.otherClient = true;
 		$scope.task.clientName = $routeParams.client_name;
@@ -166,4 +166,8 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 			($scope.task.assignee) &&
 			($scope.task.description && $scope.task.description != ""))
 	}
-})
+
+	$scope.$on('$destroy', function() {
+		$location.search('');
+	});
+});
