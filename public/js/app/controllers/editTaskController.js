@@ -61,6 +61,14 @@ Caweb.controller('editTaskController', function($scope, $rootScope, $routeParams
 	function getReqDocs() {
 		CAService.getReqDocs($routeParams.taskId).then(function(reqDocs) {
 			$scope.reqDocs = reqDocs;
+			for(var i = 0; i < $scope.reqDocs.length ; i++) {
+				$scope.docStatus[$scope.reqDocs[i].doc_id] = {
+					id : $scope.reqDocs[i].doc_id,
+					label : $scope.reqDocs[i].label,
+					name : $scope.reqDocs[i].doc_name,
+					status : 0
+				}
+			}
 		}, function(err) {
 			$mdToast.show($mdToast.simple()
 			.textContent("Unable to fetch Document Details")
