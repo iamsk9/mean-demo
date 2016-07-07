@@ -12,7 +12,7 @@ exports.authorize = function(req, res, next) {
 		jwt.verify(token, app.get('secret'), function(err, decoded) {      
 		  if (err) {
 		  	console.log(err);
-		    return res.json({ success: false, message: 'Failed to authenticate token.' });    
+		    return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
 		  } else {
 		    // if everything is good, save to request for use in other routes
 		    var query = "SELECT * from user_tokens where session_token = ? and user_id = ? and deleted_at is NULL";

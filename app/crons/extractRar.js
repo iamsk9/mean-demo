@@ -74,15 +74,16 @@ function parseZipEntry(data, parentPath, zipEntry) {
 					parent : results[0].id,
 					name : filePath.slice(-1)[0]
 				};
-				DocsHelper.createDirectory(data.user_id, params).then(function() {
+				DocsHelper.createDirectory({id : data.user_id}, params).then(function() {
 					console.log("Folder Created");
 					parseZipEntryDefer.resolve();
 				}, function() {
 					console.log("Error in creating a dierectory");
 					parseZipEntryDefer.reject();
 				});
-			}, function() {
+			}, function(err) {
 				parseZipEntryDefer.reject();
+				console.log(err);
 				console.log("Unable to get the Doc with url : " + url);
 			});
 		} else {
@@ -99,6 +100,7 @@ function parseZipEntry(data, parentPath, zipEntry) {
 				parseZipEntryDefer.resolve();
 			}, function(err) {
 				console.log("Error in Creating Directory");
+				console.log(err);
 				parseZipEntryDefer.reject(err);
 			});
 		}
@@ -128,10 +130,12 @@ function parseZipEntry(data, parentPath, zipEntry) {
 				parseZipEntryDefer.resolve();
 			}, function(err) {
 				console.log("Error in uploading the File");
+				console.log(err);
 				parseZipEntryDefer.reject(err);
 			});
-		}, function() {
+		}, function(err) {
 			console.log("Unable to get the Doc with url : " + url);
+			console.log(err);
 			parseZipEntryDefer.reject(err);
 		});
 	} else {
@@ -183,7 +187,8 @@ jobs.process('extractRar', function(job, done) {
 			promise = parseZipEntry(job.data, parentPath, entries[0]);
 			console.log(promise);
 			for(var i = 1; i < entries.length; i++) {
-				if (entries[i].entryName.indexOf("__MACOSX") > -1) {
+				if (entries[i].entryName.indexOf("__MACOSX") > -1 || 
+					entries[i].entryName.indexOf(".DS_Store") > -1) {
 					continue;
 				}
 				promise = promise.then(
