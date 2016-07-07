@@ -59,6 +59,14 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	} else {
 		$scope.clientSelected = false;
 	}
+    
+    $scope.showPrompt = function(doc){
+    	$mdDialog.show($mdDialog.confirm()
+	          .title('Document Details')
+	          .textContent('DocumentId' + ' : ' +doc.id+ ' Description ' + ' : ' +doc.description + ' Added on ' + ' : ' +doc.created_at.substring(0,10))
+	          .ariaLabel('Remove Work')
+	          .ok('Ok'));
+    }
 
 	$scope.querySearch = function(searchText) {
 		return CAService.searchClients(searchText);

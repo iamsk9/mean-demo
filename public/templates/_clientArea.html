@@ -83,7 +83,8 @@
 								</div>
 								<div layout = "row" layout-align = "end center">
 									<md-button class = "md-primary" ng-show = "!isClient && (!doc.descriptionInputFlag &&(doc.description == null || doc.description == ''))" ng-click = "showDescriptionInput($index, $event)" >Add Description</md-button>
-									<md-button target = "_self" ng-if = "!doc.is_directory" href = "/document/[[doc.id]]">Download </md-button>
+									<md-button target = "_self" ng-if = "!doc.is_directory" ng-click = "showPrompt(doc)">Show details</md-button>
+									<md-button target = "_self" ng-if = "!doc.is_directory" href = "/document/[[doc.id]]">Download</md-button>
 								</div>
 							</md-card-actions>
 						</md-card>
