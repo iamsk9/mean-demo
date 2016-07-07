@@ -81,9 +81,9 @@
 									  <md-progress-circular md-mode="[[doc.descriptionLoader]]" style = "margin-left:auto;"></md-progress-circular>
 									</md-input-container>
 								</div>
-								<div layout = "row" layout-align = "end center">
-									<md-button class = "md-primary" ng-show = "!isClient && (!doc.descriptionInputFlag &&(doc.description == null || doc.description == ''))" ng-click = "showDescriptionInput($index, $event)" >Add Description</md-button>
-									<md-button target = "_self" ng-if = "!doc.is_directory" href = "/document/[[doc.id]]">Download </md-button>
+								<div layout = "row" layout-align = "space-between center">
+									<md-button target = "_self" ng-if = "!doc.is_directory" ng-click = "showPrompt(doc)">Show details</md-button>
+									<md-button target = "_self" ng-if = "!doc.is_directory" href = "/document/[[doc.id]]">Download</md-button>
 								</div>
 							</md-card-actions>
 						</md-card>
@@ -205,3 +205,36 @@
 		</md-dialog-content>
     </md-dialog>
 </script>
+<script type = "text/ng-template" id = "documentDetails.tmpl.html">
+	<md-dialog aria-label = "Document Details">
+		<md-toolbar>
+			<div class = "md-toolbar-tools">
+				<h2>Document Details</h2>
+				<span flex></span>
+		        <md-button class="md-icon-button" ng-click="theScope.closeDialog()">
+		          <md-icon md-font-icon="fa-times" class = "fa" aria-label="Close dialog"></md-icon>
+		        </md-button>
+	        </div>
+		</md-toolbar>
+		<md-dialog-content style="width:400px;max-height:810px;margin: 20px">
+			<div layout = "column">
+				<div layout = "row" layout-align = "space-around">
+					<p style = "width: 160px">Document ID : </p>
+					<p style = "width: 200px">[[doc.id]]</p>
+				</div>
+				<div layout = "row" layout-align = "space-around ">
+					<p style = "width: 160px">Document Name : </p>
+					<p style = "width: 200px">[[doc.description]]</p>
+				</div>
+				<div layout = "row" layout-align = "space-around">
+					<p style = "width: 160px">Document Added On :</p>
+					<p style = "width: 200px">[[doc.created_at | showDate]]</p>
+				</div>
+				<div layout = "row" layout-align = "space-around">
+					<p style = "width: 160px">Document Added By :</p>
+					<p style = "width: 200px">[[doc.added_by]]</p>
+				</div>
+			</div>
+		</md-dialog-content>
+	</md-dialog>
+</script> 

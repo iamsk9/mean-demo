@@ -95,7 +95,7 @@
                         <md-list style = "padding: 0px">
                             <md-list-item md-virtual-repeat = "item in notifications" md-on-demand class="repeated-item" ng-class = "{'notification-read' : item.is_read}">
                                 <div class="md-list-item-text" ng-click="viewTask(item)" layout="column" style = "width: 100%">
-                                    <div layout = "row" layout-align = "space-between center">
+                                    <div ng-click = "markNotificationAsRead(item)" layout = "row" layout-align = "space-between center">
                                           <p class = "notification-text" ng-show = "item.task_id">Task #[[item.task_id]]</p>
                                           <p class = "notification-text" ng-show = "item.client_enquiry_id">Enquiry #[[item.id]]</p>
                                           <a href = "javascript:void(0)" class = "read-link" ng-if = "item.is_read == 0" ng-click = "markNotificationAsRead(item)">Mark as read</a>

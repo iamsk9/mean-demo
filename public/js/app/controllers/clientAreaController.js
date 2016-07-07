@@ -59,6 +59,22 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	} else {
 		$scope.clientSelected = false;
 	}
+    
+    $scope.showPrompt = function(doc){
+    	$mdDialog.show({
+	    	controller : function($scope, theScope) {
+	    		$scope.theScope = theScope;
+	    		$scope.doc = doc;
+	    	},
+			templateUrl : 'documentDetails.tmpl.html',
+			parent : angular.element(document.body),
+			clickOutsideToClose:true,
+			locals : {
+				theScope : $scope
+			}
+		}).then(function(){
+		});
+    }
 
 	$scope.querySearch = function(searchText) {
 		return CAService.searchClients(searchText);
@@ -299,6 +315,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 					return
 				}
 				CAService.addDocument($scope.clientDetails.id, response.data.data);
+				response.data.data.added_by = $rootScope.user.name;
 				$scope.docs.push(response.data.data);
 			} else {
 				$mdToast.show($mdToast.simple()

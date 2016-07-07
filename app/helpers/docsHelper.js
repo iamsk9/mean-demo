@@ -88,7 +88,8 @@ exports.saveDoc = function(request) {
 							return;
 						}
 						console.log("Query Successful");
-						saveDocDefer.resolve({url : url, description: request.file.originalname});
+						saveDocDefer.resolve({id : result.insertId, url : url, description: request.file.originalname, 
+							created_at : moment().format('YYYY-MM-DD HH:mm:ss')});
 						fs.unlink('uploads/'+request.file.filename, function(err) {
 	  						if (err) {
 								console.log("Could not Delete file from uploads");
@@ -111,10 +112,9 @@ exports.saveDoc = function(request) {
 exports.getDocumentsByClientId = function(id, parent) {
 	var documentsDefer = q.defer();
 	if(parent) {
-		var docsByClientId = "SELECT * from docs where client_id = ? and parent = ? and deleted_at is NULL";
+		var docsByClientId = "SELECT d.id, d.user_id, d.url, d.created_at, d.description, d.is_directory, d.parent, d.client_id, u.first_name as added_by from docs d LEFT JOIN users u on d.user_id = u.id where d.client_id = ? and d.parent = ? and d.deleted_at is NULL";
 	} else {
-		var docsByClientId = "SELECT * from docs where client_id = ? and parent is NULL and deleted_at is NULL";
-
+		var docsByClientId = "SELECT d.id, d.user_id, d.url, d.created_at, d.description, d.is_directory, d.parent, d.client_id, u.first_name as added_by from docs d LEFT JOIN users u on d.user_id = u.id where client_id = ? and d.parent is NULL and d.deleted_at is NULL";
 	}
 	db.getConnection().then(function(connection) {
 		connection.query(docsByClientId, [id, parent], function(err, results) {
