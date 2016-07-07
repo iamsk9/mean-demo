@@ -63,7 +63,7 @@ exports.assignTask = function(request, user) {
 		created_at : moment().format('YYYY-MM-DD HH:mm:ss'),
 		is_read : 0
 	};
-	var taskWorks = [];     
+	var taskWorks = [];
 	if(request.client) {
 		console.log(request.client);
 		payload.client_id = request.client.id;
@@ -94,7 +94,7 @@ exports.assignTask = function(request, user) {
 			utils.runQuery(connection, taskWorksQuery, taskWorks, true);
 			taskWorks = [];
 	    }
-	}).then(function() {	
+	}).then(function() {
 		notification.task_id = Tid;
 		notification.description = 'New Task has been assigned - Task #' + notification.task_id;
 		if(request.client_enquiry_id)
@@ -321,6 +321,80 @@ exports.getTasks = function(user) {
 		});
 		getTasksDefer.resolve(results);
 	}).catch(function(err) {
+		getTasksDefer.reject(err);
+	});
+	return getTasksDefer.promise;
+}
+
+exports.getTodaysTasks = function(user) {
+	var getTasksDefer = q.defer();
+	var query = "SELECT user_role from users WHERE id = ?";
+	db.getConnection().then(function(connection){
+		return utils.runQuery(connection, query,[user.id]);
+	}).then(function(results){
+			var e = results.map(function(f) {
+				var role = f.user_role;
+				return role;
+			});
+
+				var query = "SELECT t.id, t.client_id, t.client_name, t.contact_number, t.pan_card, t.user_id, t.task_description, t.date_of_appointment, t.time_of_appointment, t.task_status, t.remarks, c.name as primary_client_name, c.phone_number as client_contact_number, c.company_pan_number as client_pan_card, t.assigned_by, u.first_name as assigned_by_name\
+				from tasks t LEFT JOIN clients c on t.client_id = c.id\
+				 INNER JOIN users u on t.assigned_by = u.id \
+				 where (t.user_id = ? or t.assigned_by = ? ) and t.deleted_at is NULL and date_of_appointment = ?";
+				db.getConnection().then(function(connection) {
+					return utils.runQuery(connection, query, [user.id, user.id, moment().format('YYYY-MM-DD')]);
+				}).then(function(results) {
+					results.map(function(e) {
+						//console.log(e);
+						if(e.client_id) {
+							e.client_name = e.primary_client_name;
+							e.contact_number = e.client_contact_number;
+							e.pan_card = e.client_pan_card;
+						}
+						delete e.primary_client_name;
+						delete e.client_contact_number;
+						delete e.client_pan_card;
+						e.date_of_appointment = moment(e.date_of_appointment).format('DD-MM-YYYY');
+						e.time_of_appointment = moment(e.time_of_appointment, 'HH:mm').format('hh:mm A');
+						return e;
+					});
+					getTasksDefer.resolve(results);
+				}).catch(function(err) {
+					getTasksDefer.reject(err);
+				});
+
+
+	}).catch(function(err) {
+		getTasksDefer.reject(err);
+	});
+	return getTasksDefer.promise;
+}
+
+exports.getMyTasks = function(user) {
+	var getTasksDefer = q.defer();
+	var query = "SELECT t.id, t.client_id, t.client_name, t.contact_number, t.pan_card, t.user_id, t.task_description, t.date_of_appointment, t.time_of_appointment, t.task_status, t.remarks, c.name as primary_client_name, c.phone_number as client_contact_number, c.company_pan_number as client_pan_card, t.assigned_by, u.first_name as assigned_by_name\
+			from tasks t LEFT JOIN clients c on t.client_id = c.id\
+		 	INNER JOIN users u on t.assigned_by = u.id \
+			where (t.user_id = ? or t.assigned_by = ? ) and t.deleted_at is NULL";
+	db.getConnection().then(function(connection) {
+		return utils.runQuery(connection, query, [user.id, user.id]);
+	}).then(function(results) {
+					results.map(function(e) {
+						console.log(e);
+						if(e.client_id) {
+							e.client_name = e.primary_client_name;
+							e.contact_number = e.client_contact_number;
+							e.pan_card = e.client_pan_card;
+						}
+						delete e.primary_client_name;
+						delete e.client_contact_number;
+						delete e.client_pan_card;
+						e.date_of_appointment = moment(e.date_of_appointment).format('DD-MM-YYYY');
+						e.time_of_appointment = moment(e.time_of_appointment, 'HH:mm').format('hh:mm A');
+						return e;
+					});
+					getTasksDefer.resolve(results);
+				}).catch(function(err) {
 		getTasksDefer.reject(err);
 	});
 	return getTasksDefer.promise;

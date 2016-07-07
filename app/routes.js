@@ -111,7 +111,7 @@ module.exports = function(app, apiRoutes, blobService) {
 
     apiRoutes.get('/departments', DepartmentsController.getDepartments);
 
-    apiRoutes.get('/departments/:id', DepartmentsController.getDepartmentTasks);    
+    apiRoutes.get('/departments/:id', DepartmentsController.getDepartmentTasks);
 
     apiRoutes.patch('/departments/:departmentId', DepartmentsController.updateDepartment);
 
@@ -120,6 +120,8 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.post('/task', TaskController.assignTask);
 
 	apiRoutes.get('/tasks', TaskController.getTasks);
+
+	//apiRoutes.get('/tasks', TaskController.getTodaysTasks);
 
 	apiRoutes.get('/task/:taskId', TaskController.getTask);
 
@@ -134,6 +136,10 @@ module.exports = function(app, apiRoutes, blobService) {
 	apiRoutes.patch('/taskStatus', TaskController.updateTaskStatus);
 
 	apiRoutes.delete('/task/:taskId', TaskController.removeTask);
+
+apiRoutes.get('/mytasks', TaskController.getMyTasks);
+
+apiRoutes.get('/tasks', TaskController.getTodaysTasks);
 
 	apiRoutes.get('/notifications', NotificationsController.getNotifications);
 

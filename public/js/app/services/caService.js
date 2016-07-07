@@ -117,7 +117,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				};
 				this.getClientsService(payload).then(function(data) {
 					if(data.returnCode == "SUCCESS") {
-						if(typeof data.data != "undefined" && 
+						if(typeof data.data != "undefined" &&
 							data.data.length > 0) {
 							clientCache[id] = angular.copy(data.data[0]);
 							clientDefer.resolve(data.data[0]);
@@ -144,7 +144,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				};
 				this.getClientsService(payload).then(function(data) {
 					if(data.returnCode == "SUCCESS") {
-						if(typeof data.data != "undefined" && 
+						if(typeof data.data != "undefined" &&
 							data.data.length > 0) {
 							clientCache[id] = angular.copy(data.data[0]);
 							clientDefer.resolve(data.data[0]);
@@ -244,7 +244,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				createDepartmentDefer.reject(err);
 			});
 			return createDepartmentDefer.promise;
-		},    
+		},
 
 		createWork : function(payload) {
 			var createWorkDefer = $q.defer();
@@ -258,7 +258,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 				createWorkDefer.reject(err);
 			});
 			return createWorkDefer.promise;
-		},    
+		},
 
         removeDepartment : function(id, removeWorks) {
 			var removeDepartmentDefer = $q.defer();
@@ -299,7 +299,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 			})
 			return updateDepartmentDefer.promise;
 		},
-        
+
         updateWorks : function(id, payload) {
 			var updateWorksDefer = $q.defer();
 			Restangular.one('/departmentWorks/' + id).patch(payload).then(function(data) {
@@ -330,8 +330,8 @@ Caweb.factory('CAService', function(Restangular, $q){
 		},
 
 		isDocDescriptionChanged : function(id, index, value) {
-			if((docsCache[id].docs[index].description != undefined && 
-				docsCache[id].docs[index].description != value) || 
+			if((docsCache[id].docs[index].description != undefined &&
+				docsCache[id].docs[index].description != value) ||
 				(docsCache[id].docs[index].description == undefined && value != "")) {
 				return true;
 			} else {
@@ -402,7 +402,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 			for(var key in updated) {
 	                if(updated[key] != original[key])
 				    {
-							payload[key] = updated[key]; 
+							payload[key] = updated[key];
 					}
 			}
 			return payload;
@@ -495,6 +495,32 @@ Caweb.factory('CAService', function(Restangular, $q){
 			})
 			return updateBranchDefer.promise;
 		},
+		getMyTasks : function() {
+			var getMyTasksDefer = $q.defer();
+			Restangular.one('/mytasks').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getMyTasksDefer.resolve(data.data);
+				} else {
+					getMyTasksDefer.reject(data);
+				}
+			}, function(err) {
+				getMyTasksDefer.reject(err);
+			});
+			return getMyTasksDefer.promise;
+		},
+		getTodaysTasks : function() {
+			var getTodaysTasksDefer = $q.defer();
+			Restangular.one('/tasks').get().then(function(data) {
+				if(data.returnCode == "SUCCESS") {
+					getTodaysTasksDefer.resolve(data.data);
+				} else {
+					getTodaysTasksDefer.reject(data);
+				}
+			}, function(err) {
+				getTodaysTasksDefer.reject(err);
+			});
+			return getTodaysTasksDefer.promise;
+		},
 		getTasks : function() {
 			var getTasksDefer = $q.defer();
 			Restangular.one('/tasks').get().then(function(data) {
@@ -508,6 +534,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 			});
 			return getTasksDefer.promise;
 		},
+
 		assignTask : function(payload) {
 			var assignTaskDefer = $q.defer();
 			Restangular.one('/task').post('', payload).then(function(data) {
@@ -609,7 +636,7 @@ Caweb.factory('CAService', function(Restangular, $q){
 			var updateTaskDefer = $q.defer();
 			Restangular.one('/task/' + id).patch(payload).then(function(data) {
 				if(data.returnCode == "SUCCESS") {
-					updateTaskDefer.resolve(data.data);	
+					updateTaskDefer.resolve(data.data);
 				} else {
 					updateTaskDefer.reject(data);
 				}
