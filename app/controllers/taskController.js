@@ -16,6 +16,34 @@ exports.getTasks = function(req,res){
 	});
 };
 
+exports.getTodaysTasks = function(req,res){
+	TaskHelper.getTodaysTasks(req.user).then(function(result){
+		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
+	}, function(err){
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode})
+		} else {
+			console.log(err);
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014})
+
+		}
+	});
+};
+
+exports.getMyTasks = function(req,res){
+	TaskHelper.getMyTasks(req.user).then(function(result){
+		res.json({returnCode : "SUCCESS", data : result, errorCode : null});
+	}, function(err){
+		console.log(err);
+		if(err.errorCode) {
+			res.json({returnCode : "FAILURE", data : null, errorCode : err.errorCode})
+		} else {
+			console.log(err);
+			res.json({returnCode : "FAILURE", data : null, errorCode : 1014})
+		}
+	});
+};
 exports.getTask = function(req,res){
 	TaskHelper.getTask(req.params.taskId, req.user).then(function(result){
 		res.json({returnCode : "SUCCESS", data : result, errorCode : null});

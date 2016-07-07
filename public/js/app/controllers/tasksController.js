@@ -8,27 +8,74 @@ Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdT
 	$rootScope.selectedTab = $rootScope.tabsMap['Tasks'];
 	$scope.myTasks = [];
 	$scope.assignedTasks = [];
+	$scope.todaysTasks = [];
 	var taskList;
 	var originalTasks;
-	function getTasks() {
-		CAService.getTasks().then(function(tasks){
-			var userId = UserService.getUserDetails().id;
-			taskList = tasks;
-			originalTasks = angular.copy(tasks);
-			$scope.myTasks = tasks.filter(function(task) {
-				return task.user_id == userId;
-			});
-			$scope.assignedTasks = tasks.filter(function(task) {
-				return task.assigned_by == userId;
-			});
-		}, function(err) {
-			$mdToast.show($mdToast.simple()
-			.textContent("Unable to fetch Tasks")
-			.position("top right")
-			.hideDelay(5000));
-		 });
-	}
+
+		function getMyTasks() {
+			CAService.getMyTasks().then(function(tasks){
+				var userId = UserService.getUserDetails().id;
+				taskList = tasks;
+				originalTasks = angular.copy(tasks);
+				$scope.myTasks = tasks;
+			}, function(err) {
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch Tasks")
+				.position("top right")
+				.hideDelay(5000));
+			 });
+		 }
+
+		function getTasks() {
+			CAService.getTasks().then(function(tasks){
+				var userId = UserService.getUserDetails().id;
+				taskList = tasks;
+				originalTasks = angular.copy(tasks);
+				$scope.todaysTasks = tasks.filter(function(task) {
+					var today = new Date();
+	        var dd = today.getDate();
+	         var mm = today.getMonth()+1; //January is 0!
+	        var yyyy = today.getFullYear();
+	        if(dd<10)
+	            dd='0'+dd;
+				  if(mm<10)
+				       mm='0'+mm;
+				   var today = dd+'-'+mm+'-'+yyyy;
+					return task.date_of_appointment == today;
+				});
+				$scope.assignedTasks = tasks.filter(function(task) {
+					return task.assigned_by == userId;
+				});
+				$scope.myTasks = tasks.filter(function(task) {
+					return task.user_id==userId;
+				});
+			}, function(err) {
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch Tasks")
+				.position("top right")
+				.hideDelay(5000));
+			 });
+		}
+		function getTodaysTasks() {
+			CAService.getTodaysTasks().then(function(tasks){
+				var userId = UserService.getUserDetails().id;
+				taskList = tasks;
+				originalTasks = angular.copy(tasks);
+				$scope.todaysTasks = tasks;
+				$mdToast.show($mdToast.simple()
+				.textContent("fetch Tasks")
+				.position("top right")
+				.hideDelay(5000));
+			}, function(err) {
+				$mdToast.show($mdToast.simple()
+				.textContent("Unable to fetch Tasks")
+				.position("top right")
+				.hideDelay(5000));
+			 });
+		}
+
 	getTasks();
+
 	function showDialog(){
 		$mdDialog.show({
 	    	controller : function($scope, theScope) {
@@ -113,6 +160,6 @@ Caweb.controller('tasksController', function($scope, $rootScope, CAService, $mdT
 				.hideDelay(5000));
 	    	});
 	    }, function() {
-	    });	
+	    });
 	}
 });

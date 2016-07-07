@@ -13,6 +13,38 @@
 			</md-input-container>
 		</div>
 		<md-tabs md-stretch-tabs md-dynamic-height>
+			<md-tab label = "Today's Tasks" ng-if="user.role=='admin'">
+				<md-content>
+					<md-table-container md-row-select style = "margin-bottom : 40px">
+				        <table md-table>
+				            <thead md-head >
+				                <tr md-row >
+				                    <th md-column class = "font_16 center" style = "width : 50px">Task Id</th>
+				                    <th md-column class = "font_16 center" style = "width : 100px">Client Name</th>
+				                    <th md-column class = "font_16 center" style = "width : 100px">Contact Number</th>
+				                    <th md-column class = "font_16 center" style = "width : 100px">Pan Card</th>
+				                    <th md-column class = "font_16 center" style = "width : 100px">Status</th>
+				                    <th md-column class = "font_16 center" style = "width : 100px">Action</th>
+				                </tr>
+				            </thead>
+				            <tbody md-body>
+					            <tr md-row ng-show = "todaysTasks.length > 0" ng-repeat = "task in todaysTasks | filter:searchQuery">
+					                <td md-cell class = "font_14 center">ASGT[[task.id]]</td>
+					                <td md-cell class = "font_14 center">[[task.client_name]]</td>
+					                <td md-cell class = "font_14 center">[[task.contact_number]]</td>
+					                <td md-cell class = "font_14 center" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></td>
+					                <td md-cell class = "font_14 center" ng-show = "task.pan_card">[[task.pan_card]]</td>
+					              	<td md-cell class = "font_14 center">[[task.task_status]]</td>
+					                <td md-cell class = "font_14 center" style = "width : 100px"><div layout = "row" layout-align = "start center"><md-icon ng-click = "updateTask(task)" md-font-icon="fa-pencil" class = "fa icon-transition" ></md-icon><md-icon ng-click = "viewTask(task)" md-font-icon="fa-eye" class = "fa icon-transition" ></md-icon><md-icon ng-click = "showRemoveTaskDialog($index)" md-font-icon="fa-times" class = "fa icon-transition" ></md-icon></div></td>
+					            </tr>
+					            <tr md-row ng-show = "assignedTasks.length == 0">
+					            	<td md-cell class = "font_16 center font_bold" colspan = "8">There are no tasks assigned by you.</td>
+					            </tr>
+					        </tbody>
+					    </table>
+					</md-table-container>
+				</md-content>
+			</md-tab>
 			<md-tab label = "My Tasks">
 				<md-content>
 					<md-table-container md-row-select style = "margin-bottom : 40px">
@@ -51,39 +83,39 @@
 					</md-table-container>
 				</md-content>
 			</md-tab>
-
 			<md-tab label = "Task Assigned" ng-if="user.role=='admin'">
 				<md-content>
 					<md-table-container md-row-select style = "margin-bottom : 40px">
-				        <table md-table>
-				            <thead md-head >
-				                <tr md-row >
-				                    <th md-column class = "font_16 center" style = "width : 50px">Task Id</th>
-				                    <th md-column class = "font_16 center" style = "width : 100px">Client Name</th>
-				                    <th md-column class = "font_16 center" style = "width : 100px">Contact Number</th>
-				                    <th md-column class = "font_16 center" style = "width : 100px">Pan Card</th>
-				                    <th md-column class = "font_16 center" style = "width : 100px">Status</th>
-				                    <th md-column class = "font_16 center" style = "width : 100px">Action</th>
-				                </tr>
-				            </thead>
-				            <tbody md-body>
-					            <tr md-row ng-show = "assignedTasks.length > 0" ng-repeat = "task in assignedTasks | filter:searchQuery">
-					                <td md-cell class = "font_14 center">ASGT[[task.id]]</td>
-					                <td md-cell class = "font_14 center">[[task.client_name]]</td>
-					                <td md-cell class = "font_14 center">[[task.contact_number]]</td>
-					                <td md-cell class = "font_14 center" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></td>
-					                <td md-cell class = "font_14 center" ng-show = "task.pan_card">[[task.pan_card]]</td>
-					              	<td md-cell class = "font_14 center">[[task.task_status]]</td>
-					                <td md-cell class = "font_14 center" style = "width : 100px"><div layout = "row" layout-align = "start center"><md-icon ng-click = "updateTask(task)" md-font-icon="fa-pencil" class = "fa icon-transition" ></md-icon><md-icon ng-click = "viewTask(task)" md-font-icon="fa-eye" class = "fa icon-transition" ></md-icon><md-icon ng-click = "showRemoveTaskDialog($index)" md-font-icon="fa-times" class = "fa icon-transition" ></md-icon></div></td>
-					            </tr>
-					            <tr md-row ng-show = "assignedTasks.length == 0">
-					            	<td md-cell class = "font_16 center font_bold" colspan = "8">There are no tasks assigned by you.</td>
-					            </tr>
-					        </tbody>
-					    </table>
+								<table md-table>
+										<thead md-head >
+												<tr md-row >
+														<th md-column class = "font_16 center" style = "width : 50px">Task Id</th>
+														<th md-column class = "font_16 center" style = "width : 100px">Client Name</th>
+														<th md-column class = "font_16 center" style = "width : 100px">Contact Number</th>
+														<th md-column class = "font_16 center" style = "width : 100px">Pan Card</th>
+														<th md-column class = "font_16 center" style = "width : 100px">Status</th>
+														<th md-column class = "font_16 center" style = "width : 100px">Action</th>
+												</tr>
+										</thead>
+										<tbody md-body>
+											<tr md-row ng-show = "assignedTasks.length > 0" ng-repeat = "task in assignedTasks | filter:searchQuery">
+													<td md-cell class = "font_14 center">ASGT[[task.id]]</td>
+													<td md-cell class = "font_14 center">[[task.client_name]]</td>
+													<td md-cell class = "font_14 center">[[task.contact_number]]</td>
+													<td md-cell class = "font_14 center" ng-hide = "task.pan_card"><md-icon md-font-icon="fa-minus" class = "fa"></md-icon></td>
+													<td md-cell class = "font_14 center" ng-show = "task.pan_card">[[task.pan_card]]</td>
+													<td md-cell class = "font_14 center">[[task.task_status]]</td>
+													<td md-cell class = "font_14 center" style = "width : 100px"><div layout = "row" layout-align = "start center"><md-icon ng-click = "updateTask(task)" md-font-icon="fa-pencil" class = "fa icon-transition" ></md-icon><md-icon ng-click = "viewTask(task)" md-font-icon="fa-eye" class = "fa icon-transition" ></md-icon><md-icon ng-click = "showRemoveTaskDialog($index)" md-font-icon="fa-times" class = "fa icon-transition" ></md-icon></div></td>
+											</tr>
+											<tr md-row ng-show = "assignedTasks.length == 0">
+												<td md-cell class = "font_16 center font_bold" colspan = "8">There are no tasks assigned by you.</td>
+											</tr>
+									</tbody>
+							</table>
 					</md-table-container>
 				</md-content>
 			</md-tab>
+
 		</md-tabs>
 	</div>
 </md-content>
