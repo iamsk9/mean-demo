@@ -5,11 +5,13 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		return;
 	}
 	$rootScope.selectedTab = $rootScope.tabsMap['Assign Task'];
+	$rootScope.taskAssignedThroughNotification=0;
 	$scope.reset = true;
 	$scope.task = {};
 	$scope.currentClient = {};
 	$scope.task.works = [];
 	if($routeParams.client_name && $routeParams.mobile) {
+		$rootScope.taskAssignedThroughNotification=1;
 		$scope.otherClient = true;
 		$scope.task.clientName = $routeParams.client_name;
 		$scope.task.contactNumber = $routeParams.mobile;
@@ -17,14 +19,15 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		$scope.task.comment = $routeParams.comments;
 		CAService.getClientEnquiryDetails($routeParams.client_enquiry_id).then(function(result){
             $scope.task.clientEmail = result.email;
-            $scope.task.works = [{ id : result.task, name : result.task_name }]; 
-		},function(){   
+            $scope.task.works = [{ id : result.task, name : result.task_name }];
+		},function(){
             $mdToast.show($mdToast.simple()
 					.textContent("Error in getting client details")
 					.position("top right")
-					.hideDelay(5000)); 
+					.hideDelay(5000));
         });
 	}
+
 	$scope.assignTask = function() {
 		if(validateDetails()) {
 			$scope.assignTaskForm.$setPristine();
@@ -45,6 +48,8 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 				$scope.assignTaskForm.$setPristine(true);
 				$scope.assignTaskForm.$setDirty(false);
 				$scope.assignTaskForm.$setUntouched(true);
+				$location.search({client_name : NULL, mobile : NULL, client_enquiry_id : NULL,comments : NULL});
+				$location.path('/assigntask');
 			}, function(err) {
 				$scope.assignTaskLoading = false;
 				$mdToast.show($mdToast.simple()
@@ -74,10 +79,10 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 	$scope.querySearch = function(searchText) {
 		   return CAService.searchClients(searchText);
 	}
-     
+
     $scope.filterResults = function(query) {
 		if(query) {
-			var results = $scope.masterWorks.filter(createFilterFor(query));	
+			var results = $scope.masterWorks.filter(createFilterFor(query));
 		} else {
 			var results = $scope.masterWorks;
 		}
@@ -157,7 +162,7 @@ Caweb.controller('assignTaskController', function($scope, $rootScope, CAService,
 		setAllInputsDirty($scope);
 		return ((($scope.otherClient && $scope.task.clientName && $scope.task.clientName != "" && $scope.task.contactNumber) ||
 			(!$scope.otherClient && $scope.task.client)) &&
-			($scope.task.assignee) && 
+			($scope.task.assignee) &&
 			($scope.task.description && $scope.task.description != ""))
 	}
 })
