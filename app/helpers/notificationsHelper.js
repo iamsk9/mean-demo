@@ -8,8 +8,8 @@ var utils = require('../utils');
 
 exports.getNotifications = function(params, user) {
 	var getNotificationsDefer = q.defer();
-	var notificationsQuery = "SELECT n.id, task_id, is_read, description,client_enquiry_id,ce.name,ce.mobile,ce.subject,ce.comment from notifications n LEFT JOIN \
-	clients_enquiry ce on n.client_enquiry_id = ce.id where user_id = ? and n.deleted_at is NULL and is_read = ? LIMIT 10 OFFSET ?";
+	var notificationsQuery = "SELECT n.id,task_id,is_read,description,client_enquiry_id,ce.name,ce.mobile,ce.subject,ce.comment,UNIX_TIMESTAMP(n.created_at) as date from notifications n LEFT JOIN \
+	clients_enquiry ce on n.client_enquiry_id = ce.id where user_id = ? and n.deleted_at is NULL and is_read = ? ORDER BY date DESC LIMIT 10 OFFSET ?";
 	db.getConnection().then(function(connection) {
 		return utils.runQuery(connection, notificationsQuery, [user.id, 0, 10 * (params.page - 1)], true);
 	}).then(function(results) {
