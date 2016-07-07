@@ -233,7 +233,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 		   {
 				  if(index!=$rootScope.tabsMap['Assign Task']){
 						    $location.path('/assigntask');
-							 		 var confirm = $mdDialog.confirm()
+							 	var confirm = $mdDialog.confirm()
 	 			          .textContent('Would you like to move without assigning task')
 	 			          .ariaLabel('Assign task')
 	 			          .ok('No')
@@ -243,8 +243,7 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 						$location.path('/assigntask');
 	 			    }, function() {
 							$rootScope.taskAssignedThroughNotification=0;
-							$location.search({client_name : NULL, mobile : NULL, client_enquiry_id : NULL,comments : NULL});
-	 			    });
+				  });
 	 			}}
 	}
 	$rootScope.showUserProfile = function(ev) {
@@ -259,9 +258,9 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         $rootScope.notificationsOpen = false;
     });
 	$rootScope.switchTab = function(index,tab) {
-	 if($rootScope.user.role == "CLIENT") {
-			index = $rootScope.tabsMap[tab];
-		}
+	      if($rootScope.user.role == "CLIENT") {
+			      index = $rootScope.tabsMap[tab];
+	    	}
         else if($rootScope.user.role == "clerk" && (tab == "Documents" || tab == "Clients")) {
             index = $rootScope.tabsMap[tab];
         }
