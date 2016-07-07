@@ -54,7 +54,7 @@
                         	<div layout = "row" layout-align = "space-around center">
 				    			<p style = "margin-top : 0px">Client Name</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px" ng-if="addClientThroughAdminNotification">[[task.clientName]]</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;min-height:25px" ng-if="addClientThroughAdminNotification">[[task.clientName]]</p>
 								  <div ng-if="!addClientThroughAdminNotification">
 									  <input type="text" required="" name = "clientName" ng-model = "task.clientName" >
 									  <div ng-messages = "assignTaskForm.clientName.$error">
@@ -64,7 +64,7 @@
 								</md-input-container>
 								<p style = "margin-top : 0px">Contact Number</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px" ng-if="addClientThroughAdminNotification">[[task.contactNumber]]</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;min-height:25px" ng-if="addClientThroughAdminNotification">[[task.contactNumber]]</p>
 								  <div ng-if="!addClientThroughAdminNotification">
 									  <input type="text" required="" name = "contactNumber" ng-model = "task.contactNumber">
 									  <div ng-messages = "assignTaskForm.contactNumber.$error">
@@ -76,12 +76,12 @@
 						    <div layout = "row" layout-align = "space-around center" ng-if="addClientThroughAdminNotification">
 				    			<p style = "margin-top : 0px">Email</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px">[[task.clientEmail]]</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;min-height:25px">[[task.clientEmail]]</p>
 								 </md-input-container>
 								<p style = "margin-top : 0px">Comment</p>
 					            <md-input-container style = "width : 30%" class = "md-block">
-					              <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;font-weight:bold;height:25px" ng-if="task.comment == 'urgent'">[[task.comment]]</p>
-								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;height:25px" ng-if="task.comment != 'urgent'">[[task.comment]]</p>
+					              <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;font-weight:bold;min-height:25px" ng-if="task.comment == 'urgent'">[[task.comment]]</p>
+								  <p style="border:1px solid #B6B6B4;padding:4px 0 4px 8px;margin-top : 0px;min-height:25px" ng-if="task.comment != 'urgent'">[[task.comment]]</p>
 								</md-input-container>
 						    </div>
 								  
