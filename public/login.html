@@ -42,7 +42,7 @@
     	</div>
     	<div layout = "column" layout-align = "center center" class = "md-whiteframe-z2" style = "width : 400px; background :  white; margin-left:auto; margin-right : auto">
     		<md-content class="md-padding">
-	          	<form name = "loginForm">
+	          	<form name = "loginForm" ng-submit = "signin()">
 		            <div layout = "column" layout-align = "center center">
 		            	<md-input-container style = "width : 300px">
 						  <label>Email</label>
@@ -62,6 +62,7 @@
 						  	<div ng-message = "serverError">Unable to login due to a server error. Please try after some time</div>
 						  </div>
 						</md-input-container>
+            <input type = "submit" style = "display:none"/>
 						<md-button class = "md-primary" ng-click = "signin()" style = "font-size : 1.3em">Sign In</md-button>
 		            </div>
 	  			</form>
