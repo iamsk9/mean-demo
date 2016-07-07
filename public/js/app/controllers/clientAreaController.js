@@ -61,11 +61,19 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 	}
     
     $scope.showPrompt = function(doc){
-    	$mdDialog.show($mdDialog.confirm()
-	          .title('Document Details')
-	          .textContent('DocumentId' + ' : ' +doc.id+ ' Description ' + ' : ' +doc.description + ' Added on ' + ' : ' +doc.created_at.substring(0,10))
-	          .ariaLabel('Remove Work')
-	          .ok('Ok'));
+    	$mdDialog.show({
+	    	controller : function($scope, theScope) {
+	    		$scope.theScope = theScope;
+	    		$scope.doc = doc;
+	    	},
+			templateUrl : 'documentDetails.tmpl.html',
+			parent : angular.element(document.body),
+			clickOutsideToClose:true,
+			locals : {
+				theScope : $scope
+			}
+		}).then(function(){
+		});
     }
 
 	$scope.querySearch = function(searchText) {
@@ -307,6 +315,7 @@ Caweb.controller('clientAreaController', function($rootScope, $scope, CAService,
 					return
 				}
 				CAService.addDocument($scope.clientDetails.id, response.data.data);
+				response.data.data.added_by = $rootScope.user.name;
 				$scope.docs.push(response.data.data);
 			} else {
 				$mdToast.show($mdToast.simple()

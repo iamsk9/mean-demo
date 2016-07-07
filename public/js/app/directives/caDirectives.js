@@ -61,3 +61,9 @@ Caweb.directive('dateFix', function() {
         }
     };
 });
+
+Caweb.filter('showDate', function() {
+    return function(input) {
+        return moment(input).format("DD-MM-YYYY");   
+    }
+});
