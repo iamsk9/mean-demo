@@ -105,15 +105,17 @@ Caweb.config(function($mdThemingProvider, RestangularProvider, $routeProvider, $
         .otherwise('/dashboard');
 });
 
-Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService, $mdSidenav){
+Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService, $mdSidenav,$mdDialog){
 	$rootScope.user = UserService.getUserDetails();
      $rootScope.tabs = Tabs[$rootScope.user.role];
+		 $rootScope.clicked=0;
 	$rootScope.tabsMap = {};
     var allTasks;
 	 if($rootScope.user.role == 'clerk' || $rootScope.user.role == 'employee'){
          $location.path('/clients');
     }
     $rootScope.viewTask = function(item) {
+			$rootScope.clicked=1;
       if(user.role == 'admin' || user.role == 'employee'){
         if(item.task_id){
             var taskAssignedToEmployee = allTasks.filter(function(result){
@@ -225,6 +227,25 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
 		console.log("hover");
 		$mdOpenMenu(ev);
 	}
+	$rootScope.dialog=function(index)
+	{
+		if($rootScope.taskAssignedThroughNotification==1 && $rootScope.clicked==1)
+		   {
+				  if(index!=$rootScope.tabsMap['Assign Task']){
+						    $location.path('/assigntask');
+							 	var confirm = $mdDialog.confirm()
+	 			          .textContent('Would you like to move without assigning task')
+	 			          .ariaLabel('Assign task')
+	 			          .ok('No')
+	 			          .cancel('yes');
+	 			    $mdDialog.show(confirm).then(function() {
+								$rootScope.taskAssignedThroughNotification=0;
+						$location.path('/assigntask');
+	 			    }, function() {
+							$rootScope.taskAssignedThroughNotification=0;
+				  });
+	 			}}
+	}
 	$rootScope.showUserProfile = function(ev) {
         $mdSidenav('right').toggle();
 	}
@@ -237,9 +258,9 @@ Caweb.run(function($rootScope, UserService, $mdToast, Tabs, $location, CAService
         $rootScope.notificationsOpen = false;
     });
 	$rootScope.switchTab = function(index,tab) {
-		if($rootScope.user.role == "CLIENT") {
-			index = $rootScope.tabsMap[tab];
-		}
+	      if($rootScope.user.role == "CLIENT") {
+			      index = $rootScope.tabsMap[tab];
+	    	}
         else if($rootScope.user.role == "clerk" && (tab == "Documents" || tab == "Clients")) {
             index = $rootScope.tabsMap[tab];
         }
